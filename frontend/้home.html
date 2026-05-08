@@ -1,0 +1,381 @@
+﻿<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cell Learning â€” à¹‚à¸¥à¸à¸‚à¸­à¸‡à¹€à¸‹à¸¥à¸¥à¹Œ</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Kanit',sans-serif;background:#050210;color:#fff;min-height:100vh;overflow-x:hidden}
+
+/* Loading */
+#ls{position:fixed;inset:0;background:#050210;z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px}
+#ls.hide{animation:fadeOut .5s ease forwards;pointer-events:none}
+@keyframes fadeOut{to{opacity:0}}
+.lring{width:44px;height:44px;border:3px solid rgba(124,58,237,.2);border-top-color:#7c3aed;border-radius:50%;animation:rot .8s linear infinite}
+@keyframes rot{to{transform:rotate(360deg)}}
+
+/* Hero section */
+.hero-img{width:100%;height:100%;object-fit:cover;object-position:center top}
+.hero-fade{mask-image:linear-gradient(to bottom,rgba(0,0,0,1) 55%,rgba(0,0,0,0) 100%);-webkit-mask-image:linear-gradient(to bottom,rgba(0,0,0,1) 55%,rgba(0,0,0,0) 100%)}
+.hero-placeholder{background:linear-gradient(145deg,#1a0a3a 0%,#2d1065 40%,#0f0929 100%);display:flex;align-items:center;justify-content:center}
+
+/* Header */
+.hdr{background:linear-gradient(to bottom,rgba(5,2,16,.9) 0%,rgba(5,2,16,.0) 100%)}
+
+/* User badge */
+.ubadge{background:rgba(124,58,237,.15);border:1px solid rgba(124,58,237,.35);border-radius:999px;padding:4px 12px 4px 5px;display:inline-flex;align-items:center;gap:7px;font-size:11px;transition:all .2s}
+.ubadge:hover{background:rgba(124,58,237,.22)}
+
+/* Logout */
+.logbtn{cursor:pointer;padding:5px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);font-size:10px;color:rgba(255,255,255,.4);transition:all .2s;font-family:'Kanit',sans-serif}
+.logbtn:hover{border-color:rgba(239,68,68,.4);color:#fca5a5;background:rgba(239,68,68,.08)}
+
+/* Score pill */
+.score-pill{background:rgba(0,0,0,.55);border:1px solid rgba(234,179,8,.35);border-radius:999px;backdrop-filter:blur(12px);box-shadow:0 0 20px rgba(234,179,8,.2),inset 0 1px 0 rgba(255,255,255,.05)}
+
+/* Info bar */
+.info-bar{background:linear-gradient(135deg,rgba(124,58,237,.1),rgba(217,70,239,.05));border:1px solid rgba(124,58,237,.18);border-radius:20px}
+
+/* E-Cards */
+.ecard{background:rgba(255,255,255,.042);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.08);border-radius:20px;transition:all .3s;position:relative;overflow:hidden;display:flex;align-items:center;padding:14px 16px 14px 14px;gap:0;text-decoration:none;color:inherit}
+.ecard::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.1),transparent)}
+.ecard:hover{transform:translateX(5px) translateY(-1px);background:rgba(255,255,255,.07)}
+
+/* E-number circle */
+.enum{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;flex-shrink:0;position:relative}
+.enum::after{content:'';position:absolute;inset:-3px;border-radius:50%;border:1px solid currentColor;opacity:.25}
+
+/* Card accent glows */
+.e1g{box-shadow:0 0 25px rgba(168,85,247,.3),inset 0 1px 0 rgba(168,85,247,.2);border-left:3px solid rgba(168,85,247,.6)}
+.e2g{box-shadow:0 0 25px rgba(59,130,246,.3),inset 0 1px 0 rgba(59,130,246,.2);border-left:3px solid rgba(59,130,246,.6)}
+.e3g{box-shadow:0 0 25px rgba(16,185,129,.3),inset 0 1px 0 rgba(16,185,129,.2);border-left:3px solid rgba(16,185,129,.6)}
+.e4g{box-shadow:0 0 25px rgba(245,158,11,.3),inset 0 1px 0 rgba(245,158,11,.2);border-left:3px solid rgba(245,158,11,.6)}
+.e5g{box-shadow:0 0 25px rgba(239,68,68,.3),inset 0 1px 0 rgba(239,68,68,.2);border-left:3px solid rgba(239,68,68,.6)}
+
+/* Arrow icon */
+.arr{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .3s}
+.ecard:hover .arr{background:rgba(255,255,255,.12);transform:translateX(3px)}
+
+/* Footer stats */
+.stat-box{background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:14px 10px;text-align:center;transition:all .2s}
+.stat-box:hover{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12)}
+
+/* Path line */
+.pline{position:absolute;left:39px;top:70px;bottom:70px;width:1px;background:linear-gradient(to bottom,transparent,rgba(255,255,255,.12) 20%,rgba(255,255,255,.12) 80%,transparent);z-index:0}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.fu{animation:fadeUp .6s ease both}
+</style>
+</head>
+<body class="max-w-[480px] mx-auto">
+
+<!-- Loading -->
+<div id="ls">
+  <div class="lring"></div>
+  <p class="text-xs text-gray-600 tracking-widest uppercase">à¸à¸³à¸¥à¸±à¸‡à¹‚à¸«à¸¥à¸”...</p>
+</div>
+
+<!-- Header -->
+<header class="hdr sticky top-0 z-50 flex justify-between items-center px-4 py-3">
+  <div class="flex items-center gap-2.5">
+    <div class="relative">
+      <div class="w-9 h-9 bg-gradient-to-br from-violet-500 to-fuchsia-600 rounded-xl flex items-center justify-center shadow-lg shadow-violet-900/50">
+        <i class="fas fa-microscope text-xs"></i>
+      </div>
+      <div class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-400 rounded-full border-2 border-[#050210] animate-pulse"></div>
+    </div>
+    <div>
+      <p class="text-xs font-bold leading-none">à¹‚à¸¥à¸à¸‚à¸­à¸‡à¹€à¸‹à¸¥à¸¥à¹Œ</p>
+      <p class="text-[8px] text-purple-400 font-light tracking-wider mt-0.5">Mitosis Â· à¸„à¸£à¸¹à¸•à¸±à¹Šà¸</p>
+    </div>
+  </div>
+  <div class="flex items-center gap-2">
+    <div class="ubadge">
+      <div class="w-6 h-6 bg-gradient-to-br from-violet-500 to-fuchsia-500 rounded-full flex items-center justify-center">
+        <i class="fas fa-user" style="font-size:8px"></i>
+      </div>
+      <span id="hdrName" class="text-purple-200 font-semibold">...</span>
+    </div>
+    <button class="logbtn" onclick="logout()">
+      <i class="fas fa-right-from-bracket"></i>
+    </button>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="relative w-full" style="height:400px">
+  <!-- Image -->
+  <img id="heroImg" src="../image/teacher-home-page.png"
+    alt="Hero" class="hero-img hero-fade absolute inset-0"
+    onerror="this.style.display='none';document.getElementById('heroFallback').style.display='flex'">
+
+  <!-- CSS Fallback (if image fails) -->
+  <div id="heroFallback" class="absolute inset-0 hero-fade hero-placeholder" style="display:none">
+    <!-- Animated cell background fallback -->
+    <svg viewBox="0 0 480 400" class="w-full h-full opacity-30" style="position:absolute;inset:0">
+      <defs>
+        <radialGradient id="hg1"><stop offset="0%" stop-color="rgba(124,58,237,.5)"/><stop offset="100%" stop-color="transparent"/></radialGradient>
+        <radialGradient id="hg2"><stop offset="0%" stop-color="rgba(217,70,239,.4)"/><stop offset="100%" stop-color="transparent"/></radialGradient>
+      </defs>
+      <ellipse cx="240" cy="200" rx="180" ry="160" fill="url(#hg1)" opacity=".6"/>
+      <circle cx="240" cy="200" r="70" fill="url(#hg2)" opacity=".5"/>
+      <circle cx="240" cy="200" r="160" fill="none" stroke="rgba(139,92,246,.3)" stroke-width="1.5"/>
+      <circle cx="240" cy="200" r="75" fill="none" stroke="rgba(232,121,249,.35)" stroke-width="1.5" stroke-dasharray="8,5"/>
+      <!-- chromosomes -->
+      <rect x="222" y="188" width="8" height="24" rx="4" fill="rgba(167,139,250,.7)"/>
+      <rect x="234" y="185" width="8" height="30" rx="4" fill="rgba(196,181,253,.7)"/>
+      <rect x="246" y="190" width="8" height="20" rx="4" fill="rgba(167,139,250,.7)"/>
+      <line x1="240" y1="90" x2="240" y2="200" stroke="rgba(139,92,246,.3)" stroke-width="1" stroke-dasharray="5,4"/>
+      <line x1="240" y1="310" x2="240" y2="200" stroke="rgba(139,92,246,.3)" stroke-width="1" stroke-dasharray="5,4"/>
+      <circle cx="240" cy="86" r="8" fill="rgba(217,70,239,.7)"/>
+      <circle cx="240" cy="314" r="8" fill="rgba(217,70,239,.7)"/>
+    </svg>
+    <div class="relative z-10 text-center px-8">
+      <div class="w-20 h-20 bg-gradient-to-br from-violet-600/40 to-fuchsia-600/30 border border-violet-500/30 rounded-3xl flex items-center justify-center mx-auto mb-4">
+        <i class="fas fa-dna text-4xl text-violet-300 opacity-70"></i>
+      </div>
+      <p class="text-violet-300 text-sm font-light opacity-60">à¸„à¸£à¸¹à¸•à¸±à¹Šà¸ Â· Cell Learning</p>
+    </div>
+  </div>
+
+  <!-- Overlay content -->
+  <div class="absolute inset-0 flex flex-col justify-between pt-4 pb-0 px-5"
+    style="background:linear-gradient(180deg,rgba(5,2,16,.15) 0%,rgba(5,2,16,0) 30%,rgba(5,2,16,.7) 75%,rgba(5,2,16,1) 100%)">
+
+    <!-- Score badge -->
+    <div class="flex justify-center">
+      <div class="score-pill flex items-center gap-2.5 px-4 py-1.5">
+        <div class="flex items-center gap-1">
+          <i class="fas fa-star text-yellow-400" style="font-size:9px"></i>
+          <i class="fas fa-star text-yellow-400" style="font-size:9px"></i>
+          <i class="fas fa-star text-yellow-400" style="font-size:9px"></i>
+        </div>
+        <span class="text-[10px] font-bold tracking-wide">à¸„à¸°à¹à¸™à¸™à¸ªà¸°à¸ªà¸¡
+          <span id="heroScore" class="text-yellow-300">0</span> pts
+        </span>
+      </div>
+    </div>
+
+    <!-- Welcome text bottom -->
+    <div class="pb-6">
+      <p class="text-xs text-white/60 font-light mb-1">à¸ªà¸§à¸±à¸ªà¸”à¸µ, <span id="wlcName" class="text-violet-300 font-semibold">...</span></p>
+      <h2 class="text-[38px] font-extrabold leading-none tracking-tight">
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-white via-violet-100 to-blue-200">à¹‚à¸¥à¸à¸‚à¸­à¸‡à¹€à¸‹à¸¥à¸¥à¹Œ</span>
+      </h2>
+      <p class="text-[11px] text-blue-200/70 mt-2 font-light leading-relaxed">
+        à¸œà¸ˆà¸à¸ à¸±à¸¢à¹€à¸žà¸·à¹ˆà¸­à¹€à¸£à¸µà¸¢à¸™à¸£à¸¹à¹‰à¸à¸²à¸£à¹à¸šà¹ˆà¸‡à¹€à¸‹à¸¥à¸¥à¹Œà¹à¸šà¸šà¹„à¸¡à¹‚à¸—à¸‹à¸´à¸ª<br>à¹€à¸‚à¹‰à¸²à¹ƒà¸ˆà¸‡à¹ˆà¸²à¸¢ à¸ªà¸™à¸¸à¸ à¸ˆà¸³à¹„à¸”à¹‰à¹„à¸¡à¹ˆà¸¥à¸·à¸¡ âœ¨
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Info bar -->
+<div class="info-bar mx-4 mb-5 px-5 py-3 flex items-center justify-between fu">
+  <div class="flex items-center gap-3 text-[11px]">
+    <div class="flex items-center gap-1.5 text-purple-300">
+      <i class="fas fa-graduation-cap text-violet-400 text-xs"></i>
+      <span id="infoClass">à¸Šà¸±à¹‰à¸™ â€”</span>
+    </div>
+    <span class="text-gray-700">Â·</span>
+    <div class="flex items-center gap-1.5 text-purple-300">
+      <i class="fas fa-hashtag text-fuchsia-400 text-xs"></i>
+      <span id="infoNum">à¹€à¸¥à¸‚à¸—à¸µà¹ˆ â€”</span>
+    </div>
+  </div>
+  <div class="flex items-center gap-1.5 text-yellow-400 text-[11px] font-semibold">
+    <i class="fas fa-trophy text-[10px]"></i>
+    <span id="infoScore">0</span>
+    <span class="text-gray-500 font-normal">à¸„à¸°à¹à¸™à¸™</span>
+  </div>
+</div>
+
+<!-- Learning Path -->
+<div class="px-4 pb-6">
+  <div class="flex items-center justify-between mb-4 fu" style="animation-delay:.1s">
+    <div>
+      <h3 class="text-sm font-bold tracking-wide">à¹€à¸ªà¹‰à¸™à¸—à¸²à¸‡à¸à¸²à¸£à¹€à¸£à¸µà¸¢à¸™à¸£à¸¹à¹‰</h3>
+      <p class="text-[10px] text-gray-500 font-light">5E Learning Model</p>
+    </div>
+    <div class="text-[10px] text-gray-600 flex items-center gap-1.5">
+      <i class="fas fa-circle-info text-violet-500"></i>
+      <span>5 à¸à¸´à¸ˆà¸à¸£à¸£à¸¡ Â· 6 à¸‚à¸±à¹‰à¸™à¸•à¸­à¸™</span>
+    </div>
+  </div>
+
+  <div class="relative">
+    <div class="pline"></div>
+    <div class="space-y-3">
+
+      <!-- E1: Engage -->
+      <a href="E1.html" class="ecard e1g fu" style="animation-delay:.15s">
+        <div class="enum bg-gradient-to-br from-purple-400 to-purple-700 text-white mr-4" style="box-shadow:0 0 20px rgba(168,85,247,.4)">E1</div>
+        <div class="flex-grow min-w-0">
+          <div class="flex items-center gap-2 mb-0.5">
+            <p class="text-xs font-bold uppercase tracking-wider">Engage</p>
+            <span class="text-[9px] bg-purple-500/15 text-purple-300 px-2 py-0.5 rounded-full border border-purple-500/20">à¸à¸£à¸°à¸•à¸¸à¹‰à¸™</span>
+          </div>
+          <p class="text-[10px] text-gray-400 font-light leading-relaxed">à¹€à¸Šà¸·à¹ˆà¸­à¸¡à¹‚à¸¢à¸‡à¸›à¸£à¸°à¸ªà¸šà¸à¸²à¸£à¸“à¹Œà¹€à¸”à¸´à¸¡ à¸à¸£à¸°à¸•à¸¸à¹‰à¸™à¸„à¸§à¸²à¸¡à¸ªà¸™à¹ƒà¸ˆ</p>
+        </div>
+        <div class="flex items-center gap-2 ml-3 flex-shrink-0">
+          <div class="w-9 h-9 bg-purple-500/15 rounded-2xl flex items-center justify-center">
+            <i class="fas fa-lightbulb text-purple-400 text-sm"></i>
+          </div>
+          <div class="arr"><i class="fas fa-chevron-right text-[9px] text-gray-500"></i></div>
+        </div>
+      </a>
+
+      <!-- E2: Explore -->
+      <a href="E2.html" class="ecard e2g fu" style="animation-delay:.2s">
+        <div class="enum bg-gradient-to-br from-blue-400 to-blue-700 text-white mr-4" style="box-shadow:0 0 20px rgba(59,130,246,.4)">E2</div>
+        <div class="flex-grow min-w-0">
+          <div class="flex items-center gap-2 mb-0.5">
+            <p class="text-xs font-bold uppercase tracking-wider">Explore</p>
+            <span class="text-[9px] bg-blue-500/15 text-blue-300 px-2 py-0.5 rounded-full border border-blue-500/20">à¸ªà¸³à¸£à¸§à¸ˆ</span>
+          </div>
+          <p class="text-[10px] text-gray-400 font-light leading-relaxed">à¸ªà¸³à¸£à¸§à¸ˆà¸„à¹‰à¸™à¸«à¸²à¸œà¹ˆà¸²à¸™à¹€à¸à¸¡à¹€à¸£à¸µà¸¢à¸‡à¸¥à¸³à¸”à¸±à¸šà¹€à¸‹à¸¥à¸¥à¹Œ</p>
+        </div>
+        <div class="flex items-center gap-2 ml-3 flex-shrink-0">
+          <div class="w-9 h-9 bg-blue-500/15 rounded-2xl flex items-center justify-center">
+            <i class="fas fa-search text-blue-400 text-sm"></i>
+          </div>
+          <div class="arr"><i class="fas fa-chevron-right text-[9px] text-gray-500"></i></div>
+        </div>
+      </a>
+
+      <!-- E3: Explain -->
+      <a href="E3.html" class="ecard e3g fu" style="animation-delay:.25s">
+        <div class="enum bg-gradient-to-br from-emerald-400 to-emerald-700 text-white mr-4" style="box-shadow:0 0 20px rgba(16,185,129,.4)">E3</div>
+        <div class="flex-grow min-w-0">
+          <div class="flex items-center gap-2 mb-0.5">
+            <p class="text-xs font-bold uppercase tracking-wider">Explain</p>
+            <span class="text-[9px] bg-emerald-500/15 text-emerald-300 px-2 py-0.5 rounded-full border border-emerald-500/20">à¸­à¸˜à¸´à¸šà¸²à¸¢</span>
+          </div>
+          <p class="text-[10px] text-gray-400 font-light leading-relaxed">à¸­à¸˜à¸´à¸šà¸²à¸¢à¹€à¸™à¸·à¹‰à¸­à¸«à¸²à¸”à¹‰à¸§à¸¢à¹à¸­à¸™à¸´à¹€à¸¡à¸Šà¸±à¸™à¹à¸¥à¸°à¹€à¸žà¸¥à¸‡</p>
+        </div>
+        <div class="flex items-center gap-2 ml-3 flex-shrink-0">
+          <div class="w-9 h-9 bg-emerald-500/15 rounded-2xl flex items-center justify-center">
+            <i class="fas fa-play-circle text-emerald-400 text-sm"></i>
+          </div>
+          <div class="arr"><i class="fas fa-chevron-right text-[9px] text-gray-500"></i></div>
+        </div>
+      </a>
+
+      <!-- E4: Elaborate -->
+      <a href="E4.html" class="ecard e4g fu" style="animation-delay:.3s">
+        <div class="enum bg-gradient-to-br from-amber-400 to-amber-700 text-white mr-4" style="box-shadow:0 0 20px rgba(245,158,11,.4)">E4</div>
+        <div class="flex-grow min-w-0">
+          <div class="flex items-center gap-2 mb-0.5">
+            <p class="text-xs font-bold uppercase tracking-wider">Elaborate</p>
+            <span class="text-[9px] bg-amber-500/15 text-amber-300 px-2 py-0.5 rounded-full border border-amber-500/20">à¸•à¹ˆà¸­à¸¢à¸­à¸”</span>
+          </div>
+          <p class="text-[10px] text-gray-400 font-light leading-relaxed">à¸•à¹ˆà¸­à¸¢à¸­à¸”à¸„à¸§à¸²à¸¡à¸£à¸¹à¹‰ à¸ªà¸£à¹‰à¸²à¸‡à¸Šà¸´à¹‰à¸™à¸‡à¸²à¸™à¸‚à¸­à¸‡à¸„à¸¸à¸“à¹€à¸­à¸‡</p>
+        </div>
+        <div class="flex items-center gap-2 ml-3 flex-shrink-0">
+          <div class="w-9 h-9 bg-amber-500/15 rounded-2xl flex items-center justify-center">
+            <i class="fas fa-palette text-amber-400 text-sm"></i>
+          </div>
+          <div class="arr"><i class="fas fa-chevron-right text-[9px] text-gray-500"></i></div>
+        </div>
+      </a>
+
+      <!-- E5: Evaluate -->
+      <a href="E5.html" class="ecard e5g fu" style="animation-delay:.35s">
+        <div class="enum bg-gradient-to-br from-red-400 to-red-700 text-white mr-4" style="box-shadow:0 0 20px rgba(239,68,68,.4)">E5</div>
+        <div class="flex-grow min-w-0">
+          <div class="flex items-center gap-2 mb-0.5">
+            <p class="text-xs font-bold uppercase tracking-wider">Evaluate</p>
+            <span class="text-[9px] bg-red-500/15 text-red-300 px-2 py-0.5 rounded-full border border-red-500/20">à¸—à¸”à¸ªà¸­à¸š</span>
+          </div>
+          <p class="text-[10px] text-gray-400 font-light leading-relaxed">à¸—à¸”à¸ªà¸­à¸šà¸„à¸§à¸²à¸¡à¹€à¸‚à¹‰à¸²à¹ƒà¸ˆ à¸žà¸´à¸Šà¸´à¸•à¸ à¸²à¸£à¸à¸´à¸ˆà¸ªà¸¸à¸”à¸—à¹‰à¸²à¸¢</p>
+        </div>
+        <div class="flex items-center gap-2 ml-3 flex-shrink-0">
+          <div class="w-9 h-9 bg-red-500/15 rounded-2xl flex items-center justify-center">
+            <i class="fas fa-trophy text-red-400 text-sm"></i>
+          </div>
+          <div class="arr"><i class="fas fa-chevron-right text-[9px] text-gray-500"></i></div>
+        </div>
+      </a>
+
+    </div>
+  </div>
+</div>
+
+<!-- Footer stats -->
+<footer class="mx-4 mb-8 fu" style="animation-delay:.4s">
+  <div class="grid grid-cols-4 gap-2.5">
+    <div class="stat-box">
+      <div class="w-9 h-9 bg-red-500/15 rounded-xl flex items-center justify-center mx-auto mb-2">
+        <i class="fas fa-crosshairs text-red-400 text-xs"></i>
+      </div>
+      <p class="text-[8px] font-bold text-gray-400">à¹€à¸›à¹‰à¸²à¸«à¸¡à¸²à¸¢</p>
+    </div>
+    <div class="stat-box">
+      <div class="w-9 h-9 bg-pink-500/15 rounded-xl flex items-center justify-center mx-auto mb-2">
+        <i class="fas fa-brain text-pink-400 text-xs"></i>
+      </div>
+      <p class="text-[8px] font-bold text-gray-400">à¸—à¸±à¸à¸©à¸°</p>
+    </div>
+    <div class="stat-box">
+      <div class="w-9 h-9 bg-yellow-500/15 rounded-xl flex items-center justify-center mx-auto mb-2">
+        <i class="fas fa-award text-yellow-400 text-xs"></i>
+      </div>
+      <p class="text-[8px] font-bold text-gray-400">à¸„à¸°à¹à¸™à¸™</p>
+    </div>
+    <div class="stat-box">
+      <div class="w-9 h-9 bg-sky-500/15 rounded-xl flex items-center justify-center mx-auto mb-2">
+        <i class="fas fa-comment text-sky-400 text-xs"></i>
+      </div>
+      <p class="text-[8px] font-bold text-gray-400">à¸•à¸´à¸”à¸•à¹ˆà¸­à¸„à¸£à¸¹</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+const API='';
+
+function logout(){
+  localStorage.removeItem('cl_token');
+  localStorage.removeItem('cl_user');
+  window.location.href='login.html';
+}
+
+function setUI(u){
+  const name=u.first_name||(u.username||'');
+  document.getElementById('hdrName').textContent=name;
+  document.getElementById('wlcName').textContent=name;
+  document.getElementById('heroScore').textContent=u.score??0;
+  document.getElementById('infoScore').textContent=u.score??0;
+  document.getElementById('infoClass').textContent='à¸Šà¸±à¹‰à¸™ '+(u.class_name||'â€”');
+  document.getElementById('infoNum').textContent='à¹€à¸¥à¸‚à¸—à¸µà¹ˆ '+(u.student_number||'â€”');
+}
+
+async function init(){
+  const token=localStorage.getItem('cl_token');
+  if(!token){window.location.href='login.html';return}
+
+  /* Show cached immediately */
+  try{const c=JSON.parse(localStorage.getItem('cl_user')||'{}');if(c.username)setUI(c)}catch{}
+
+  /* Refresh from server */
+  try{
+    const res=await fetch(`${API}/api/auth/me`,{headers:{'Authorization':'Bearer '+token}});
+    if(res.status===401||res.status===422){logout();return}
+    const u=await res.json();
+    localStorage.setItem('cl_user',JSON.stringify(u));
+    setUI(u);
+  }catch{/* offline - show cached */}
+  finally{
+    const ls=document.getElementById('ls');
+    ls.classList.add('hide');
+    setTimeout(()=>ls.remove(),600);
+  }
+}
+init();
+</script>
+</body>
+</html>
+

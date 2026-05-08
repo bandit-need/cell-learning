@@ -1,0 +1,529 @@
+﻿<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cell Learning â€” à¸ªà¸¡à¸±à¸„à¸£à¸ªà¸¡à¸²à¸Šà¸´à¸</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Kanit',sans-serif;background:#050210;min-height:100vh;color:#fff;overflow-x:hidden}
+
+/* Stars */
+#stars{position:fixed;inset:0;pointer-events:none;z-index:0}
+.star{position:absolute;background:#fff;border-radius:50%;animation:twinkle ease-in-out infinite}
+@keyframes twinkle{0%,100%{opacity:.08;transform:scale(1)}50%{opacity:.7;transform:scale(1.3)}}
+
+/* Blobs */
+.blob{position:fixed;border-radius:50%;filter:blur(100px);pointer-events:none;z-index:0}
+.b1{width:600px;height:600px;background:radial-gradient(circle,rgba(109,40,217,.16) 0%,transparent 70%);top:-180px;right:-120px;animation:blobMove 18s ease-in-out infinite}
+.b2{width:400px;height:400px;background:radial-gradient(circle,rgba(76,29,149,.12) 0%,transparent 70%);bottom:-100px;left:-80px;animation:blobMove 14s ease-in-out infinite 6s reverse}
+@keyframes blobMove{0%,100%{transform:translate(0,0)}50%{transform:translate(25px,-18px)}}
+
+/* Glass */
+.glass{background:rgba(255,255,255,.038);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.07)}
+.glass-card{background:rgba(255,255,255,.05);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.1)}
+
+/* Inputs */
+.inp{background:rgba(255,255,255,.055);border:1.5px solid rgba(255,255,255,.09);color:#fff;width:100%;transition:all .3s;font-family:'Kanit',sans-serif}
+.inp:focus{outline:none;border-color:#7c3aed;background:rgba(124,58,237,.12);box-shadow:0 0 0 4px rgba(124,58,237,.14),0 0 20px rgba(124,58,237,.08)}
+.inp::placeholder{color:rgba(255,255,255,.2);font-weight:300}
+
+/* Buttons */
+.btn-p{background:linear-gradient(135deg,#6d28d9,#7c3aed,#d946ef);position:relative;overflow:hidden;transition:all .3s;font-family:'Kanit',sans-serif}
+.btn-p::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,#5b21b6,#6d28d9,#c026d3);opacity:0;transition:opacity .3s}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(109,40,217,.5)}
+.btn-p:active{transform:translateY(0)}
+.btn-p>*{position:relative;z-index:1}
+.btn-p:hover::before{opacity:1}
+.btn-p:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-s{background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.1);transition:all .25s;font-family:'Kanit',sans-serif}
+.btn-s:hover{background:rgba(124,58,237,.1);border-color:rgba(124,58,237,.4)}
+
+/* Step progress */
+.sdot{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;transition:all .4s;flex-shrink:0}
+.sdot-idle{background:rgba(255,255,255,.04);border:2px solid rgba(255,255,255,.1);color:rgba(255,255,255,.3)}
+.sdot-active{background:linear-gradient(135deg,#7c3aed,#d946ef);border:2px solid transparent;color:#fff;box-shadow:0 0 24px rgba(124,58,237,.7),0 0 0 4px rgba(124,58,237,.15)}
+.sdot-done{background:rgba(124,58,237,.18);border:2px solid rgba(124,58,237,.6);color:#a78bfa}
+.sline{flex:1;height:2px;background:rgba(255,255,255,.07);position:relative;overflow:hidden;border-radius:2px}
+.sline::after{content:'';position:absolute;left:0;top:0;height:100%;width:0;background:linear-gradient(90deg,#7c3aed,#d946ef);transition:width .6s ease;border-radius:2px}
+.sline.filled::after{width:100%}
+
+/* Step content */
+.step{display:none}
+.step.active{display:block;animation:slideR .4s cubic-bezier(.25,.46,.45,.94)}
+@keyframes slideR{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:translateX(0)}}
+.step.back-in{animation:slideL .4s cubic-bezier(.25,.46,.45,.94)}
+@keyframes slideL{from{opacity:0;transform:translateX(-28px)}to{opacity:1;transform:translateX(0)}}
+
+/* Gender */
+.gopt input[type=radio]{display:none}
+.gopt label{display:flex;align-items:center;justify-content:center;gap:7px;padding:11px 16px;border-radius:14px;border:1.5px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);cursor:pointer;transition:all .25s;font-size:13px;color:rgba(255,255,255,.4);font-family:'Kanit',sans-serif}
+.gopt input:checked+label{border-color:#7c3aed;background:rgba(124,58,237,.18);color:#fff;box-shadow:0 0 18px rgba(124,58,237,.35)}
+.gopt label:hover{border-color:rgba(124,58,237,.4);color:rgba(255,255,255,.75)}
+
+/* Password strength */
+.psb{height:3px;border-radius:2px;transition:background .35s}
+
+/* Toast */
+#toast{position:fixed;top:24px;right:24px;z-index:9999;transform:translateX(140%);transition:transform .45s cubic-bezier(.34,1.56,.64,1)}
+#toast.show{transform:translateX(0)}
+
+/* Spinner */
+.spin{width:18px;height:18px;border:2px solid rgba(255,255,255,.25);border-top-color:#fff;border-radius:50%;animation:spinAnim .7s linear infinite}
+@keyframes spinAnim{to{transform:rotate(360deg)}}
+
+/* Success overlay */
+#sov{display:none;position:fixed;inset:0;background:rgba(5,2,16,.96);backdrop-filter:blur(12px);z-index:9998;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px}
+#sov.show{display:flex;animation:fadeIn .5s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.check-pop{animation:checkPop .6s cubic-bezier(.34,1.56,.64,1) .2s both}
+@keyframes checkPop{from{transform:scale(0) rotate(-180deg);opacity:0}to{transform:scale(1) rotate(0deg);opacity:1}}
+.confetti{position:absolute;width:8px;height:8px;border-radius:2px;animation:confettiFall 2.5s ease forwards}
+@keyframes confettiFall{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+
+/* Summary */
+.srow{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:13px}
+.srow:last-child{border-bottom:none}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.fu{animation:fadeUp .6s ease both}
+</style>
+</head>
+<body>
+<div id="stars"></div>
+<div class="blob b1"></div>
+<div class="blob b2"></div>
+
+<!-- Toast -->
+<div id="toast">
+  <div id="tbox" class="glass rounded-2xl px-5 py-3.5 flex items-center gap-3 shadow-2xl min-w-[260px] border">
+    <i id="tic" class="text-base"></i>
+    <span id="tmsg" class="text-sm font-medium"></span>
+  </div>
+</div>
+
+<!-- Success Overlay -->
+<div id="sov">
+  <!-- Confetti (added by JS) -->
+  <div id="confettiContainer" class="absolute inset-0 overflow-hidden pointer-events-none"></div>
+
+  <div class="check-pop w-28 h-28 bg-gradient-to-br from-violet-600 to-fuchsia-500 rounded-3xl flex items-center justify-center shadow-2xl shadow-purple-900/60 mb-7 rotate-12">
+    <i class="fas fa-check text-4xl"></i>
+  </div>
+  <h2 class="text-3xl font-bold mb-2 tracking-wide">à¸ªà¸¡à¸±à¸„à¸£à¸ªà¸¡à¸²à¸Šà¸´à¸à¸ªà¸³à¹€à¸£à¹‡à¸ˆ!</h2>
+  <p class="text-gray-400 text-sm mb-1">à¸¢à¸´à¸™à¸”à¸µà¸•à¹‰à¸­à¸™à¸£à¸±à¸šà¹€à¸‚à¹‰à¸²à¸ªà¸¹à¹ˆà¹‚à¸¥à¸à¸‚à¸­à¸‡à¹€à¸‹à¸¥à¸¥à¹Œ âœ¨</p>
+  <p class="text-gray-600 text-xs mb-10">à¸à¸³à¸¥à¸±à¸‡à¸™à¸³à¹„à¸›à¸¢à¸±à¸‡à¸«à¸™à¹‰à¸²à¹€à¸‚à¹‰à¸²à¸ªà¸¹à¹ˆà¸£à¸°à¸šà¸š...</p>
+  <a href="login.html" class="btn-p px-8 py-3.5 rounded-2xl font-semibold text-sm flex items-center gap-2">
+    <i class="fas fa-arrow-right-to-bracket"></i>à¹€à¸‚à¹‰à¸²à¸ªà¸¹à¹ˆà¸£à¸°à¸šà¸šà¹€à¸¥à¸¢
+  </a>
+</div>
+
+<!-- Nav -->
+<nav class="relative z-10 flex justify-between items-center px-6 lg:px-12 py-5">
+  <a href="login.html" class="flex items-center gap-3 hover:opacity-70 transition">
+    <div class="w-10 h-10 bg-gradient-to-br from-violet-500 to-fuchsia-600 rounded-xl flex items-center justify-center shadow-lg shadow-violet-900/60">
+      <i class="fas fa-microscope text-sm"></i>
+    </div>
+    <div>
+      <p class="text-sm font-bold leading-tight">Cell Learning</p>
+      <p class="text-[9px] text-purple-400 font-light tracking-widest uppercase">Mitosis Â· à¸„à¸£à¸¹à¸•à¸±à¹Šà¸</p>
+    </div>
+  </a>
+  <a href="login.html" class="text-xs text-gray-500 hover:text-white transition flex items-center gap-1.5 border border-white/8 px-3 py-2 rounded-xl hover:border-white/20">
+    <i class="fas fa-arrow-left text-[9px]"></i>à¸à¸¥à¸±à¸šà¹€à¸‚à¹‰à¸²à¸ªà¸¹à¹ˆà¸£à¸°à¸šà¸š
+  </a>
+</nav>
+
+<!-- Main -->
+<main class="relative z-10 flex justify-center px-4 pb-16 pt-2">
+<div class="w-full max-w-[520px]">
+
+  <!-- Header -->
+  <div class="text-center mb-8 fu">
+    <h2 class="text-3xl font-bold tracking-wide mb-1">à¸ªà¸¡à¸±à¸„à¸£à¸ªà¸¡à¸²à¸Šà¸´à¸</h2>
+    <p class="text-gray-500 text-sm font-light">3 à¸‚à¸±à¹‰à¸™à¸•à¸­à¸™à¸‡à¹ˆà¸²à¸¢à¹† à¹€à¸£à¸´à¹ˆà¸¡à¹€à¸£à¸µà¸¢à¸™à¸£à¸¹à¹‰à¹‚à¸¥à¸à¸‚à¸­à¸‡à¹€à¸‹à¸¥à¸¥à¹Œ</p>
+  </div>
+
+  <!-- Step progress -->
+  <div class="flex items-center gap-0 mb-4 fu" style="animation-delay:.1s">
+    <div class="sdot sdot-active" id="sd1">1</div>
+    <div class="sline" id="sl1"></div>
+    <div class="sdot sdot-idle" id="sd2">2</div>
+    <div class="sline" id="sl2"></div>
+    <div class="sdot sdot-idle" id="sd3">3</div>
+  </div>
+
+  <!-- Step labels -->
+  <div class="flex mb-8 fu" style="animation-delay:.15s">
+    <div class="flex-1 text-center">
+      <p id="lbl1" class="text-[11px] font-semibold text-violet-400 uppercase tracking-wider">à¸šà¸±à¸à¸Šà¸µà¸œà¸¹à¹‰à¹ƒà¸Šà¹‰</p>
+    </div>
+    <div class="flex-1 text-center">
+      <p id="lbl2" class="text-[11px] font-medium text-gray-600 uppercase tracking-wider">à¸‚à¹‰à¸­à¸¡à¸¹à¸¥à¸ªà¹ˆà¸§à¸™à¸•à¸±à¸§</p>
+    </div>
+    <div class="flex-1 text-center">
+      <p id="lbl3" class="text-[11px] font-medium text-gray-600 uppercase tracking-wider">à¸‚à¹‰à¸­à¸¡à¸¹à¸¥à¸à¸²à¸£à¹€à¸£à¸µà¸¢à¸™</p>
+    </div>
+  </div>
+
+  <!-- Form card -->
+  <div class="glass-card rounded-[2rem] shadow-2xl shadow-purple-950/40 overflow-hidden fu" style="animation-delay:.2s">
+    <div class="h-1 bg-gradient-to-r from-violet-600 via-fuchsia-500 to-pink-500"></div>
+    <div class="p-8">
+
+      <!-- â•â•â• STEP 1: Account â•â•â• -->
+      <div class="step active" id="step1">
+        <div class="flex items-center gap-4 mb-6">
+          <div class="w-11 h-11 bg-gradient-to-br from-violet-600/30 to-violet-800/20 border border-violet-500/30 rounded-2xl flex items-center justify-center flex-shrink-0">
+            <i class="fas fa-user-shield text-violet-300 text-sm"></i>
+          </div>
+          <div>
+            <h3 class="text-lg font-bold">à¸‚à¹‰à¸­à¸¡à¸¹à¸¥à¸šà¸±à¸à¸Šà¸µà¸œà¸¹à¹‰à¹ƒà¸Šà¹‰</h3>
+            <p class="text-[11px] text-gray-500 font-light">à¸ªà¸£à¹‰à¸²à¸‡à¸Šà¸·à¹ˆà¸­à¸œà¸¹à¹‰à¹ƒà¸Šà¹‰à¹à¸¥à¸°à¸£à¸«à¸±à¸ªà¸œà¹ˆà¸²à¸™à¸‚à¸­à¸‡à¸„à¸¸à¸“</p>
+          </div>
+        </div>
+
+        <div class="space-y-5">
+          <div>
+            <label class="block text-[11px] text-gray-400 uppercase tracking-widest font-medium mb-2">à¸Šà¸·à¹ˆà¸­à¸œà¸¹à¹‰à¹ƒà¸Šà¹‰ <span class="text-red-400 normal-case">*</span></label>
+            <div class="relative">
+              <div class="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 bg-violet-500/15 rounded-lg flex items-center justify-center">
+                <i class="fas fa-at text-violet-400" style="font-size:10px"></i>
+              </div>
+              <input id="r_user" type="text" placeholder="à¹€à¸Šà¹ˆà¸™ student001 à¸«à¸£à¸·à¸­ à¹€à¸¥à¸‚à¸›à¸£à¸°à¸ˆà¸³à¸•à¸±à¸§"
+                class="inp rounded-2xl py-4 pl-12 pr-4 text-sm" autocomplete="username">
+            </div>
+            <p class="text-[10px] text-gray-600 mt-1.5 pl-1">à¸•à¸±à¸§à¸­à¸±à¸à¸©à¸£à¹à¸¥à¸°à¸•à¸±à¸§à¹€à¸¥à¸‚ à¸­à¸¢à¹ˆà¸²à¸‡à¸™à¹‰à¸­à¸¢ 3 à¸•à¸±à¸§</p>
+          </div>
+          <div>
+            <label class="block text-[11px] text-gray-400 uppercase tracking-widest font-medium mb-2">à¸£à¸«à¸±à¸ªà¸œà¹ˆà¸²à¸™ <span class="text-red-400 normal-case">*</span></label>
+            <div class="relative">
+              <div class="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 bg-fuchsia-500/15 rounded-lg flex items-center justify-center">
+                <i class="fas fa-lock text-fuchsia-400" style="font-size:10px"></i>
+              </div>
+              <input id="r_pw" type="password" placeholder="à¸­à¸¢à¹ˆà¸²à¸‡à¸™à¹‰à¸­à¸¢ 6 à¸•à¸±à¸§à¸­à¸±à¸à¸©à¸£"
+                class="inp rounded-2xl py-4 pl-12 pr-12 text-sm" autocomplete="new-password">
+              <button type="button" onclick="tv('r_pw','e1')" class="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center text-gray-500 hover:text-purple-400 transition">
+                <i id="e1" class="fas fa-eye text-sm"></i>
+              </button>
+            </div>
+            <div class="flex gap-1.5 mt-2.5">
+              <div id="sb1" class="psb flex-1 bg-white/8"></div>
+              <div id="sb2" class="psb flex-1 bg-white/8"></div>
+              <div id="sb3" class="psb flex-1 bg-white/8"></div>
+              <div id="sb4" class="psb flex-1 bg-white/8"></div>
+            </div>
+            <p id="pstr" class="text-[10px] mt-1 pl-1 h-3 text-gray-600"></p>
+          </div>
+          <div>
+            <label class="block text-[11px] text-gray-400 uppercase tracking-widest font-medium mb-2">à¸¢à¸·à¸™à¸¢à¸±à¸™à¸£à¸«à¸±à¸ªà¸œà¹ˆà¸²à¸™ <span class="text-red-400 normal-case">*</span></label>
+            <div class="relative">
+              <div class="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 bg-purple-500/15 rounded-lg flex items-center justify-center">
+                <i class="fas fa-lock-open text-purple-400" style="font-size:10px"></i>
+              </div>
+              <input id="r_cf" type="password" placeholder="à¸à¸£à¸­à¸à¸£à¸«à¸±à¸ªà¸œà¹ˆà¸²à¸™à¸­à¸µà¸à¸„à¸£à¸±à¹‰à¸‡"
+                class="inp rounded-2xl py-4 pl-12 pr-12 text-sm" autocomplete="new-password">
+              <button type="button" onclick="tv('r_cf','e2')" class="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center text-gray-500 hover:text-purple-400 transition">
+                <i id="e2" class="fas fa-eye text-sm"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- â•â•â• STEP 2: Personal â•â•â• -->
+      <div class="step" id="step2">
+        <div class="flex items-center gap-4 mb-6">
+          <div class="w-11 h-11 bg-gradient-to-br from-fuchsia-600/30 to-fuchsia-800/20 border border-fuchsia-500/30 rounded-2xl flex items-center justify-center flex-shrink-0">
+            <i class="fas fa-id-card text-fuchsia-300 text-sm"></i>
+          </div>
+          <div>
+            <h3 class="text-lg font-bold">à¸‚à¹‰à¸­à¸¡à¸¹à¸¥à¸ªà¹ˆà¸§à¸™à¸•à¸±à¸§</h3>
+            <p class="text-[11px] text-gray-500 font-light">à¸à¸£à¸­à¸à¸‚à¹‰à¸­à¸¡à¸¹à¸¥à¸ªà¹ˆà¸§à¸™à¸•à¸±à¸§à¹ƒà¸«à¹‰à¸„à¸£à¸šà¸–à¹‰à¸§à¸™</p>
+          </div>
+        </div>
+
+        <div class="space-y-5">
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-[11px] text-gray-400 uppercase tracking-widest font-medium mb-2">à¸Šà¸·à¹ˆà¸­ <span class="text-red-400 normal-case">*</span></label>
+              <input id="r_fn" type="text" placeholder="à¸ªà¸¡à¸Šà¸²à¸¢"
+                class="inp rounded-2xl py-4 px-4 text-sm">
+            </div>
+            <div>
+              <label class="block text-[11px] text-gray-400 uppercase tracking-widest font-medium mb-2">à¸™à¸²à¸¡à¸ªà¸à¸¸à¸¥ <span class="text-red-400 normal-case">*</span></label>
+              <input id="r_ln" type="text" placeholder="à¹ƒà¸ˆà¸”à¸µ"
+                class="inp rounded-2xl py-4 px-4 text-sm">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-[11px] text-gray-400 uppercase tracking-widest font-medium mb-2">à¹€à¸žà¸¨ <span class="text-red-400 normal-case">*</span></label>
+            <div class="grid grid-cols-3 gap-2.5">
+              <div class="gopt"><input type="radio" name="gender" id="gm" value="à¸Šà¸²à¸¢">
+                <label for="gm"><i class="fas fa-mars text-sky-400 text-xs"></i>à¸Šà¸²à¸¢</label></div>
+              <div class="gopt"><input type="radio" name="gender" id="gf" value="à¸«à¸à¸´à¸‡">
+                <label for="gf"><i class="fas fa-venus text-pink-400 text-xs"></i>à¸«à¸à¸´à¸‡</label></div>
+              <div class="gopt"><input type="radio" name="gender" id="go" value="à¸­à¸·à¹ˆà¸™à¹†">
+                <label for="go"><i class="fas fa-genderless text-purple-400 text-xs"></i>à¸­à¸·à¹ˆà¸™à¹†</label></div>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-[11px] text-gray-400 uppercase tracking-widest font-medium mb-2">à¸­à¸²à¸¢à¸¸ <span class="text-red-400 normal-case">*</span></label>
+            <div class="relative">
+              <div class="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 bg-sky-500/15 rounded-lg flex items-center justify-center">
+                <i class="fas fa-calendar-days text-sky-400" style="font-size:10px"></i>
+              </div>
+              <input id="r_age" type="number" min="1" max="99" placeholder="à¹€à¸Šà¹ˆà¸™ 16"
+                class="inp rounded-2xl py-4 pl-12 pr-4 text-sm">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- â•â•â• STEP 3: School + Review â•â•â• -->
+      <div class="step" id="step3">
+        <div class="flex items-center gap-4 mb-6">
+          <div class="w-11 h-11 bg-gradient-to-br from-blue-600/30 to-blue-800/20 border border-blue-500/30 rounded-2xl flex items-center justify-center flex-shrink-0">
+            <i class="fas fa-school text-blue-300 text-sm"></i>
+          </div>
+          <div>
+            <h3 class="text-lg font-bold">à¸‚à¹‰à¸­à¸¡à¸¹à¸¥à¸à¸²à¸£à¹€à¸£à¸µà¸¢à¸™</h3>
+            <p class="text-[11px] text-gray-500 font-light">à¸£à¸°à¸šà¸¸à¸Šà¸±à¹‰à¸™à¹€à¸£à¸µà¸¢à¸™à¹à¸¥à¸°à¸•à¸£à¸§à¸ˆà¸ªà¸­à¸šà¸‚à¹‰à¸­à¸¡à¸¹à¸¥</p>
+          </div>
+        </div>
+
+        <div class="space-y-5">
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-[11px] text-gray-400 uppercase tracking-widest font-medium mb-2">à¸Šà¸±à¹‰à¸™à¹€à¸£à¸µà¸¢à¸™ <span class="text-red-400 normal-case">*</span></label>
+              <div class="relative">
+                <div class="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 bg-blue-500/15 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-graduation-cap text-blue-400" style="font-size:10px"></i>
+                </div>
+                <input id="r_cls" type="text" placeholder="à¸¡.4/1"
+                  class="inp rounded-2xl py-4 pl-12 pr-4 text-sm">
+              </div>
+            </div>
+            <div>
+              <label class="block text-[11px] text-gray-400 uppercase tracking-widest font-medium mb-2">à¹€à¸¥à¸‚à¸—à¸µà¹ˆ <span class="text-red-400 normal-case">*</span></label>
+              <div class="relative">
+                <div class="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 bg-blue-500/15 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-hashtag text-blue-400" style="font-size:10px"></i>
+                </div>
+                <input id="r_num" type="number" min="1" placeholder="15"
+                  class="inp rounded-2xl py-4 pl-12 pr-4 text-sm">
+              </div>
+            </div>
+          </div>
+
+          <!-- Summary card -->
+          <div class="bg-gradient-to-br from-violet-500/8 to-fuchsia-500/5 border border-violet-500/15 rounded-2xl p-5">
+            <div class="flex items-center gap-2 mb-4">
+              <i class="fas fa-clipboard-check text-violet-400 text-xs"></i>
+              <p class="text-[10px] text-gray-500 uppercase tracking-widest font-semibold">à¸ªà¸£à¸¸à¸›à¸‚à¹‰à¸­à¸¡à¸¹à¸¥à¸—à¸±à¹‰à¸‡à¸«à¸¡à¸”</p>
+            </div>
+            <div class="space-y-0 divide-y divide-white/5">
+              <div class="srow"><span class="text-gray-500">à¸Šà¸·à¹ˆà¸­à¸œà¸¹à¹‰à¹ƒà¸Šà¹‰</span><span id="sv_u" class="text-violet-300 font-semibold">-</span></div>
+              <div class="srow"><span class="text-gray-500">à¸Šà¸·à¹ˆà¸­-à¸™à¸²à¸¡à¸ªà¸à¸¸à¸¥</span><span id="sv_n" class="text-white font-medium">-</span></div>
+              <div class="srow"><span class="text-gray-500">à¹€à¸žà¸¨</span><span id="sv_g" class="text-white font-medium">-</span></div>
+              <div class="srow"><span class="text-gray-500">à¸­à¸²à¸¢à¸¸</span><span id="sv_a" class="text-white font-medium">-</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <div class="flex gap-3 mt-8">
+        <button id="prevBtn" onclick="go(-1)"
+          class="btn-s hidden items-center gap-2 px-5 py-3.5 rounded-2xl text-sm font-medium text-gray-300">
+          <i class="fas fa-arrow-left text-xs"></i>à¸¢à¹‰à¸­à¸™à¸à¸¥à¸±à¸š
+        </button>
+        <button id="nextBtn" onclick="go(1)"
+          class="btn-p flex-1 py-3.5 rounded-2xl font-semibold text-sm flex items-center justify-center gap-2">
+          <span id="nextLbl">à¸–à¸±à¸”à¹„à¸› <i class="fas fa-arrow-right ml-1 text-xs"></i></span>
+          <div id="nextSpin" class="spin hidden"></div>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <p class="text-center text-xs text-gray-600 mt-5">
+    à¸¡à¸µà¸šà¸±à¸à¸Šà¸µà¸­à¸¢à¸¹à¹ˆà¹à¸¥à¹‰à¸§?
+    <a href="login.html" class="text-violet-400 hover:text-violet-300 transition ml-1">à¹€à¸‚à¹‰à¸²à¸ªà¸¹à¹ˆà¸£à¸°à¸šà¸š</a>
+  </p>
+
+</div>
+</main>
+
+<script>
+const API='';
+let cur=1;
+
+/* Stars */
+const sf=document.getElementById('stars');
+for(let i=0;i<80;i++){
+  const s=document.createElement('div');s.className='star';
+  const sz=Math.random()*2+.5;
+  s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}vw;top:${Math.random()*100}vh;animation-duration:${Math.random()*4+2}s;animation-delay:${Math.random()*5}s`;
+  sf.appendChild(s);
+}
+
+function tv(id,eid){
+  const el=document.getElementById(id),ic=document.getElementById(eid);
+  el.type=el.type==='password'?'text':'password';
+  ic.classList.toggle('fa-eye');ic.classList.toggle('fa-eye-slash');
+}
+
+/* Password strength */
+document.getElementById('r_pw').addEventListener('input',function(){
+  const v=this.value;
+  let s=0;
+  if(v.length>=6)s++;if(v.length>=10)s++;
+  if(/[A-Z0-9]/.test(v))s++;if(/[^A-Za-z0-9]/.test(v))s++;
+  const cols=['bg-white/8','bg-red-500','bg-orange-400','bg-yellow-400','bg-emerald-500'];
+  const txt=['','à¸­à¹ˆà¸­à¸™à¸¡à¸²à¸','à¸žà¸­à¹ƒà¸Šà¹‰','à¸”à¸µ','à¹à¸‚à¹‡à¸‡à¹à¸à¸£à¹ˆà¸‡'];
+  for(let i=1;i<=4;i++) document.getElementById('sb'+i).className='psb flex-1 '+(i<=s?cols[s]:'bg-white/8');
+  document.getElementById('pstr').textContent=v.length?txt[s]:'';
+  document.getElementById('pstr').style.color=s>=3?'#34d399':s>=2?'#fbbf24':'#f87171';
+});
+
+/* Toast */
+function toast(msg,type='error'){
+  const el=document.getElementById('toast'),box=document.getElementById('tbox'),ic=document.getElementById('tic');
+  document.getElementById('tmsg').textContent=msg;
+  box.className='glass rounded-2xl px-5 py-3.5 flex items-center gap-3 shadow-2xl min-w-[260px] border';
+  if(type==='error'){ic.className='fas fa-circle-xmark text-red-400 text-base';box.classList.add('border-red-500/30')}
+  else{ic.className='fas fa-circle-check text-emerald-400 text-base';box.classList.add('border-emerald-500/30')}
+  el.classList.add('show');setTimeout(()=>el.classList.remove('show'),3800);
+}
+
+/* Validate */
+function validate(s){
+  if(s===1){
+    const u=document.getElementById('r_user').value.trim();
+    const p=document.getElementById('r_pw').value;
+    const c=document.getElementById('r_cf').value;
+    if(!u){toast('à¸à¸£à¸¸à¸“à¸²à¸à¸£à¸­à¸à¸Šà¸·à¹ˆà¸­à¸œà¸¹à¹‰à¹ƒà¸Šà¹‰');return false}
+    if(u.length<3){toast('à¸Šà¸·à¹ˆà¸­à¸œà¸¹à¹‰à¹ƒà¸Šà¹‰à¸•à¹‰à¸­à¸‡à¸¡à¸µà¸­à¸¢à¹ˆà¸²à¸‡à¸™à¹‰à¸­à¸¢ 3 à¸•à¸±à¸§à¸­à¸±à¸à¸©à¸£');return false}
+    if(!p){toast('à¸à¸£à¸¸à¸“à¸²à¸à¸£à¸­à¸à¸£à¸«à¸±à¸ªà¸œà¹ˆà¸²à¸™');return false}
+    if(p.length<6){toast('à¸£à¸«à¸±à¸ªà¸œà¹ˆà¸²à¸™à¸•à¹‰à¸­à¸‡à¸¡à¸µà¸­à¸¢à¹ˆà¸²à¸‡à¸™à¹‰à¸­à¸¢ 6 à¸•à¸±à¸§à¸­à¸±à¸à¸©à¸£');return false}
+    if(p!==c){toast('à¸£à¸«à¸±à¸ªà¸œà¹ˆà¸²à¸™à¹„à¸¡à¹ˆà¸•à¸£à¸‡à¸à¸±à¸™');return false}
+    return true;
+  }
+  if(s===2){
+    if(!document.getElementById('r_fn').value.trim()){toast('à¸à¸£à¸¸à¸“à¸²à¸à¸£à¸­à¸à¸Šà¸·à¹ˆà¸­');return false}
+    if(!document.getElementById('r_ln').value.trim()){toast('à¸à¸£à¸¸à¸“à¸²à¸à¸£à¸­à¸à¸™à¸²à¸¡à¸ªà¸à¸¸à¸¥');return false}
+    if(!document.querySelector('input[name=gender]:checked')){toast('à¸à¸£à¸¸à¸“à¸²à¹€à¸¥à¸·à¸­à¸à¹€à¸žà¸¨');return false}
+    const a=document.getElementById('r_age').value;
+    if(!a||a<1||a>99){toast('à¸à¸£à¸¸à¸“à¸²à¸à¸£à¸­à¸à¸­à¸²à¸¢à¸¸ (1-99)');return false}
+    return true;
+  }
+  if(s===3){
+    if(!document.getElementById('r_cls').value.trim()){toast('à¸à¸£à¸¸à¸“à¸²à¸à¸£à¸­à¸à¸Šà¸±à¹‰à¸™à¹€à¸£à¸µà¸¢à¸™');return false}
+    if(!document.getElementById('r_num').value||document.getElementById('r_num').value<1){toast('à¸à¸£à¸¸à¸“à¸²à¸à¸£à¸­à¸à¹€à¸¥à¸‚à¸—à¸µà¹ˆ');return false}
+    return true;
+  }
+  return true;
+}
+
+function updateUI(){
+  for(let i=1;i<=3;i++){
+    const d=document.getElementById('sd'+i),l=document.getElementById('lbl'+i);
+    d.className='sdot';
+    if(i<cur){d.classList.add('sdot-done');d.innerHTML='<i class="fas fa-check text-xs"></i>'}
+    else if(i===cur){d.classList.add('sdot-active');d.textContent=i}
+    else{d.classList.add('sdot-idle');d.textContent=i}
+    l.className='text-[11px] font-medium uppercase tracking-wider '+(i===cur?'text-violet-400 font-semibold':'text-gray-600');
+  }
+  for(let i=1;i<=2;i++){
+    document.getElementById('sl'+i).className='sline'+(i<cur?' filled':'');
+  }
+  const pb=document.getElementById('prevBtn');
+  pb.classList.toggle('hidden',cur===1);
+  pb.style.display=cur===1?'none':'flex';
+  document.getElementById('nextLbl').innerHTML=cur===3?'<i class="fas fa-user-plus mr-2 text-xs"></i>à¸ªà¸¡à¸±à¸„à¸£à¸ªà¸¡à¸²à¸Šà¸´à¸':'à¸–à¸±à¸”à¹„à¸› <i class="fas fa-arrow-right ml-1 text-xs"></i>';
+}
+
+function fillSummary(){
+  const g=document.querySelector('input[name=gender]:checked');
+  document.getElementById('sv_u').textContent=document.getElementById('r_user').value||'-';
+  document.getElementById('sv_n').textContent=(document.getElementById('r_fn').value+' '+document.getElementById('r_ln').value).trim()||'-';
+  document.getElementById('sv_g').textContent=g?g.value:'-';
+  document.getElementById('sv_a').textContent=(document.getElementById('r_age').value||'-')+' à¸›à¸µ';
+}
+
+function go(dir){
+  if(dir===1){
+    if(!validate(cur))return;
+    if(cur===3){submitForm();return}
+    const old=document.getElementById('step'+cur);
+    old.classList.remove('active');
+    cur++;
+    const next=document.getElementById('step'+cur);
+    next.classList.add('active');
+    next.classList.remove('back-in');
+    if(cur===3)fillSummary();
+  } else {
+    const old=document.getElementById('step'+cur);
+    old.classList.remove('active');
+    cur--;
+    const prev=document.getElementById('step'+cur);
+    prev.classList.add('active','back-in');
+    setTimeout(()=>prev.classList.remove('back-in'),500);
+  }
+  updateUI();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function spawnConfetti(){
+  const c=document.getElementById('confettiContainer');
+  const cols=['#7c3aed','#d946ef','#a78bfa','#c4b5fd','#f0abfc','#818cf8'];
+  for(let i=0;i<40;i++){
+    const d=document.createElement('div');
+    d.className='confetti';
+    d.style.cssText=`left:${Math.random()*100}%;top:${-10-Math.random()*20}px;background:${cols[Math.floor(Math.random()*cols.length)]};width:${Math.random()*8+4}px;height:${Math.random()*8+4}px;border-radius:${Math.random()>0.5?'50%':'2px'};animation-delay:${Math.random()*1}s;animation-duration:${Math.random()*2+1.5}s`;
+    c.appendChild(d);
+  }
+}
+
+async function submitForm(){
+  if(!validate(3))return;
+  const g=document.querySelector('input[name=gender]:checked');
+  const payload={
+    username:document.getElementById('r_user').value.trim(),
+    password:document.getElementById('r_pw').value,
+    first_name:document.getElementById('r_fn').value.trim(),
+    last_name:document.getElementById('r_ln').value.trim(),
+    gender:g?g.value:'',
+    age:parseInt(document.getElementById('r_age').value),
+    class_name:document.getElementById('r_cls').value.trim(),
+    student_number:parseInt(document.getElementById('r_num').value),
+  };
+  document.getElementById('nextLbl').classList.add('hidden');
+  document.getElementById('nextSpin').classList.remove('hidden');
+  document.getElementById('nextBtn').disabled=true;
+  try{
+    const res=await fetch(`${API}/api/auth/register`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    const d=await res.json();
+    if(res.ok){
+      spawnConfetti();
+      document.getElementById('sov').classList.add('show');
+      setTimeout(()=>{window.location.href='login.html';},4000);
+    } else {toast(d.error||'à¸ªà¸¡à¸±à¸„à¸£à¹„à¸¡à¹ˆà¸ªà¸³à¹€à¸£à¹‡à¸ˆ à¸à¸£à¸¸à¸“à¸²à¸¥à¸­à¸‡à¹ƒà¸«à¸¡à¹ˆ');}
+  }catch{toast('à¹„à¸¡à¹ˆà¸ªà¸²à¸¡à¸²à¸£à¸–à¹€à¸Šà¸·à¹ˆà¸­à¸¡à¸•à¹ˆà¸­à¹€à¸‹à¸´à¸£à¹Œà¸Ÿà¹€à¸§à¸­à¸£à¹Œà¹„à¸”à¹‰ à¸à¸£à¸¸à¸“à¸²à¹€à¸›à¸´à¸” server.py à¸à¹ˆà¸­à¸™');}
+  finally{
+    document.getElementById('nextLbl').classList.remove('hidden');
+    document.getElementById('nextSpin').classList.add('hidden');
+    document.getElementById('nextBtn').disabled=false;
+  }
+}
+</script>
+</body>
+</html>
+

@@ -1,0 +1,268 @@
+﻿<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>E4 Â· Elaborate â€” à¸•à¹ˆà¸­à¸¢à¸­à¸”à¸„à¸§à¸²à¸¡à¸£à¸¹à¹‰</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Kanit',sans-serif;background:#050210;color:#fff;min-height:100vh;overflow-x:hidden}
+@keyframes twinkle{0%,100%{opacity:.1}50%{opacity:.65}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+@keyframes matchPop{0%{transform:scale(1)}50%{transform:scale(1.06)}100%{transform:scale(1)}}
+@keyframes popIn{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}
+@keyframes confettiFall{from{transform:translateY(-20px) rotate(0deg);opacity:1}to{transform:translateY(100vh) rotate(720deg);opacity:0}}
+.fu{animation:fadeUp .5s ease both}
+.hdr{background:linear-gradient(to bottom,rgba(5,2,16,.95),rgba(5,2,16,0));position:sticky;top:0;z-index:50}
+.ubadge{background:rgba(217,119,6,.15);border:1px solid rgba(217,119,6,.35);border-radius:999px;padding:4px 12px 4px 5px;display:inline-flex;align-items:center;gap:7px;font-size:11px}
+.logbtn{cursor:pointer;padding:5px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);font-size:10px;color:rgba(255,255,255,.4);font-family:'Kanit',sans-serif;transition:all .2s}
+.logbtn:hover{border-color:rgba(239,68,68,.4);color:#fca5a5;background:rgba(239,68,68,.08)}
+
+/* Match card */
+.mcard{background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.1);border-radius:14px;padding:11px 12px;cursor:pointer;transition:all .22s;text-align:left;user-select:none;width:100%}
+.mcard:hover:not(.matched):not(.disabled){background:rgba(217,119,6,.1);border-color:rgba(217,119,6,.4)}
+.mcard.sel{background:rgba(217,119,6,.2);border-color:#f59e0b;box-shadow:0 0 16px rgba(245,158,11,.45)}
+.mcard.matched{border-color:rgba(16,185,129,.6);background:rgba(16,185,129,.12);cursor:default;animation:matchPop .3s ease}
+.mcard.wrong{animation:shake .35s ease}
+.mcard.disabled{opacity:.5;cursor:default;pointer-events:none}
+
+/* Progress bar */
+.pbar-bg{background:rgba(255,255,255,.06);border-radius:999px;height:6px;overflow:hidden}
+.pbar-fill{height:100%;background:linear-gradient(90deg,#d97706,#f59e0b);border-radius:999px;transition:width .5s ease}
+
+/* Success overlay */
+.overlay{position:fixed;inset:0;background:rgba(5,2,16,.92);z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;backdrop-filter:blur(8px)}
+.result-card{background:rgba(255,255,255,.06);border:1px solid rgba(217,119,6,.35);border-radius:24px;padding:32px 24px;width:100%;max-width:360px;text-align:center;animation:popIn .4s ease}
+
+.nav-btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px 20px;border-radius:16px;font-family:'Kanit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .3s;text-decoration:none}
+</style>
+</head>
+<body class="max-w-[480px] mx-auto">
+
+<div id="stars" style="position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden"></div>
+<div id="confettiLayer" style="position:fixed;inset:0;pointer-events:none;z-index:200;overflow:hidden"></div>
+
+<!-- Header -->
+<header class="hdr flex justify-between items-center px-4 py-3 relative z-10">
+  <div class="flex items-center gap-2.5">
+    <a href="E3.html" class="w-9 h-9 bg-gradient-to-br from-amber-600 to-orange-700 rounded-xl flex items-center justify-center shadow-lg hover:opacity-80 transition-opacity">
+      <i class="fas fa-arrow-left text-xs"></i>
+    </a>
+    <div>
+      <p class="text-xs font-bold leading-none">Elaborate</p>
+      <p class="text-[8px] text-amber-400 font-light tracking-wider mt-0.5">E4 Â· à¸•à¹ˆà¸­à¸¢à¸­à¸”à¸„à¸§à¸²à¸¡à¸£à¸¹à¹‰</p>
+    </div>
+  </div>
+  <div class="flex items-center gap-2">
+    <div class="ubadge">
+      <div class="w-6 h-6 bg-gradient-to-br from-amber-500 to-orange-600 rounded-full flex items-center justify-center">
+        <i class="fas fa-user" style="font-size:8px"></i>
+      </div>
+      <span id="hdrName" class="text-amber-200 font-semibold">...</span>
+    </div>
+    <button class="logbtn" onclick="logout()"><i class="fas fa-right-from-bracket"></i></button>
+  </div>
+</header>
+
+<main class="px-4 pb-10 relative z-10">
+
+  <!-- Title -->
+  <div class="text-center py-5 fu">
+    <div class="inline-flex items-center gap-2 bg-amber-500/10 border border-amber-500/20 rounded-full px-4 py-1.5 text-xs text-amber-300 mb-4">
+      <div class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></div>
+      à¸à¸´à¸ˆà¸à¸£à¸£à¸¡à¸—à¸µà¹ˆ 4 &nbsp;Â·&nbsp; Elaborate
+    </div>
+    <h1 class="text-xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-orange-300 mb-2">à¸ˆà¸±à¸šà¸„à¸¹à¹ˆà¸‚à¸±à¹‰à¸™à¸•à¸­à¸™à¸à¸±à¸šà¸„à¸³à¸­à¸˜à¸´à¸šà¸²à¸¢</h1>
+    <p class="text-[11px] text-gray-400 leading-relaxed">à¹à¸•à¸°à¸Šà¸·à¹ˆà¸­à¸‚à¸±à¹‰à¸™à¸•à¸­à¸™ à¹à¸¥à¹‰à¸§à¹à¸•à¸°à¸„à¸³à¸­à¸˜à¸´à¸šà¸²à¸¢à¸—à¸µà¹ˆà¸•à¸£à¸‡à¸à¸±à¸™</p>
+  </div>
+
+  <!-- Progress -->
+  <div class="fu mb-4" style="animation-delay:.05s">
+    <div class="flex justify-between text-[10px] text-gray-500 mb-1.5">
+      <span>à¸„à¸§à¸²à¸¡à¸à¹‰à¸²à¸§à¸«à¸™à¹‰à¸²</span>
+      <span id="progTxt">0 / 6 à¸„à¸¹à¹ˆ</span>
+    </div>
+    <div class="pbar-bg"><div class="pbar-fill" id="pbar" style="width:0%"></div></div>
+  </div>
+
+  <!-- Hint -->
+  <div id="hint" class="text-center text-[10px] text-amber-400 bg-amber-500/8 border border-amber-500/15 rounded-full px-4 py-1.5 mb-4 fu" style="animation-delay:.08s">
+    <i class="fas fa-hand-pointer mr-1"></i>
+    <span id="hintTxt">à¹à¸•à¸°à¸Šà¸·à¹ˆà¸­à¸‚à¸±à¹‰à¸™à¸•à¸­à¸™à¸—à¸²à¸‡à¸‹à¹‰à¸²à¸¢à¸à¹ˆà¸­à¸™</span>
+  </div>
+
+  <!-- Matching game -->
+  <div class="grid grid-cols-2 gap-3 fu" style="animation-delay:.1s">
+
+    <!-- Left: Stage names -->
+    <div>
+      <p class="text-[9px] font-bold text-amber-400 uppercase tracking-wider mb-2 text-center">à¸Šà¸·à¹ˆà¸­à¸‚à¸±à¹‰à¸™à¸•à¸­à¸™</p>
+      <div class="space-y-2" id="leftCol"></div>
+    </div>
+
+    <!-- Right: Descriptions -->
+    <div>
+      <p class="text-[9px] font-bold text-orange-400 uppercase tracking-wider mb-2 text-center">à¸„à¸³à¸­à¸˜à¸´à¸šà¸²à¸¢</p>
+      <div class="space-y-2" id="rightCol"></div>
+    </div>
+
+  </div>
+
+  <!-- Retry -->
+  <div class="mt-5 fu" style="animation-delay:.2s">
+    <button onclick="resetGame()" class="w-full py-3 rounded-xl border border-white/12 text-sm text-gray-400 font-semibold hover:bg-white/6 transition-all">
+      <i class="fas fa-redo mr-2"></i>à¹€à¸£à¸´à¹ˆà¸¡à¹ƒà¸«à¸¡à¹ˆ
+    </button>
+  </div>
+
+</main>
+
+<!-- Success Overlay -->
+<div class="overlay hidden" id="overlay">
+  <div class="result-card">
+    <div class="text-5xl mb-3">ðŸŽ‰</div>
+    <p class="text-xl font-bold text-amber-300 mb-1">à¹€à¸¢à¸µà¹ˆà¸¢à¸¡à¸¡à¸²à¸!</p>
+    <p class="text-sm text-gray-400 mb-6">à¸„à¸¸à¸“à¸ˆà¸±à¸šà¸„à¸¹à¹ˆà¹„à¸”à¹‰à¸„à¸£à¸šà¸—à¸¸à¸à¸„à¸¹à¹ˆà¹à¸¥à¹‰à¸§<br>à¹à¸ªà¸”à¸‡à¸§à¹ˆà¸²à¹€à¸‚à¹‰à¸²à¹ƒà¸ˆà¸‚à¸±à¹‰à¸™à¸•à¸­à¸™à¹„à¸¡à¹‚à¸—à¸‹à¸´à¸ªà¸”à¸µà¸¡à¸²à¸!</p>
+    <div class="flex gap-3">
+      <button onclick="resetGame()" class="flex-1 py-3 rounded-xl border border-white/15 text-sm font-semibold hover:bg-white/8 transition-all">
+        <i class="fas fa-redo mr-1.5"></i>à¸¥à¸­à¸‡à¹ƒà¸«à¸¡à¹ˆ
+      </button>
+      <a href="E5.html" class="flex-1 py-3 rounded-xl bg-gradient-to-r from-amber-600 to-orange-600 text-sm font-semibold hover:opacity-90 transition-all text-center" style="box-shadow:0 8px 25px rgba(217,119,6,.4)">
+        E5 à¸–à¸±à¸”à¹„à¸› <i class="fas fa-arrow-right ml-1.5"></i>
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+const API='';
+function logout(){localStorage.removeItem('cl_token');localStorage.removeItem('cl_user');window.location.href='login.html';}
+(function(){
+  if(!localStorage.getItem('cl_token')){window.location.href='login.html';return;}
+  const u=JSON.parse(localStorage.getItem('cl_user')||'{}');
+  document.getElementById('hdrName').textContent=u.first_name||u.username||'';
+})();
+(function(){
+  const c=document.getElementById('stars');
+  for(let i=0;i<55;i++){
+    const s=document.createElement('div');
+    const sz=Math.random()*1.5+0.5;
+    s.style.cssText=`position:absolute;background:#fff;border-radius:50%;left:${Math.random()*100}%;top:${Math.random()*100}%;width:${sz}px;height:${sz}px;opacity:${Math.random()*.4+.1};animation:twinkle ${Math.random()*3+2}s ease-in-out infinite;animation-delay:${Math.random()*4}s`;
+    c.appendChild(s);
+  }
+})();
+
+const PAIRS=[
+  {id:'interphase',name:'à¸­à¸´à¸™à¹€à¸•à¸­à¸£à¹Œà¹€à¸Ÿà¸ª',color:'#6366f1',desc:'à¹€à¸‹à¸¥à¸¥à¹Œà¹€à¸•à¸£à¸µà¸¢à¸¡à¸žà¸£à¹‰à¸­à¸¡ DNA à¸–à¸¹à¸à¸ˆà¸³à¸¥à¸­à¸‡'},
+  {id:'prophase',name:'à¹‚à¸žà¸£à¹€à¸Ÿà¸ª',color:'#8b5cf6',desc:'à¹‚à¸„à¸£à¹‚à¸¡à¹‚à¸‹à¸¡à¸«à¸”à¸•à¸±à¸§à¹à¸¥à¸°à¸¡à¸­à¸‡à¹€à¸«à¹‡à¸™à¹„à¸”à¹‰à¸Šà¸±à¸”à¹€à¸ˆà¸™'},
+  {id:'metaphase',name:'à¹€à¸¡à¸—à¸²à¹€à¸Ÿà¸ª',color:'#ec4899',desc:'à¹‚à¸„à¸£à¹‚à¸¡à¹‚à¸‹à¸¡à¹€à¸£à¸µà¸¢à¸‡à¸•à¸±à¸§à¸—à¸µà¹ˆà¸à¸¶à¹ˆà¸‡à¸à¸¥à¸²à¸‡à¹€à¸‹à¸¥à¸¥à¹Œ'},
+  {id:'anaphase',name:'à¹à¸­à¸™à¸²à¹€à¸Ÿà¸ª',color:'#f59e0b',desc:'à¹‚à¸„à¸£à¹‚à¸¡à¹‚à¸‹à¸¡à¸–à¸¹à¸à¸”à¸¶à¸‡à¹à¸¢à¸à¹„à¸›à¸¢à¸±à¸‡à¹à¸•à¹ˆà¸¥à¸°à¸‚à¸±à¹‰à¸§'},
+  {id:'telophase',name:'à¹€à¸—à¹‚à¸¥à¹€à¸Ÿà¸ª',color:'#10b981',desc:'à¸™à¸´à¸§à¹€à¸„à¸¥à¸µà¸¢à¸ªà¹ƒà¸«à¸¡à¹ˆ 2 à¸­à¸±à¸™à¸à¹ˆà¸­à¸•à¸±à¸§à¸‚à¸¶à¹‰à¸™'},
+  {id:'cytokinesis',name:'à¹„à¸‹à¹‚à¸•à¹„à¸„à¸™à¸µà¸‹à¸´à¸ª',color:'#3b82f6',desc:'à¹„à¸‹à¹‚à¸—à¸žà¸¥à¸²à¸ªà¸‹à¸¶à¸¡à¹à¸šà¹ˆà¸‡ à¹„à¸”à¹‰à¹€à¸‹à¸¥à¸¥à¹Œà¸¥à¸¹à¸ 2 à¹€à¸‹à¸¥à¸¥à¹Œ'}
+];
+
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
+
+let leftItems=shuffle([...PAIRS]);
+let rightItems=shuffle([...PAIRS]);
+let matched=new Set();
+let selectedLeft=null;
+let matchCount=0;
+
+function render(){
+  const lc=document.getElementById('leftCol');
+  const rc=document.getElementById('rightCol');
+  lc.innerHTML='';
+  rc.innerHTML='';
+
+  leftItems.forEach(p=>{
+    const btn=document.createElement('button');
+    const isMatched=matched.has(p.id);
+    btn.className='mcard'+(selectedLeft&&selectedLeft.id===p.id?' sel':'')+(isMatched?' matched':'');
+    btn.id='left_'+p.id;
+    btn.innerHTML=`<p class="text-[11px] font-bold" style="color:${isMatched?'#10b981':p.color}">${p.name}</p>`;
+    if(!isMatched) btn.onclick=()=>selectLeft(p);
+    lc.appendChild(btn);
+  });
+
+  rightItems.forEach(p=>{
+    const btn=document.createElement('button');
+    const isMatched=matched.has(p.id);
+    btn.className='mcard'+(isMatched?' matched disabled':'');
+    btn.id='right_'+p.id;
+    btn.innerHTML=`<p class="text-[10px] text-gray-300 leading-tight">${p.desc}</p>`;
+    if(!isMatched) btn.onclick=()=>selectRight(p);
+    rc.appendChild(btn);
+  });
+
+  document.getElementById('progTxt').textContent=`${matchCount} / 6 à¸„à¸¹à¹ˆ`;
+  document.getElementById('pbar').style.width=`${matchCount/6*100}%`;
+}
+
+function selectLeft(p){
+  selectedLeft=p;
+  document.getElementById('hintTxt').textContent=`à¹€à¸¥à¸·à¸­à¸: ${p.name} â€” à¹à¸•à¸°à¸„à¸³à¸­à¸˜à¸´à¸šà¸²à¸¢à¸—à¸²à¸‡à¸‚à¸§à¸²`;
+  render();
+}
+
+function selectRight(p){
+  if(!selectedLeft) return;
+  if(selectedLeft.id===p.id){
+    matched.add(p.id);
+    matchCount++;
+    selectedLeft=null;
+    document.getElementById('hintTxt').textContent=matchCount<6?'à¸–à¸¹à¸à¸•à¹‰à¸­à¸‡! à¹à¸•à¸°à¸‚à¸±à¹‰à¸™à¸•à¸­à¸™à¸–à¸±à¸”à¹„à¸›':'à¸ˆà¸±à¸šà¸„à¸¹à¹ˆà¸„à¸£à¸šà¹à¸¥à¹‰à¸§!';
+    render();
+    if(matchCount===6){
+      setTimeout(()=>{
+        spawnConfetti();
+        document.getElementById('overlay').classList.remove('hidden');
+      },500);
+    }
+  } else {
+    const lBtn=document.getElementById('left_'+selectedLeft.id);
+    const rBtn=document.getElementById('right_'+p.id);
+    lBtn.classList.add('wrong');
+    rBtn.classList.add('wrong');
+    setTimeout(()=>{lBtn.classList.remove('wrong');rBtn.classList.remove('wrong');},400);
+    document.getElementById('hintTxt').textContent='à¹„à¸¡à¹ˆà¸•à¸£à¸‡à¸à¸±à¸™ à¸¥à¸­à¸‡à¹ƒà¸«à¸¡à¹ˆ!';
+    selectedLeft=null;
+    render();
+  }
+}
+
+function resetGame(){
+  leftItems=shuffle([...PAIRS]);
+  rightItems=shuffle([...PAIRS]);
+  matched=new Set();
+  selectedLeft=null;
+  matchCount=0;
+  document.getElementById('hintTxt').textContent='à¹à¸•à¸°à¸Šà¸·à¹ˆà¸­à¸‚à¸±à¹‰à¸™à¸•à¸­à¸™à¸—à¸²à¸‡à¸‹à¹‰à¸²à¸¢à¸à¹ˆà¸­à¸™';
+  document.getElementById('overlay').classList.add('hidden');
+  render();
+}
+
+function spawnConfetti(){
+  const colors=['#f59e0b','#ec4899','#8b5cf6','#10b981','#3b82f6','#fff'];
+  const layer=document.getElementById('confettiLayer');
+  for(let i=0;i<50;i++){
+    const d=document.createElement('div');
+    const c=colors[Math.floor(Math.random()*colors.length)];
+    const w=Math.random()*8+4,h=Math.random()*6+3;
+    const dur=Math.random()*2+1.5;
+    const delay=Math.random()*1;
+    d.style.cssText=`position:absolute;left:${Math.random()*100}%;top:-20px;width:${w}px;height:${h}px;background:${c};border-radius:2px;animation:confettiFall ${dur}s ${delay}s ease-in forwards`;
+    layer.appendChild(d);
+    setTimeout(()=>d.remove(),(dur+delay+0.1)*1000);
+  }
+}
+
+render();
+</script>
+</body>
+</html>
+

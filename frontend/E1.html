@@ -1,0 +1,235 @@
+﻿<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>E1 Â· Engage â€” à¸à¸£à¸°à¸•à¸¸à¹‰à¸™à¸„à¸§à¸²à¸¡à¸ªà¸™à¹ƒà¸ˆ</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Kanit',sans-serif;background:#050210;color:#fff;min-height:100vh;overflow-x:hidden}
+@keyframes twinkle{0%,100%{opacity:.1}50%{opacity:.65}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes floatCell{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-10px) rotate(4deg)}}
+@keyframes cellGlow{0%,100%{filter:drop-shadow(0 0 6px rgba(139,92,246,.5))}50%{filter:drop-shadow(0 0 18px rgba(167,139,250,.9))}}
+.fu{animation:fadeUp .6s ease both}
+.hdr{background:linear-gradient(to bottom,rgba(5,2,16,.95) 0%,rgba(5,2,16,0) 100%);position:sticky;top:0;z-index:50}
+.ubadge{background:rgba(124,58,237,.15);border:1px solid rgba(124,58,237,.35);border-radius:999px;padding:4px 12px 4px 5px;display:inline-flex;align-items:center;gap:7px;font-size:11px;transition:all .2s}
+.logbtn{cursor:pointer;padding:5px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);font-size:10px;color:rgba(255,255,255,.4);font-family:'Kanit',sans-serif;transition:all .2s}
+.logbtn:hover{border-color:rgba(239,68,68,.4);color:#fca5a5;background:rgba(239,68,68,.08)}
+.card{background:rgba(255,255,255,.042);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.08);border-radius:20px}
+.check-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;border:1px solid rgba(124,58,237,.15);background:rgba(124,58,237,.04);cursor:pointer;transition:all .2s;user-select:none}
+.check-item:hover{background:rgba(124,58,237,.1);border-color:rgba(124,58,237,.3)}
+.check-item.ck{background:rgba(124,58,237,.14);border-color:rgba(124,58,237,.5)}
+.cbox{width:20px;height:20px;border-radius:6px;border:1.5px solid rgba(124,58,237,.4);background:rgba(124,58,237,.08);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.check-item.ck .cbox{background:#7c3aed;border-color:#7c3aed}
+.fact-card{background:linear-gradient(135deg,rgba(124,58,237,.1),rgba(217,70,239,.04));border:1px solid rgba(124,58,237,.18);border-radius:16px;padding:15px 14px;transition:all .2s}
+.fact-card:hover{border-color:rgba(124,58,237,.35);background:linear-gradient(135deg,rgba(124,58,237,.15),rgba(217,70,239,.07))}
+.cta-btn{background:linear-gradient(135deg,#6d28d9,#a855f7);border:none;color:#fff;font-family:'Kanit',sans-serif;font-size:14px;font-weight:600;padding:15px 28px;border-radius:16px;cursor:pointer;width:100%;transition:all .3s;box-shadow:0 8px 30px rgba(124,58,237,.45)}
+.cta-btn:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(124,58,237,.65)}
+.cell-svg{animation:floatCell 4s ease-in-out infinite}
+.cell-glow{animation:cellGlow 3s ease-in-out infinite}
+textarea{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(124,58,237,.2);border-radius:12px;color:#fff;font-family:'Kanit',sans-serif;font-size:12px;padding:12px;resize:none;outline:none;transition:border .2s;min-height:80px;line-height:1.6}
+textarea:focus{border-color:rgba(124,58,237,.55)}
+textarea::placeholder{color:rgba(255,255,255,.25)}
+</style>
+</head>
+<body class="max-w-[480px] mx-auto">
+
+<div id="stars" style="position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden"></div>
+
+<!-- Header -->
+<header class="hdr flex justify-between items-center px-4 py-3 relative z-10">
+  <div class="flex items-center gap-2.5">
+    <a href="à¹‰home.html" class="w-9 h-9 bg-gradient-to-br from-violet-600 to-fuchsia-600 rounded-xl flex items-center justify-center shadow-lg shadow-violet-900/50 hover:opacity-80 transition-opacity">
+      <i class="fas fa-arrow-left text-xs"></i>
+    </a>
+    <div>
+      <p class="text-xs font-bold leading-none">Engage</p>
+      <p class="text-[8px] text-purple-400 font-light tracking-wider mt-0.5">E1 Â· à¸à¸£à¸°à¸•à¸¸à¹‰à¸™à¸„à¸§à¸²à¸¡à¸ªà¸™à¹ƒà¸ˆ</p>
+    </div>
+  </div>
+  <div class="flex items-center gap-2">
+    <div class="ubadge">
+      <div class="w-6 h-6 bg-gradient-to-br from-violet-500 to-fuchsia-500 rounded-full flex items-center justify-center">
+        <i class="fas fa-user" style="font-size:8px"></i>
+      </div>
+      <span id="hdrName" class="text-purple-200 font-semibold">...</span>
+    </div>
+    <button class="logbtn" onclick="logout()"><i class="fas fa-right-from-bracket"></i></button>
+  </div>
+</header>
+
+<main class="px-4 pb-10 relative z-10">
+
+  <!-- Hero -->
+  <div class="text-center py-6 fu">
+    <div class="inline-flex items-center gap-2 bg-purple-500/10 border border-purple-500/20 rounded-full px-4 py-1.5 text-xs text-purple-300 mb-5">
+      <div class="w-2 h-2 rounded-full bg-purple-400 animate-pulse"></div>
+      à¸à¸´à¸ˆà¸à¸£à¸£à¸¡à¸—à¸µà¹ˆ 1 &nbsp;Â·&nbsp; Engage
+    </div>
+
+    <div class="flex justify-center mb-4">
+      <div class="cell-svg cell-glow">
+        <svg viewBox="0 0 160 160" width="130" height="130">
+          <defs>
+            <radialGradient id="cg1" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="rgba(139,92,246,.28)"/>
+              <stop offset="100%" stop-color="rgba(109,40,217,.04)"/>
+            </radialGradient>
+          </defs>
+          <circle cx="80" cy="80" r="70" fill="url(#cg1)" stroke="rgba(139,92,246,.65)" stroke-width="2"/>
+          <circle cx="80" cy="80" r="28" fill="rgba(109,40,217,.18)" stroke="rgba(167,139,250,.55)" stroke-width="1.5" stroke-dasharray="4,3"/>
+          <path d="M65 75 Q72 68 80 75 Q88 82 95 75" fill="none" stroke="rgba(196,181,253,.9)" stroke-width="2" stroke-linecap="round"/>
+          <path d="M68 86 Q75 79 83 86" fill="none" stroke="rgba(216,180,254,.65)" stroke-width="1.5" stroke-linecap="round"/>
+          <ellipse cx="44" cy="58" rx="12" ry="7" fill="none" stroke="rgba(167,139,250,.35)" stroke-width="1.5" transform="rotate(-25,44,58)"/>
+          <ellipse cx="116" cy="62" rx="12" ry="7" fill="none" stroke="rgba(167,139,250,.35)" stroke-width="1.5" transform="rotate(20,116,62)"/>
+          <ellipse cx="48" cy="108" rx="10" ry="6" fill="none" stroke="rgba(167,139,250,.28)" stroke-width="1.5" transform="rotate(15,48,108)"/>
+          <ellipse cx="114" cy="102" rx="11" ry="6" fill="none" stroke="rgba(167,139,250,.28)" stroke-width="1.5" transform="rotate(-15,114,102)"/>
+          <circle cx="80" cy="16" r="3.5" fill="rgba(217,70,239,.8)"/>
+        </svg>
+      </div>
+    </div>
+
+    <h1 class="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-violet-300 to-fuchsia-300 mb-2">à¸à¸£à¸°à¸•à¸¸à¹‰à¸™à¸„à¸§à¸²à¸¡à¸ªà¸™à¹ƒà¸ˆ</h1>
+    <p class="text-xs text-gray-400 font-light leading-relaxed">à¸à¹ˆà¸­à¸™à¹€à¸£à¸´à¹ˆà¸¡à¹€à¸£à¸µà¸¢à¸™ à¸¥à¸­à¸‡à¸”à¸¹à¸§à¹ˆà¸²à¹€à¸£à¸²à¸£à¸¹à¹‰à¸­à¸°à¹„à¸£<br>à¹€à¸à¸µà¹ˆà¸¢à¸§à¸à¸±à¸š <span class="text-purple-300 font-medium">à¸à¸²à¸£à¹à¸šà¹ˆà¸‡à¹€à¸‹à¸¥à¸¥à¹Œà¹à¸šà¸šà¹„à¸¡à¹‚à¸—à¸‹à¸´à¸ª</span> à¸šà¹‰à¸²à¸‡à¹à¸¥à¹‰à¸§</p>
+  </div>
+
+  <!-- Pre-knowledge -->
+  <div class="card p-4 mb-4 fu" style="animation-delay:.1s">
+    <div class="flex items-center gap-2.5 mb-3.5">
+      <div class="w-8 h-8 bg-purple-500/15 rounded-xl flex items-center justify-center flex-shrink-0">
+        <i class="fas fa-brain text-purple-400 text-sm"></i>
+      </div>
+      <div>
+        <p class="text-xs font-bold">à¸‰à¸±à¸™à¸£à¸¹à¹‰à¹€à¸£à¸·à¹ˆà¸­à¸‡à¸™à¸µà¹‰à¹à¸¥à¹‰à¸§</p>
+        <p class="text-[10px] text-gray-500 mt-0.5">à¹€à¸¥à¸·à¸­à¸à¸—à¸¸à¸à¸‚à¹‰à¸­à¸—à¸µà¹ˆà¸„à¸¸à¸“à¹€à¸„à¸¢à¸£à¸¹à¹‰à¸¡à¸²à¸à¹ˆà¸­à¸™</p>
+      </div>
+    </div>
+    <div class="space-y-2" id="checks">
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="cbox"><i class="fas fa-check text-white" style="font-size:9px;display:none"></i></div>
+        <p class="text-xs">à¹€à¸‹à¸¥à¸¥à¹Œà¹€à¸›à¹‡à¸™à¸«à¸™à¹ˆà¸§à¸¢à¸žà¸·à¹‰à¸™à¸à¸²à¸™à¸‚à¸­à¸‡à¸ªà¸´à¹ˆà¸‡à¸¡à¸µà¸Šà¸µà¸§à¸´à¸•</p>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="cbox"><i class="fas fa-check text-white" style="font-size:9px;display:none"></i></div>
+        <p class="text-xs">à¹€à¸‹à¸¥à¸¥à¹Œà¸ªà¸²à¸¡à¸²à¸£à¸–à¹à¸šà¹ˆà¸‡à¸•à¸±à¸§à¹€à¸žà¸·à¹ˆà¸­à¸ªà¸£à¹‰à¸²à¸‡à¹€à¸‹à¸¥à¸¥à¹Œà¹ƒà¸«à¸¡à¹ˆà¹„à¸”à¹‰</p>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="cbox"><i class="fas fa-check text-white" style="font-size:9px;display:none"></i></div>
+        <p class="text-xs">DNA à¸­à¸¢à¸¹à¹ˆà¹ƒà¸™à¸™à¸´à¸§à¹€à¸„à¸¥à¸µà¸¢à¸ªà¸‚à¸­à¸‡à¹€à¸‹à¸¥à¸¥à¹Œ</p>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="cbox"><i class="fas fa-check text-white" style="font-size:9px;display:none"></i></div>
+        <p class="text-xs">à¹„à¸¡à¹‚à¸—à¸‹à¸´à¸ªà¸„à¸·à¸­à¸à¸£à¸°à¸šà¸§à¸™à¸à¸²à¸£à¹à¸šà¹ˆà¸‡à¹€à¸‹à¸¥à¸¥à¹Œà¸Šà¸™à¸´à¸”à¸«à¸™à¸¶à¹ˆà¸‡</p>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="cbox"><i class="fas fa-check text-white" style="font-size:9px;display:none"></i></div>
+        <p class="text-xs">à¹‚à¸„à¸£à¹‚à¸¡à¹‚à¸‹à¸¡à¸„à¸·à¸­à¸—à¸µà¹ˆà¹€à¸à¹‡à¸šà¸‚à¹‰à¸­à¸¡à¸¹à¸¥à¸—à¸²à¸‡à¸žà¸±à¸™à¸˜à¸¸à¸à¸£à¸£à¸¡</p>
+      </div>
+    </div>
+    <p id="ckMsg" class="text-[10px] text-purple-400 mt-3 text-right"></p>
+  </div>
+
+  <!-- Did you know? -->
+  <div class="mb-4 fu" style="animation-delay:.2s">
+    <div class="flex items-center gap-2.5 mb-3">
+      <div class="w-8 h-8 bg-fuchsia-500/15 rounded-xl flex items-center justify-center flex-shrink-0">
+        <i class="fas fa-lightbulb text-fuchsia-400 text-sm"></i>
+      </div>
+      <div>
+        <p class="text-xs font-bold">à¸£à¸¹à¹‰à¹„à¸«à¸¡?</p>
+        <p class="text-[10px] text-gray-500 mt-0.5">à¸‚à¹‰à¸­à¹€à¸—à¹‡à¸ˆà¸ˆà¸£à¸´à¸‡à¸—à¸µà¹ˆà¸™à¹ˆà¸²à¸•à¸·à¹ˆà¸™à¹€à¸•à¹‰à¸™à¹€à¸à¸µà¹ˆà¸¢à¸§à¸à¸±à¸šà¹€à¸‹à¸¥à¸¥à¹Œ</p>
+      </div>
+    </div>
+    <div class="space-y-2.5">
+      <div class="fact-card">
+        <div class="flex items-start gap-3">
+          <span class="text-xl mt-0.5">ðŸ”¬</span>
+          <div>
+            <p class="text-xs font-semibold text-purple-300 mb-0.5">à¸£à¹ˆà¸²à¸‡à¸à¸²à¸¢à¸¡à¸µ 37 à¸¥à¹‰à¸²à¸™à¸¥à¹‰à¸²à¸™à¹€à¸‹à¸¥à¸¥à¹Œ</p>
+            <p class="text-[10px] text-gray-400 leading-relaxed">à¸£à¹ˆà¸²à¸‡à¸à¸²à¸¢à¸¡à¸™à¸¸à¸©à¸¢à¹Œà¸¡à¸µà¹€à¸‹à¸¥à¸¥à¹Œà¸¡à¸²à¸à¸à¸§à¹ˆà¸² 37 à¸¥à¹‰à¸²à¸™à¸¥à¹‰à¸²à¸™à¹€à¸‹à¸¥à¸¥à¹Œ à¹à¸¥à¸°à¸—à¸±à¹‰à¸‡à¸«à¸¡à¸”à¹€à¸£à¸´à¹ˆà¸¡à¸•à¹‰à¸™à¸ˆà¸²à¸à¹€à¸‹à¸¥à¸¥à¹Œà¹€à¸”à¸µà¸¢à¸§!</p>
+          </div>
+        </div>
+      </div>
+      <div class="fact-card">
+        <div class="flex items-start gap-3">
+          <span class="text-xl mt-0.5">âš¡</span>
+          <div>
+            <p class="text-xs font-semibold text-purple-300 mb-0.5">3.8 à¸¥à¹‰à¸²à¸™à¹€à¸‹à¸¥à¸¥à¹Œà¹ƒà¸«à¸¡à¹ˆà¸—à¸¸à¸à¸§à¸´à¸™à¸²à¸—à¸µ</p>
+            <p class="text-[10px] text-gray-400 leading-relaxed">à¹ƒà¸™à¸—à¸¸à¸à¸§à¸´à¸™à¸²à¸—à¸µ à¸£à¹ˆà¸²à¸‡à¸à¸²à¸¢à¸ªà¸£à¹‰à¸²à¸‡à¹€à¸‹à¸¥à¸¥à¹Œà¹ƒà¸«à¸¡à¹ˆà¸¡à¸²à¸à¸à¸§à¹ˆà¸² 3.8 à¸¥à¹‰à¸²à¸™à¹€à¸‹à¸¥à¸¥à¹Œ à¹€à¸žà¸·à¹ˆà¸­à¸—à¸”à¹à¸—à¸™à¹€à¸‹à¸¥à¸¥à¹Œà¹€à¸à¹ˆà¸²à¸—à¸µà¹ˆà¸•à¸²à¸¢à¹„à¸›</p>
+          </div>
+        </div>
+      </div>
+      <div class="fact-card">
+        <div class="flex items-start gap-3">
+          <span class="text-xl mt-0.5">ðŸ§¬</span>
+          <div>
+            <p class="text-xs font-semibold text-purple-300 mb-0.5">DNA à¸¢à¸²à¸§à¸à¸§à¹ˆà¸² 2 à¹€à¸¡à¸•à¸£à¸•à¹ˆà¸­à¹€à¸‹à¸¥à¸¥à¹Œ</p>
+            <p class="text-[10px] text-gray-400 leading-relaxed">DNA à¹ƒà¸™à¹à¸•à¹ˆà¸¥à¸°à¹€à¸‹à¸¥à¸¥à¹Œà¸¡à¸µà¸„à¸§à¸²à¸¡à¸¢à¸²à¸§à¸–à¸¶à¸‡ 2 à¹€à¸¡à¸•à¸£ à¹à¸•à¹ˆà¸–à¸¹à¸à¸žà¸±à¸šà¹à¸¥à¸°à¸šà¸µà¸šà¸­à¸±à¸”à¹ƒà¸«à¹‰à¸­à¸¢à¸¹à¹ˆà¹ƒà¸™à¸™à¸´à¸§à¹€à¸„à¸¥à¸µà¸¢à¸ªà¸‚à¸™à¸²à¸”à¹€à¸¥à¹‡à¸à¸¡à¸²à¸à¹„à¸”à¹‰</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- What I want to know -->
+  <div class="card p-4 mb-6 fu" style="animation-delay:.3s">
+    <div class="flex items-center gap-2.5 mb-3">
+      <div class="w-8 h-8 bg-violet-500/15 rounded-xl flex items-center justify-center flex-shrink-0">
+        <i class="fas fa-circle-question text-violet-400 text-sm"></i>
+      </div>
+      <div>
+        <p class="text-xs font-bold">à¸­à¸¢à¸²à¸à¸£à¸¹à¹‰à¸­à¸°à¹„à¸£?</p>
+        <p class="text-[10px] text-gray-500 mt-0.5">à¸šà¸­à¸à¸ªà¸´à¹ˆà¸‡à¸—à¸µà¹ˆà¸„à¸¸à¸“à¸­à¸¢à¸²à¸à¹€à¸£à¸µà¸¢à¸™à¸£à¸¹à¹‰à¹€à¸à¸µà¹ˆà¸¢à¸§à¸à¸±à¸šà¹€à¸‹à¸¥à¸¥à¹Œ</p>
+      </div>
+    </div>
+    <textarea id="wantKnow" placeholder="à¹€à¸Šà¹ˆà¸™: à¸—à¸³à¹„à¸¡à¹€à¸‹à¸¥à¸¥à¹Œà¸–à¸¶à¸‡à¸•à¹‰à¸­à¸‡à¹à¸šà¹ˆà¸‡à¸•à¸±à¸§? à¸‚à¸±à¹‰à¸™à¸•à¸­à¸™à¸à¸²à¸£à¹à¸šà¹ˆà¸‡à¹€à¸‹à¸¥à¸¥à¹Œà¸¡à¸µà¸­à¸°à¹„à¸£à¸šà¹‰à¸²à¸‡?"></textarea>
+  </div>
+
+  <!-- CTA -->
+  <div class="fu" style="animation-delay:.35s">
+    <button class="cta-btn" onclick="proceed()">
+      <i class="fas fa-flask mr-2"></i>
+      à¹„à¸›à¸ªà¸³à¸£à¸§à¸ˆà¹€à¸‹à¸¥à¸¥à¹Œà¸à¸±à¸™! &nbsp;â†’&nbsp; E2
+    </button>
+    <p class="text-center text-[10px] text-gray-600 mt-2.5">à¸–à¸±à¸”à¹„à¸›: Explore Â· à¸ªà¸³à¸£à¸§à¸ˆà¸„à¹‰à¸™à¸«à¸²à¸œà¹ˆà¸²à¸™à¹€à¸à¸¡à¹€à¸£à¸µà¸¢à¸‡à¸¥à¸³à¸”à¸±à¸š</p>
+  </div>
+
+</main>
+
+<script>
+const API='';
+function logout(){localStorage.removeItem('cl_token');localStorage.removeItem('cl_user');window.location.href='login.html';}
+
+(function(){
+  if(!localStorage.getItem('cl_token')){window.location.href='login.html';return;}
+  const u=JSON.parse(localStorage.getItem('cl_user')||'{}');
+  document.getElementById('hdrName').textContent=u.first_name||u.username||'';
+})();
+
+(function(){
+  const c=document.getElementById('stars');
+  for(let i=0;i<55;i++){
+    const s=document.createElement('div');
+    const sz=Math.random()*1.5+0.5;
+    s.style.cssText=`position:absolute;background:#fff;border-radius:50%;left:${Math.random()*100}%;top:${Math.random()*100}%;width:${sz}px;height:${sz}px;opacity:${Math.random()*.4+.1};animation:twinkle ${Math.random()*3+2}s ease-in-out infinite;animation-delay:${Math.random()*4}s`;
+    c.appendChild(s);
+  }
+})();
+
+function toggleCheck(el){
+  el.classList.toggle('ck');
+  const ico=el.querySelector('.cbox i');
+  ico.style.display=el.classList.contains('ck')?'block':'none';
+  const n=document.querySelectorAll('.check-item.ck').length;
+  document.getElementById('ckMsg').textContent=n>0?`à¹€à¸¥à¸·à¸­à¸à¹à¸¥à¹‰à¸§ ${n} à¸‚à¹‰à¸­`:'';
+}
+
+function proceed(){window.location.href='E2.html';}
+</script>
+</body>
+</html>
+
