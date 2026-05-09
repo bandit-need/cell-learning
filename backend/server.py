@@ -1,4 +1,4 @@
-from flask import Flask, send_from_directory
+from flask import Flask, send_from_directory, make_response
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from database import init_db
@@ -28,11 +28,16 @@ init_db()
 # ── Frontend ────────────────────────────────────────────────────────────────
 @app.route('/')
 def index():
-    return send_from_directory(FRONTEND_DIR, 'login.html')
+    res = make_response(send_from_directory(FRONTEND_DIR, 'login.html'))
+    res.headers['Content-Type'] = 'text/html; charset=utf-8'
+    return res
 
 @app.route('/<path:filename>')
 def serve_frontend(filename):
-    return send_from_directory(FRONTEND_DIR, filename)
+    res = make_response(send_from_directory(FRONTEND_DIR, filename))
+    if filename.endswith('.html'):
+        res.headers['Content-Type'] = 'text/html; charset=utf-8'
+    return res
 
 
 if __name__ == '__main__':
