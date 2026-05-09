@@ -7,6 +7,7 @@ from data_student import student_bp
 import os
 
 FRONTEND_DIR = os.path.join(os.path.dirname(__file__), '..', 'frontend')
+IMAGE_DIR    = os.path.join(os.path.dirname(__file__), '..', 'image')
 
 app = Flask(__name__)
 
@@ -31,6 +32,10 @@ def index():
     res = make_response(send_from_directory(FRONTEND_DIR, 'login.html'))
     res.headers['Content-Type'] = 'text/html; charset=utf-8'
     return res
+
+@app.route('/image/<path:filename>')
+def serve_image(filename):
+    return send_from_directory(IMAGE_DIR, filename)
 
 @app.route('/<path:filename>')
 def serve_frontend(filename):
