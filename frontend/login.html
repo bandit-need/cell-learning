@@ -1,51 +1,37 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cell Learning â€” à¹€à¸‚à¹‰à¸²à¸ªà¸¹à¹ˆà¸£à¸°à¸šà¸š</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Cell Learning — เข้าสู่ระบบ</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Kanit',sans-serif;background:#050210;min-height:100vh;overflow-x:hidden;color:#fff}
-
-/* â”€â”€ Stars â”€â”€ */
 #stars{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
 .star{position:absolute;background:#fff;border-radius:50%;animation:twinkle ease-in-out infinite}
 @keyframes twinkle{0%,100%{opacity:.1;transform:scale(1)}50%{opacity:.8;transform:scale(1.4)}}
-
-/* â”€â”€ Nebula blobs â”€â”€ */
 .blob{position:fixed;border-radius:50%;filter:blur(100px);pointer-events:none;z-index:0}
 .b1{width:700px;height:700px;background:radial-gradient(circle,rgba(109,40,217,.18) 0%,transparent 70%);top:-200px;left:-200px;animation:blobMove 20s ease-in-out infinite}
 .b2{width:500px;height:500px;background:radial-gradient(circle,rgba(76,29,149,.14) 0%,transparent 70%);bottom:-150px;right:-100px;animation:blobMove 15s ease-in-out infinite 5s reverse}
 .b3{width:300px;height:300px;background:radial-gradient(circle,rgba(192,38,211,.1) 0%,transparent 70%);top:40%;right:25%;animation:blobMove 18s ease-in-out infinite 10s}
 @keyframes blobMove{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(30px,-20px) scale(1.05)}66%{transform:translate(-20px,30px) scale(.95)}}
-
-/* â”€â”€ Glass â”€â”€ */
 .glass{background:rgba(255,255,255,.038);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.07)}
 .glass-bright{background:rgba(255,255,255,.055);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.1)}
-
-/* â”€â”€ Input â”€â”€ */
-.inp{background:rgba(255,255,255,.055);border:1.5px solid rgba(255,255,255,.1);color:#fff;width:100%;transition:all .3s;font-family:'Kanit',sans-serif;letter-spacing:.01em}
-.inp:focus{outline:none;border-color:#7c3aed;background:rgba(124,58,237,.12);box-shadow:0 0 0 4px rgba(124,58,237,.15),0 0 20px rgba(124,58,237,.1)}
-.inp::placeholder{color:rgba(255,255,255,.2);font-weight:300}
-
-/* â”€â”€ Primary btn â”€â”€ */
+.inp{background:rgba(255,255,255,.055);border:1.5px solid rgba(255,255,255,.1);color:#fff;width:100%;transition:all .3s;font-family:'Kanit',sans-serif;font-size:16px}
+.inp:focus{outline:none;border-color:#7c3aed;background:rgba(124,58,237,.12);box-shadow:0 0 0 4px rgba(124,58,237,.15)}
+.inp::placeholder{color:rgba(255,255,255,.3);font-weight:300}
 .btn-p{background:linear-gradient(135deg,#6d28d9 0%,#7c3aed 40%,#d946ef 100%);transition:all .3s;font-family:'Kanit',sans-serif;position:relative;overflow:hidden}
 .btn-p::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,#5b21b6,#6d28d9,#c026d3);opacity:0;transition:opacity .3s}
-.btn-p:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(109,40,217,.5),0 0 0 1px rgba(167,139,250,.3)}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(109,40,217,.5)}
 .btn-p:active{transform:translateY(0)}
 .btn-p>*{position:relative;z-index:1}
 .btn-p:hover::before{opacity:1}
 .btn-p:disabled{opacity:.55;cursor:not-allowed;transform:none;box-shadow:none}
-
-/* â”€â”€ Secondary btn â”€â”€ */
 .btn-s{background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.1);transition:all .3s;font-family:'Kanit',sans-serif}
 .btn-s:hover{background:rgba(124,58,237,.12);border-color:rgba(124,58,237,.5)}
-
-/* â”€â”€ Cell SVG â”€â”€ */
 .cell-wrap{animation:cellSpin 90s linear infinite}
 @keyframes cellSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 .membrane{animation:memPulse 4s ease-in-out infinite}
@@ -56,80 +42,65 @@ body{font-family:'Kanit',sans-serif;background:#050210;min-height:100vh;overflow
 @keyframes chromGlow{0%,100%{opacity:.9}50%{opacity:1;filter:drop-shadow(0 0 5px rgba(167,139,250,.8))}}
 .spindle-line{stroke-dasharray:6 4;animation:spindleFlow 2.5s linear infinite}
 @keyframes spindleFlow{from{stroke-dashoffset:0}to{stroke-dashoffset:-20}}
-
-/* â”€â”€ Stage badges â”€â”€ */
-.stage-badge{display:inline-flex;align-items:center;gap:6px;font-size:10px;padding:4px 10px;border-radius:999px;border:1px solid;font-weight:500;letter-spacing:.03em}
-
-/* â”€â”€ Toast â”€â”€ */
-#toast{position:fixed;top:24px;right:24px;z-index:9999;transform:translateX(140%);transition:transform .45s cubic-bezier(.34,1.56,.64,1)}
-#toast.show{transform:translateX(0)}
-
-/* â”€â”€ Spinner â”€â”€ */
+.stage-badge{display:inline-flex;align-items:center;gap:6px;font-size:10px;padding:4px 10px;border-radius:999px;border:1px solid;font-weight:500}
+#toast{position:fixed;top:16px;right:16px;left:16px;z-index:9999;transform:translateY(-130%);transition:transform .45s cubic-bezier(.34,1.56,.64,1)}
+#toast.show{transform:translateY(0)}
+@media(min-width:640px){#toast{left:auto;right:24px;top:24px;min-width:280px;transform:translateX(140%)}#toast.show{transform:translateX(0)}}
 .spin{width:20px;height:20px;border:2px solid rgba(255,255,255,.25);border-top-color:#fff;border-radius:50%;animation:spinAnim .7s linear infinite}
 @keyframes spinAnim{to{transform:rotate(360deg)}}
-
-/* â”€â”€ Animations â”€â”€ */
 @keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
 .fu{animation:fadeUp .7s ease both}
-@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-10px)}40%,80%{transform:translateX(10px)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
 .shake{animation:shake .4s ease}
 </style>
 </head>
 <body>
 <div id="stars"></div>
-<div class="blob b1"></div>
-<div class="blob b2"></div>
-<div class="blob b3"></div>
+<div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
 
 <!-- Toast -->
 <div id="toast">
-  <div id="tbox" class="glass rounded-2xl px-5 py-3.5 flex items-center gap-3 shadow-2xl min-w-[260px] border">
-    <i id="tic" class="text-base"></i>
+  <div id="tbox" class="glass rounded-2xl px-5 py-3.5 flex items-center gap-3 shadow-2xl border">
+    <i id="tic" class="text-base flex-shrink-0"></i>
     <span id="tmsg" class="text-sm font-medium"></span>
   </div>
 </div>
 
 <!-- Nav -->
-<nav class="relative z-10 flex justify-between items-center px-6 lg:px-12 py-5">
+<nav class="relative z-10 flex justify-between items-center px-5 lg:px-12 py-4">
   <div class="flex items-center gap-3">
     <div class="relative">
-      <div class="w-10 h-10 bg-gradient-to-br from-violet-500 to-fuchsia-600 rounded-xl flex items-center justify-center shadow-lg shadow-violet-900/60">
-        <i class="fas fa-microscope text-sm"></i>
+      <div class="w-9 h-9 lg:w-10 lg:h-10 bg-gradient-to-br from-violet-500 to-fuchsia-600 rounded-xl flex items-center justify-center shadow-lg shadow-violet-900/60">
+        <i class="fas fa-microscope text-xs lg:text-sm"></i>
       </div>
-      <div class="absolute -top-0.5 -right-0.5 w-3 h-3 bg-emerald-400 rounded-full border-2 border-[#050210] animate-pulse"></div>
+      <div class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-400 rounded-full border-2 border-[#050210] animate-pulse"></div>
     </div>
     <div>
       <p class="text-sm font-bold leading-tight tracking-wide">Cell Learning</p>
-      <p class="text-[9px] text-purple-400 font-light tracking-widest uppercase">Mitosis Â· à¸„à¸£à¸¹à¸•à¸±à¹Šà¸</p>
+      <p class="text-[9px] text-purple-400 font-light tracking-widest uppercase">Mitosis · ครูตั๊ก</p>
     </div>
   </div>
-  <a href="register.html" class="text-xs border border-purple-500/30 px-4 py-2 rounded-xl hover:bg-purple-500/10 transition-all text-purple-300 hover:text-white flex items-center gap-2 hover:border-purple-400/50">
-    <i class="fas fa-user-plus text-[10px]"></i>à¸ªà¸¡à¸±à¸„à¸£à¸ªà¸¡à¸²à¸Šà¸´à¸
+  <a href="register.html" class="text-xs border border-purple-500/30 px-3 py-2 lg:px-4 rounded-xl hover:bg-purple-500/10 transition-all text-purple-300 hover:text-white flex items-center gap-1.5">
+    <i class="fas fa-user-plus text-[10px]"></i>สมัครสมาชิก
   </a>
 </nav>
 
 <!-- Main -->
-<main class="relative z-10 container mx-auto px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center min-h-[calc(100vh-88px)] py-8">
+<main class="relative z-10 container mx-auto px-5 lg:px-12 grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 items-center min-h-[calc(100vh-72px)] py-4 lg:py-8">
 
-  <!-- â•â• LEFT: Cell Illustration â•â• -->
+  <!-- LEFT: Cell + Info -->
   <div class="text-center lg:text-left fu" style="animation-delay:.1s">
 
-    <!-- Animated Cell Diagram -->
-    <div class="relative w-72 h-72 lg:w-80 lg:h-80 mx-auto lg:mx-0 mb-8">
-      <!-- Outer ring -->
+    <!-- Cell Diagram -->
+    <div class="relative mx-auto lg:mx-0 mb-4 lg:mb-8"
+         style="width:clamp(160px,45vw,320px);height:clamp(160px,45vw,320px)">
       <div class="absolute inset-[-12px] rounded-full border border-violet-500/15 animate-spin" style="animation-duration:40s"></div>
       <div class="absolute inset-[-24px] rounded-full border border-purple-500/8 animate-spin" style="animation-duration:60s;animation-direction:reverse"></div>
-
-      <!-- Cell SVG -->
       <svg class="cell-wrap w-full h-full" viewBox="0 0 280 280" fill="none" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <radialGradient id="cg1" cx="50%" cy="50%" r="50%">
             <stop offset="0%" stop-color="rgba(109,40,217,0.18)"/>
             <stop offset="100%" stop-color="rgba(49,10,100,0.04)"/>
-          </radialGradient>
-          <radialGradient id="cg2" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="rgba(217,70,239,0.22)"/>
-            <stop offset="100%" stop-color="rgba(109,40,217,0.06)"/>
           </radialGradient>
           <filter id="glow1" x="-30%" y="-30%" width="160%" height="160%">
             <feGaussianBlur stdDeviation="4" result="b"/>
@@ -140,153 +111,124 @@ body{font-family:'Kanit',sans-serif;background:#050210;min-height:100vh;overflow
             <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
           </filter>
         </defs>
-
-        <!-- Cell membrane outer glow -->
         <circle cx="140" cy="140" r="132" fill="none" stroke="rgba(124,58,237,.06)" stroke-width="24"/>
-        <!-- Cell membrane -->
         <circle class="membrane" cx="140" cy="140" r="120" fill="url(#cg1)" stroke="rgba(139,92,246,.6)" stroke-width="1.8" filter="url(#glow1)"/>
-
-        <!-- Cytoplasm dots (organelles) -->
         <circle cx="90" cy="100" r="3" fill="rgba(167,139,250,.25)"/>
         <circle cx="200" cy="90" r="2" fill="rgba(192,132,252,.2)"/>
         <circle cx="80" cy="190" r="2.5" fill="rgba(167,139,250,.2)"/>
         <circle cx="210" cy="195" r="2" fill="rgba(192,132,252,.25)"/>
-        <circle cx="100" cy="230" r="2" fill="rgba(167,139,250,.2)"/>
-        <circle cx="220" cy="220" r="3" fill="rgba(192,132,252,.2)"/>
-        <circle cx="60" cy="145" r="2" fill="rgba(167,139,250,.18)"/>
-        <circle cx="225" cy="145" r="2.5" fill="rgba(192,132,252,.18)"/>
-
-        <!-- Spindle fibers (top â†’ chromosomes) -->
         <line class="spindle-line" x1="140" y1="32" x2="106" y2="140" stroke="rgba(139,92,246,.28)" stroke-width="1"/>
         <line class="spindle-line" x1="140" y1="32" x2="125" y2="140" stroke="rgba(139,92,246,.28)" stroke-width="1" style="animation-delay:.4s"/>
         <line class="spindle-line" x1="140" y1="32" x2="140" y2="140" stroke="rgba(139,92,246,.35)" stroke-width="1.4" style="animation-delay:.8s"/>
         <line class="spindle-line" x1="140" y1="32" x2="158" y2="140" stroke="rgba(139,92,246,.28)" stroke-width="1" style="animation-delay:.2s"/>
         <line class="spindle-line" x1="140" y1="32" x2="174" y2="140" stroke="rgba(139,92,246,.28)" stroke-width="1" style="animation-delay:.6s"/>
-
-        <!-- Spindle fibers (bottom â†’ chromosomes) -->
         <line class="spindle-line" x1="140" y1="248" x2="106" y2="140" stroke="rgba(139,92,246,.28)" stroke-width="1"/>
         <line class="spindle-line" x1="140" y1="248" x2="125" y2="140" stroke="rgba(139,92,246,.28)" stroke-width="1" style="animation-delay:.5s"/>
         <line class="spindle-line" x1="140" y1="248" x2="140" y2="140" stroke="rgba(139,92,246,.35)" stroke-width="1.4" style="animation-delay:.9s"/>
         <line class="spindle-line" x1="140" y1="248" x2="158" y2="140" stroke="rgba(139,92,246,.28)" stroke-width="1" style="animation-delay:.3s"/>
         <line class="spindle-line" x1="140" y1="248" x2="174" y2="140" stroke="rgba(139,92,246,.28)" stroke-width="1" style="animation-delay:.7s"/>
-
-        <!-- Top centriole -->
         <circle class="centri" cx="140" cy="30" r="10" fill="rgba(217,70,239,.55)" stroke="rgba(232,121,249,.7)" stroke-width="1.5" filter="url(#glow2)"/>
         <circle cx="140" cy="30" r="5" fill="rgba(232,121,249,.9)"/>
-
-        <!-- Bottom centriole -->
         <circle class="centri" cx="140" cy="250" r="10" fill="rgba(217,70,239,.55)" stroke="rgba(232,121,249,.7)" stroke-width="1.5" filter="url(#glow2)" style="animation-delay:1s"/>
         <circle cx="140" cy="250" r="5" fill="rgba(232,121,249,.9)"/>
-
-        <!-- Metaphase plate (equatorial plane) -->
         <line x1="50" y1="140" x2="230" y2="140" stroke="rgba(232,121,249,.12)" stroke-width="1" stroke-dasharray="10,6"/>
-
-        <!-- Chromosomes (paired, lined up at metaphase plate) -->
-        <!-- Pair 1 -->
         <rect class="chrom" x="96" y="126" width="9" height="28" rx="4.5" fill="#7c3aed" opacity=".9"/>
         <rect class="chrom" x="108" y="128" width="9" height="24" rx="4.5" fill="#a78bfa" opacity=".85" style="animation-delay:.5s"/>
-        <!-- Pair 2 -->
         <rect class="chrom" x="121" y="122" width="9" height="36" rx="4.5" fill="#8b5cf6" opacity=".9" style="animation-delay:.2s"/>
         <rect class="chrom" x="133" y="124" width="9" height="32" rx="4.5" fill="#c4b5fd" opacity=".85" style="animation-delay:.7s"/>
-        <!-- Pair 3 (center, biggest) -->
         <rect class="chrom" x="147" y="120" width="10" height="40" rx="5" fill="#7c3aed" opacity=".9" style="animation-delay:.4s"/>
         <rect class="chrom" x="160" y="122" width="10" height="36" rx="5" fill="#a78bfa" opacity=".85" style="animation-delay:.9s"/>
-        <!-- Pair 4 -->
         <rect class="chrom" x="174" y="126" width="9" height="28" rx="4.5" fill="#8b5cf6" opacity=".9" style="animation-delay:.6s"/>
         <rect class="chrom" x="186" y="128" width="9" height="24" rx="4.5" fill="#c4b5fd" opacity=".85" style="animation-delay:.1s"/>
       </svg>
-
-      <!-- Stage label -->
-      <div class="absolute bottom-0 left-1/2 lg:left-auto lg:right-auto -translate-x-1/2 lg:translate-x-0 whitespace-nowrap">
+      <div class="absolute bottom-0 left-1/2 -translate-x-1/2 whitespace-nowrap">
         <span class="stage-badge bg-fuchsia-500/10 border-fuchsia-500/30 text-fuchsia-300">
           <span class="w-1.5 h-1.5 bg-fuchsia-400 rounded-full animate-pulse"></span>Metaphase
         </span>
       </div>
     </div>
 
-    <!-- Title -->
-    <h1 class="text-5xl lg:text-6xl font-bold leading-[1.1] tracking-tight mb-4">
-      à¸¢à¸´à¸™à¸”à¸µà¸•à¹‰à¸­à¸™à¸£à¸±à¸š<br>
-      <span class="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 via-fuchsia-400 to-pink-400">à¸ªà¸¹à¹ˆà¹‚à¸¥à¸à¸‚à¸­à¸‡à¹€à¸‹à¸¥à¸¥à¹Œ</span>
-    </h1>
-    <p class="text-gray-400 text-base font-light leading-relaxed max-w-sm mb-6">
-      à¹€à¸£à¸µà¸¢à¸™à¸£à¸¹à¹‰à¸à¸²à¸£à¹à¸šà¹ˆà¸‡à¹€à¸‹à¸¥à¸¥à¹Œà¹à¸šà¸šà¹„à¸¡à¹‚à¸—à¸‹à¸´à¸ªà¸œà¹ˆà¸²à¸™à¹€à¸à¸¡ à¸à¸´à¸ˆà¸à¸£à¸£à¸¡<br>à¹à¸¥à¸°à¸ªà¸·à¹ˆà¸­à¸—à¸µà¹ˆà¸„à¸£à¸¹à¸•à¸±à¹Šà¸à¸­à¸­à¸à¹à¸šà¸šà¹€à¸žà¸·à¹ˆà¸­à¸„à¸¸à¸“à¹‚à¸”à¸¢à¹€à¸‰à¸žà¸²à¸° âœ¨
-    </p>
-
-    <!-- Stats row -->
-    <div class="flex flex-wrap justify-center lg:justify-start gap-3">
-      <div class="glass px-4 py-2.5 rounded-2xl flex items-center gap-2.5">
-        <div class="w-7 h-7 bg-violet-500/20 rounded-lg flex items-center justify-center">
-          <i class="fas fa-gamepad text-violet-400 text-xs"></i>
+    <!-- Title (ซ่อนบนมือถือ แสดงแค่ desktop) -->
+    <div class="hidden lg:block">
+      <h1 class="text-5xl lg:text-6xl font-bold leading-[1.1] tracking-tight mb-4">
+        ยินดีต้อนรับ<br>
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 via-fuchsia-400 to-pink-400">สู่โลกของเซลล์</span>
+      </h1>
+      <p class="text-gray-400 text-base font-light leading-relaxed max-w-sm mb-6">
+        เรียนรู้การแบ่งเซลล์แบบไมโทซิสผ่านเกม กิจกรรม<br>และสื่อที่ครูตั๊กออกแบบเพื่อคุณโดยเฉพาะ ✨
+      </p>
+      <div class="flex flex-wrap gap-3">
+        <div class="glass px-4 py-2.5 rounded-2xl flex items-center gap-2.5">
+          <div class="w-7 h-7 bg-violet-500/20 rounded-lg flex items-center justify-center">
+            <i class="fas fa-gamepad text-violet-400 text-xs"></i>
+          </div>
+          <div>
+            <p class="text-base font-bold text-violet-300 leading-none">5</p>
+            <p class="text-[9px] text-gray-500 leading-none mt-0.5">กิจกรรม</p>
+          </div>
         </div>
-        <div>
-          <p class="text-base font-bold text-violet-300 leading-none">5</p>
-          <p class="text-[9px] text-gray-500 leading-none mt-0.5">à¸à¸´à¸ˆà¸à¸£à¸£à¸¡</p>
+        <div class="glass px-4 py-2.5 rounded-2xl flex items-center gap-2.5">
+          <div class="w-7 h-7 bg-fuchsia-500/20 rounded-lg flex items-center justify-center">
+            <i class="fas fa-dna text-fuchsia-400 text-xs"></i>
+          </div>
+          <div>
+            <p class="text-base font-bold text-fuchsia-300 leading-none">6</p>
+            <p class="text-[9px] text-gray-500 leading-none mt-0.5">ขั้นตอนไมโทซิส</p>
+          </div>
         </div>
-      </div>
-      <div class="glass px-4 py-2.5 rounded-2xl flex items-center gap-2.5">
-        <div class="w-7 h-7 bg-fuchsia-500/20 rounded-lg flex items-center justify-center">
-          <i class="fas fa-dna text-fuchsia-400 text-xs"></i>
-        </div>
-        <div>
-          <p class="text-base font-bold text-fuchsia-300 leading-none">6</p>
-          <p class="text-[9px] text-gray-500 leading-none mt-0.5">à¸‚à¸±à¹‰à¸™à¸•à¸­à¸™à¹„à¸¡à¹‚à¸—à¸‹à¸´à¸ª</p>
-        </div>
-      </div>
-      <div class="glass px-4 py-2.5 rounded-2xl flex items-center gap-2.5">
-        <div class="w-7 h-7 bg-sky-500/20 rounded-lg flex items-center justify-center">
-          <i class="fas fa-star text-sky-400 text-xs"></i>
-        </div>
-        <div>
-          <p class="text-base font-bold text-sky-300 leading-none">âˆž</p>
-          <p class="text-[9px] text-gray-500 leading-none mt-0.5">à¸„à¸°à¹à¸™à¸™à¸ªà¸°à¸ªà¸¡</p>
+        <div class="glass px-4 py-2.5 rounded-2xl flex items-center gap-2.5">
+          <div class="w-7 h-7 bg-sky-500/20 rounded-lg flex items-center justify-center">
+            <i class="fas fa-star text-sky-400 text-xs"></i>
+          </div>
+          <div>
+            <p class="text-base font-bold text-sky-300 leading-none">∞</p>
+            <p class="text-[9px] text-gray-500 leading-none mt-0.5">คะแนนสะสม</p>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- â•â• RIGHT: Login Form â•â• -->
+  <!-- RIGHT: Login Form -->
   <div class="flex justify-center lg:justify-end fu" style="animation-delay:.3s">
-    <div class="glass-bright w-full max-w-[420px] rounded-[2rem] shadow-2xl shadow-purple-950/50 overflow-hidden">
-
-      <!-- Card top accent -->
+    <div class="glass-bright w-full max-w-[440px] rounded-[2rem] shadow-2xl shadow-purple-950/50 overflow-hidden">
       <div class="h-1 bg-gradient-to-r from-violet-600 via-fuchsia-500 to-pink-500"></div>
+      <div class="p-6 lg:p-8">
 
-      <div class="p-8">
         <!-- Header -->
-        <div class="text-center mb-8">
-          <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-600/30 to-fuchsia-600/20 border border-violet-500/25 mb-4 relative">
-            <i class="fas fa-lock text-violet-300 text-2xl"></i>
+        <div class="text-center mb-6 lg:mb-7">
+          <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-600/30 to-fuchsia-600/20 border border-violet-500/25 mb-3 relative">
+            <i class="fas fa-lock text-violet-300 text-xl"></i>
             <div class="absolute inset-0 rounded-2xl bg-violet-500/10 animate-pulse"></div>
           </div>
-          <h2 class="text-2xl font-bold tracking-wide">à¹€à¸‚à¹‰à¸²à¸ªà¸¹à¹ˆà¸£à¸°à¸šà¸š</h2>
-          <p class="text-gray-500 text-xs mt-1 font-light">à¸à¸£à¸¸à¸“à¸²à¸à¸£à¸­à¸à¸‚à¹‰à¸­à¸¡à¸¹à¸¥à¹€à¸žà¸·à¹ˆà¸­à¹€à¸£à¸´à¹ˆà¸¡à¹€à¸£à¸µà¸¢à¸™à¸£à¸¹à¹‰</p>
+          <h2 class="text-2xl font-bold tracking-wide">เข้าสู่ระบบ</h2>
+          <p class="text-gray-500 text-xs mt-1 font-light">กรุณากรอกข้อมูลเพื่อเริ่มเรียนรู้</p>
         </div>
 
         <form id="loginForm" class="space-y-5" novalidate>
           <!-- Username -->
           <div>
-            <label class="block text-[11px] text-gray-400 font-medium uppercase tracking-widest mb-2">à¸Šà¸·à¹ˆà¸­à¸œà¸¹à¹‰à¹ƒà¸Šà¹‰ / à¹€à¸¥à¸‚à¸›à¸£à¸°à¸ˆà¸³à¸•à¸±à¸§</label>
+            <label class="block text-[11px] text-gray-400 font-medium uppercase tracking-widest mb-2">ชื่อผู้ใช้ / เลขประจำตัว</label>
             <div class="relative">
-              <div class="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 bg-violet-500/20 rounded-lg flex items-center justify-center">
+              <div class="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 bg-violet-500/20 rounded-lg flex items-center justify-center pointer-events-none">
                 <i class="fas fa-user text-violet-400" style="font-size:10px"></i>
               </div>
-              <input id="username" type="text" placeholder="à¸à¸£à¸­à¸à¸Šà¸·à¹ˆà¸­à¸œà¸¹à¹‰à¹ƒà¸Šà¹‰à¸‚à¸­à¸‡à¸„à¸¸à¸“"
-                class="inp rounded-2xl py-4 pl-12 pr-4 text-sm" autocomplete="username">
+              <input id="username" type="text" placeholder="กรอกชื่อผู้ใช้ของคุณ"
+                class="inp rounded-2xl py-4 pl-12 pr-4" autocomplete="username">
             </div>
           </div>
 
           <!-- Password -->
           <div>
-            <label class="block text-[11px] text-gray-400 font-medium uppercase tracking-widest mb-2">à¸£à¸«à¸±à¸ªà¸œà¹ˆà¸²à¸™</label>
+            <label class="block text-[11px] text-gray-400 font-medium uppercase tracking-widest mb-2">รหัสผ่าน</label>
             <div class="relative">
-              <div class="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 bg-fuchsia-500/20 rounded-lg flex items-center justify-center">
+              <div class="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 bg-fuchsia-500/20 rounded-lg flex items-center justify-center pointer-events-none">
                 <i class="fas fa-lock text-fuchsia-400" style="font-size:10px"></i>
               </div>
-              <input id="password" type="password" placeholder="à¸à¸£à¸­à¸à¸£à¸«à¸±à¸ªà¸œà¹ˆà¸²à¸™à¸‚à¸­à¸‡à¸„à¸¸à¸“"
-                class="inp rounded-2xl py-4 pl-12 pr-12 text-sm" autocomplete="current-password">
+              <input id="password" type="password" placeholder="กรอกรหัสผ่านของคุณ"
+                class="inp rounded-2xl py-4 pl-12 pr-14" autocomplete="current-password">
               <button type="button" id="togglePw"
-                class="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center text-gray-500 hover:text-purple-400 transition">
+                class="absolute right-4 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center text-gray-500 hover:text-purple-400 transition">
                 <i id="eyeIcon" class="fas fa-eye text-sm"></i>
               </button>
             </div>
@@ -294,35 +236,35 @@ body{font-family:'Kanit',sans-serif;background:#050210;min-height:100vh;overflow
 
           <!-- Remember + Forgot -->
           <div class="flex justify-between items-center">
-            <label class="flex items-center gap-2 cursor-pointer text-[11px] text-gray-500 hover:text-gray-300 transition select-none">
+            <label class="flex items-center gap-2 cursor-pointer text-[11px] text-gray-500 select-none">
               <div class="relative">
                 <input type="checkbox" id="remember" class="sr-only peer">
                 <div class="w-4 h-4 border border-white/20 rounded peer-checked:bg-violet-500 peer-checked:border-violet-500 transition"></div>
-                <i class="fas fa-check absolute inset-0 flex items-center justify-center text-white text-[8px] pointer-events-none hidden peer-checked:block" style="display:none"></i>
               </div>
-              à¸ˆà¸³à¸‰à¸±à¸™à¹„à¸§à¹‰
+              จำฉันไว้
             </label>
-            <a href="#" class="text-[11px] text-gray-500 hover:text-violet-400 transition">à¸¥à¸·à¸¡à¸£à¸«à¸±à¸ªà¸œà¹ˆà¸²à¸™?</a>
+            <a href="#" class="text-[11px] text-gray-500 hover:text-violet-400 transition py-1">ลืมรหัสผ่าน?</a>
           </div>
 
           <!-- Submit -->
-          <button type="submit" id="loginBtn" class="btn-p w-full py-4 rounded-2xl font-semibold flex items-center justify-center gap-2 text-sm tracking-wide">
-            <span id="btnLabel"><i class="fas fa-arrow-right-to-bracket mr-2"></i>à¹€à¸‚à¹‰à¸²à¸ªà¸¹à¹ˆà¸£à¸°à¸šà¸š</span>
+          <button type="submit" id="loginBtn"
+            class="btn-p w-full py-4 rounded-2xl font-semibold flex items-center justify-center gap-2 text-sm tracking-wide">
+            <span id="btnLabel"><i class="fas fa-arrow-right-to-bracket mr-2"></i>เข้าสู่ระบบ</span>
             <div id="btnSpin" class="spin hidden"></div>
           </button>
 
           <!-- Divider -->
           <div class="flex items-center gap-3">
-            <div class="flex-1 h-px bg-white/6"></div>
-            <span class="text-[10px] text-gray-600 uppercase tracking-widest">à¸«à¸£à¸·à¸­</span>
-            <div class="flex-1 h-px bg-white/6"></div>
+            <div class="flex-1 h-px bg-white/5"></div>
+            <span class="text-[10px] text-gray-600 uppercase tracking-widest">หรือ</span>
+            <div class="flex-1 h-px bg-white/5"></div>
           </div>
 
           <!-- Register link -->
           <a href="register.html"
-            class="btn-s w-full py-3.5 rounded-2xl font-medium flex items-center justify-center gap-2 text-sm text-gray-300 hover:text-white">
+            class="btn-s w-full py-4 rounded-2xl font-medium flex items-center justify-center gap-2 text-sm text-gray-300 hover:text-white">
             <i class="fas fa-user-plus text-violet-400 text-xs"></i>
-            à¸ªà¸¡à¸±à¸„à¸£à¸ªà¸¡à¸²à¸Šà¸´à¸à¹ƒà¸«à¸¡à¹ˆ
+            สมัครสมาชิกใหม่
           </a>
         </form>
       </div>
@@ -333,27 +275,24 @@ body{font-family:'Kanit',sans-serif;background:#050210;min-height:100vh;overflow
 <script>
 const API='';
 
-/* Stars */
 const sf=document.getElementById('stars');
-for(let i=0;i<120;i++){
+for(let i=0;i<100;i++){
   const s=document.createElement('div');s.className='star';
   const sz=Math.random()*2.5+.5;
   s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}vw;top:${Math.random()*100}vh;animation-duration:${Math.random()*4+2}s;animation-delay:${Math.random()*5}s`;
   sf.appendChild(s);
 }
 
-/* Toggle password */
 document.getElementById('togglePw').addEventListener('click',()=>{
   const pw=document.getElementById('password'),ic=document.getElementById('eyeIcon');
   pw.type=pw.type==='password'?'text':'password';
   ic.classList.toggle('fa-eye');ic.classList.toggle('fa-eye-slash');
 });
 
-/* Toast */
 function toast(msg,type='error'){
   const el=document.getElementById('toast'),box=document.getElementById('tbox'),ic=document.getElementById('tic');
   document.getElementById('tmsg').textContent=msg;
-  box.className='glass rounded-2xl px-5 py-3.5 flex items-center gap-3 shadow-2xl min-w-[260px] border';
+  box.className='glass rounded-2xl px-5 py-3.5 flex items-center gap-3 shadow-2xl border';
   if(type==='error'){ic.className='fas fa-circle-xmark text-red-400 text-base';box.classList.add('border-red-500/30')}
   else{ic.className='fas fa-circle-check text-emerald-400 text-base';box.classList.add('border-emerald-500/30')}
   el.classList.add('show');setTimeout(()=>el.classList.remove('show'),3800);
@@ -370,7 +309,7 @@ document.getElementById('loginForm').addEventListener('submit',async e=>{
   const u=document.getElementById('username').value.trim();
   const p=document.getElementById('password').value;
   if(!u||!p){
-    toast('à¸à¸£à¸¸à¸“à¸²à¸à¸£à¸­à¸à¸Šà¸·à¹ˆà¸­à¸œà¸¹à¹‰à¹ƒà¸Šà¹‰à¹à¸¥à¸°à¸£à¸«à¸±à¸ªà¸œà¹ˆà¸²à¸™');
+    toast('กรุณากรอกชื่อผู้ใช้และรหัสผ่าน');
     const f=document.getElementById('loginForm');f.classList.add('shake');
     setTimeout(()=>f.classList.remove('shake'),450);return;
   }
@@ -381,14 +320,13 @@ document.getElementById('loginForm').addEventListener('submit',async e=>{
     if(res.ok){
       localStorage.setItem('cl_token',d.token);
       localStorage.setItem('cl_user',JSON.stringify(d.user));
-      toast('à¸¢à¸´à¸™à¸”à¸µà¸•à¹‰à¸­à¸™à¸£à¸±à¸š '+d.user.first_name+' !','success');
-      setTimeout(()=>{window.location.href='à¹‰home.html';},900);
-    } else {toast(d.error||'à¹€à¸‚à¹‰à¸²à¸ªà¸¹à¹ˆà¸£à¸°à¸šà¸šà¹„à¸¡à¹ˆà¸ªà¸³à¹€à¸£à¹‡à¸ˆ');setLoad(false);}
-  }catch{toast('à¹„à¸¡à¹ˆà¸ªà¸²à¸¡à¸²à¸£à¸–à¹€à¸Šà¸·à¹ˆà¸­à¸¡à¸•à¹ˆà¸­à¹€à¸‹à¸´à¸£à¹Œà¸Ÿà¹€à¸§à¸­à¸£à¹Œà¹„à¸”à¹‰ à¸à¸£à¸¸à¸“à¸²à¹€à¸›à¸´à¸” server.py à¸à¹ˆà¸­à¸™');setLoad(false);}
+      toast('ยินดีต้อนรับ '+d.user.first_name+' !','success');
+      setTimeout(()=>{window.location.href='%E0%B9%89home.html';},900);
+    }else{toast(d.error||'เข้าสู่ระบบไม่สำเร็จ');setLoad(false);}
+  }catch{toast('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้');setLoad(false);}
 });
 
-if(localStorage.getItem('cl_token')) window.location.href='à¹‰home.html';
+if(localStorage.getItem('cl_token')) window.location.href='%E0%B9%89home.html';
 </script>
 </body>
 </html>
-
