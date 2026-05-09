@@ -22,6 +22,9 @@ JWTManager(app)
 app.register_blueprint(auth_bp,    url_prefix='/api/auth')
 app.register_blueprint(student_bp, url_prefix='/api/students')
 
+# ── Init DB ────────────────────────────────────────────────────────────────
+init_db()
+
 # ── Frontend ────────────────────────────────────────────────────────────────
 @app.route('/')
 def index():
@@ -33,5 +36,4 @@ def serve_frontend(filename):
 
 
 if __name__ == '__main__':
-    init_db()
     app.run(debug=True, host='0.0.0.0', port=5000)
