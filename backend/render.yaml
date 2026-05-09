@@ -3,6 +3,7 @@ services:
     name: cell-learning
     runtime: python
     plan: free
+    rootDir: backend
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn server:app
     envVars:
