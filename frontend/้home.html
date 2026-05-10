@@ -286,12 +286,12 @@ body{font-family:'Kanit',sans-serif;background:#050210;color:#fff;min-height:100
       </div>
       <p class="text-[8px] font-bold text-gray-400">คะแนน</p>
     </div>
-    <div class="stat-box">
+    <a href="chat.html" class="stat-box" style="text-decoration:none;cursor:pointer">
       <div class="w-9 h-9 bg-sky-500/15 rounded-xl flex items-center justify-center mx-auto mb-2">
         <i class="fas fa-comment text-sky-400 text-xs"></i>
       </div>
-      <p class="text-[8px] font-bold text-gray-400">ติดต่อครู</p>
-    </div>
+      <p class="text-[8px] font-bold text-sky-400">ติดต่อครู</p>
+    </a>
   </div>
 </footer>
 
@@ -317,18 +317,18 @@ function setUI(u){
 async function init(){
   const token=localStorage.getItem('cl_token');
   if(!token){window.location.href='login.html';return}
-  try{const c=JSON.parse(localStorage.getItem('cl_user')||'{}');if(c.username)setUI(c)}catch{}
+  try{const c=JSON.parse(localStorage.getItem('cl_user')||'{}');if(c.username)setUI(c);if(c.role==='teacher'){window.location.href='teacher.html';return}}catch{}
   try{
     const res=await fetch(`${API}/api/auth/me`,{headers:{'Authorization':'Bearer '+token}});
     if(res.status===401||res.status===422){logout();return}
     const u=await res.json();
+    if(u.role==='teacher'){window.location.href='teacher.html';return}
     localStorage.setItem('cl_user',JSON.stringify(u));
     setUI(u);
   }catch{}
   finally{
     const ls=document.getElementById('ls');
-    ls.classList.add('hide');
-    setTimeout(()=>ls.remove(),600);
+    if(ls){ls.classList.add('hide');setTimeout(()=>ls.remove(),600);}
   }
 }
 init();

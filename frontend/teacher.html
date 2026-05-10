@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>แดชบอร์ดครู — Cell Learning</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Kanit',sans-serif;background:#050210;color:#fff;min-height:100dvh}
+
+/* ── TABS ── */
+.tab-bar{display:flex;background:rgba(255,255,255,.04);border-bottom:1px solid rgba(255,255,255,.07)}
+.tab{flex:1;padding:12px 8px;text-align:center;font-size:12px;cursor:pointer;color:rgba(255,255,255,.45);transition:all .2s;border-bottom:2px solid transparent}
+.tab.active{color:#a855f7;border-bottom-color:#a855f7;background:rgba(168,85,247,.06)}
+
+/* ── STUDENTS LIST ── */
+.student-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:14px 16px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:12px}
+.student-card:hover,.student-card:active{background:rgba(124,58,237,.12);border-color:rgba(124,58,237,.3)}
+.student-card.selected{background:rgba(124,58,237,.18);border-color:rgba(124,58,237,.5)}
+.av{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0}
+.badge{background:#ef4444;color:#fff;border-radius:999px;font-size:9px;font-weight:700;padding:1px 6px;min-width:18px;text-align:center}
+
+/* ── CHAT ── */
+#chatPanel{display:none;flex-direction:column;height:calc(100dvh - 96px)}
+#chatPanel.visible{display:flex}
+.chat-hdr{padding:12px 16px;background:rgba(5,2,16,.97);border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:10px;flex-shrink:0}
+.messages{flex:1;overflow-y:auto;padding:14px 12px;display:flex;flex-direction:column;gap:10px}
+.messages::-webkit-scrollbar{width:3px}
+.messages::-webkit-scrollbar-thumb{background:rgba(124,58,237,.3);border-radius:9px}
+.bubble-wrap{display:flex;align-items:flex-end;gap:8px}
+.bubble-wrap.mine{flex-direction:row-reverse}
+.av-sm{width:28px;height:28px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+.bubble{max-width:72%;padding:10px 14px;border-radius:18px;font-size:13px;line-height:1.5;word-break:break-word}
+.bubble.mine{background:linear-gradient(135deg,#6d28d9,#7c3aed);border-bottom-right-radius:4px}
+.bubble.theirs{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.08);border-bottom-left-radius:4px}
+.ts{font-size:9px;color:rgba(255,255,255,.3);margin-top:3px}
+.bubble-wrap.mine .ts{text-align:right}
+.input-area{flex-shrink:0;background:rgba(5,2,16,.95);border-top:1px solid rgba(255,255,255,.07);padding:10px 12px;display:flex;gap:8px;align-items:flex-end}
+textarea{flex:1;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);border-radius:16px;color:#fff;font-family:'Kanit',sans-serif;font-size:14px;padding:10px 14px;resize:none;outline:none;min-height:42px;max-height:120px;line-height:1.5;transition:border .2s}
+textarea:focus{border-color:rgba(124,58,237,.6);background:rgba(124,58,237,.08)}
+textarea::placeholder{color:rgba(255,255,255,.25)}
+.send-btn{width:42px;height:42px;background:linear-gradient(135deg,#6d28d9,#a855f7);border:none;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+.send-btn:hover{transform:scale(1.08);box-shadow:0 4px 20px rgba(124,58,237,.5)}
+.send-btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.fu{animation:fadeUp .3s ease both}
+
+.score-chip{background:rgba(168,85,247,.15);border:1px solid rgba(168,85,247,.25);border-radius:999px;padding:2px 8px;font-size:10px;color:#c084fc}
+.class-chip{background:rgba(255,255,255,.06);border-radius:6px;padding:1px 6px;font-size:10px;color:rgba(255,255,255,.5)}
+</style>
+</head>
+<body>
+
+<!-- Top header -->
+<div style="background:rgba(5,2,16,.97);border-bottom:1px solid rgba(255,255,255,.07);padding:14px 16px;display:flex;align-items:center;gap:12px;flex-shrink:0">
+  <div style="width:36px;height:36px;background:linear-gradient(135deg,#6d28d9,#d946ef);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">👩‍🏫</div>
+  <div class="flex-1">
+    <p style="font-size:14px;font-weight:700;line-height:1">ครูตั๊ก</p>
+    <p style="font-size:10px;color:rgba(168,85,247,.8);margin-top:2px">แดชบอร์ดครู · Cell Learning</p>
+  </div>
+  <button onclick="logout()" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;color:rgba(255,255,255,.5);font-family:'Kanit',sans-serif;font-size:11px;padding:6px 12px;cursor:pointer">ออกจากระบบ</button>
+</div>
+
+<!-- Tab bar -->
+<div class="tab-bar">
+  <div class="tab active" id="tab-students" onclick="switchTab('students')">
+    <i class="fas fa-users mr-1"></i>นักเรียน
+  </div>
+  <div class="tab" id="tab-chat" onclick="switchTab('chat')">
+    <i class="fas fa-comments mr-1"></i>แชท
+    <span class="badge ml-1" id="totalUnreadBadge" style="display:none"></span>
+  </div>
+</div>
+
+<!-- ═══ STUDENTS PANEL ═══ -->
+<div id="studentsPanel" style="padding:14px 12px;overflow-y:auto;max-height:calc(100dvh - 96px)">
+
+  <!-- Filter bar -->
+  <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+    <input id="searchInput" type="text" placeholder="ค้นหาชื่อ..." oninput="renderStudents()"
+      style="flex:1;min-width:120px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;color:#fff;font-family:'Kanit',sans-serif;font-size:13px;padding:8px 12px;outline:none">
+    <select id="classFilter" onchange="renderStudents()"
+      style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;color:#fff;font-family:'Kanit',sans-serif;font-size:13px;padding:8px 10px;outline:none;cursor:pointer">
+      <option value="">ทุกห้อง</option>
+    </select>
+  </div>
+
+  <!-- Stats row -->
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px" id="statsRow"></div>
+
+  <!-- List -->
+  <div style="display:flex;flex-direction:column;gap:8px" id="studentList">
+    <div style="text-align:center;color:rgba(255,255,255,.3);font-size:13px;padding:32px 0">
+      <i class="fas fa-spinner fa-spin" style="font-size:22px;margin-bottom:8px;display:block"></i>กำลังโหลด...
+    </div>
+  </div>
+</div>
+
+<!-- ═══ CHAT PANEL ═══ -->
+<div id="chatPanel">
+  <!-- Chat header (student info) -->
+  <div class="chat-hdr">
+    <button onclick="switchTab('students')" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0">
+      <i class="fas fa-arrow-left" style="color:rgba(255,255,255,.5);font-size:12px"></i>
+    </button>
+    <div id="chatStudentAv" class="av" style="background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff"></div>
+    <div style="flex:1;min-width:0">
+      <p id="chatStudentName" style="font-size:14px;font-weight:700;line-height:1">—</p>
+      <p id="chatStudentMeta" style="font-size:10px;color:rgba(255,255,255,.4);margin-top:2px">—</p>
+    </div>
+    <div id="chatStudentScore" class="score-chip"></div>
+  </div>
+
+  <!-- Messages -->
+  <div class="messages" id="chatMsgs">
+    <div style="text-align:center;color:rgba(255,255,255,.25);font-size:12px;padding:32px 0">เลือกนักเรียนเพื่อดูแชท</div>
+  </div>
+
+  <!-- Input -->
+  <div class="input-area">
+    <textarea id="chatInput" placeholder="พิมพ์ข้อความตอบกลับ..." rows="1"
+      oninput="autoResize(this)" onkeydown="handleKey(event)"></textarea>
+    <button class="send-btn" id="chatSendBtn" onclick="sendMessage()" disabled>
+      <i class="fas fa-paper-plane" style="font-size:13px"></i>
+    </button>
+  </div>
+</div>
+
+<script>
+const API = '';
+const token = localStorage.getItem('cl_token');
+const me    = JSON.parse(localStorage.getItem('cl_user') || '{}');
+
+if (!token) { window.location.href = 'login.html'; }
+if (me.role !== 'teacher') { window.location.href = '%E0%B9%89home.html'; }
+
+let allStudents = [];
+let activeStudentId = null;
+let lastMsgId = 0;
+let pollTimer = null;
+
+// ── Tabs ───────────────────────────────────────────────────────────────────
+function switchTab(tab) {
+  document.getElementById('studentsPanel').style.display = tab === 'students' ? '' : 'none';
+  const cp = document.getElementById('chatPanel');
+  cp.classList.toggle('visible', tab === 'chat');
+  document.getElementById('tab-students').classList.toggle('active', tab === 'students');
+  document.getElementById('tab-chat').classList.toggle('active', tab === 'chat');
+  if (tab === 'chat' && activeStudentId) loadMessages(false);
+}
+
+// ── Students list ──────────────────────────────────────────────────────────
+async function fetchStudents() {
+  try {
+    const res = await fetch(`${API}/api/chat/students`, {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    if (res.status === 401) { window.location.href = 'login.html'; return; }
+    allStudents = await res.json();
+    populateClassFilter();
+    renderStudents();
+    updateTotalUnread();
+  } catch { }
+}
+
+function populateClassFilter() {
+  const sel = document.getElementById('classFilter');
+  const classes = [...new Set(allStudents.map(s => s.class_name).filter(Boolean))].sort();
+  sel.innerHTML = '<option value="">ทุกห้อง</option>';
+  classes.forEach(c => {
+    const o = document.createElement('option');
+    o.value = c; o.textContent = c;
+    sel.appendChild(o);
+  });
+}
+
+function renderStudents() {
+  const q   = document.getElementById('searchInput').value.trim().toLowerCase();
+  const cls = document.getElementById('classFilter').value;
+
+  let list = allStudents.filter(s => {
+    const name = (s.first_name + ' ' + s.last_name).toLowerCase();
+    return (!q || name.includes(q)) && (!cls || s.class_name === cls);
+  });
+
+  // Stats
+  const totalScore = list.reduce((a, s) => a + (s.score || 0), 0);
+  const avgScore   = list.length ? Math.round(totalScore / list.length) : 0;
+  const totalUnread = list.reduce((a, s) => a + (s.unread || 0), 0);
+  document.getElementById('statsRow').innerHTML = `
+    <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:10px;text-align:center">
+      <p style="font-size:18px;font-weight:700;color:#a855f7">${list.length}</p>
+      <p style="font-size:9px;color:rgba(255,255,255,.4);margin-top:2px">นักเรียน</p>
+    </div>
+    <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:10px;text-align:center">
+      <p style="font-size:18px;font-weight:700;color:#f59e0b">${avgScore}</p>
+      <p style="font-size:9px;color:rgba(255,255,255,.4);margin-top:2px">คะแนนเฉลี่ย</p>
+    </div>
+    <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:10px;text-align:center">
+      <p style="font-size:18px;font-weight:700;color:#ef4444">${totalUnread}</p>
+      <p style="font-size:9px;color:rgba(255,255,255,.4);margin-top:2px">ข้อความใหม่</p>
+    </div>`;
+
+  const container = document.getElementById('studentList');
+  if (list.length === 0) {
+    container.innerHTML = `<div style="text-align:center;color:rgba(255,255,255,.3);font-size:13px;padding:32px 0">ไม่พบนักเรียน</div>`;
+    return;
+  }
+
+  container.innerHTML = '';
+  list.forEach(s => {
+    const initials = ((s.first_name || '?')[0] + (s.last_name || '?')[0]).toUpperCase();
+    const hue = (s.id * 47) % 360;
+    const card = document.createElement('div');
+    card.className = 'student-card fu' + (s.id === activeStudentId ? ' selected' : '');
+    card.innerHTML = `
+      <div class="av" style="background:hsl(${hue},60%,40%);color:#fff">${initials}</div>
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+          <span style="font-size:13px;font-weight:600">${s.first_name} ${s.last_name}</span>
+          ${s.unread > 0 ? `<span class="badge">${s.unread}</span>` : ''}
+        </div>
+        <div style="display:flex;gap:6px;margin-top:4px;flex-wrap:wrap">
+          <span class="class-chip">ชั้น ${s.class_name || '—'} เลขที่ ${s.student_number || '—'}</span>
+          <span class="score-chip">🏆 ${s.score || 0} คะแนน</span>
+        </div>
+      </div>
+      <i class="fas fa-chevron-right" style="color:rgba(255,255,255,.2);font-size:11px;flex-shrink:0"></i>`;
+    card.addEventListener('click', () => openChat(s));
+    container.appendChild(card);
+  });
+}
+
+function updateTotalUnread() {
+  const total = allStudents.reduce((a, s) => a + (s.unread || 0), 0);
+  const badge = document.getElementById('totalUnreadBadge');
+  if (total > 0) { badge.style.display = ''; badge.textContent = total; }
+  else { badge.style.display = 'none'; }
+}
+
+// ── Chat ───────────────────────────────────────────────────────────────────
+function openChat(student) {
+  activeStudentId = student.id;
+  lastMsgId = 0;
+
+  // Mark selected in list
+  document.querySelectorAll('.student-card').forEach(c => c.classList.remove('selected'));
+
+  // Update chat header
+  const initials = ((student.first_name || '?')[0] + (student.last_name || '?')[0]).toUpperCase();
+  document.getElementById('chatStudentAv').textContent = initials;
+  document.getElementById('chatStudentName').textContent = `${student.first_name} ${student.last_name}`;
+  document.getElementById('chatStudentMeta').textContent = `ชั้น ${student.class_name || '—'} · เลขที่ ${student.student_number || '—'}`;
+  document.getElementById('chatStudentScore').textContent = `🏆 ${student.score || 0}`;
+
+  document.getElementById('chatMsgs').innerHTML = '';
+
+  // Clear old poll
+  if (pollTimer) clearInterval(pollTimer);
+
+  switchTab('chat');
+  loadMessages(false);
+  pollTimer = setInterval(() => loadMessages(true), 5000);
+
+  // Update student unread locally
+  const found = allStudents.find(s => s.id === student.id);
+  if (found) { found.unread = 0; updateTotalUnread(); renderStudents(); }
+}
+
+function fmt(iso) {
+  return new Date(iso).toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
+}
+
+function renderMsg(m, animate) {
+  const wrap = document.createElement('div');
+  wrap.className = 'bubble-wrap' + (m.is_mine ? ' mine' : '') + (animate ? ' fu' : '');
+
+  const av = document.createElement('div');
+  av.className = 'av-sm';
+  av.style.cssText = m.is_mine
+    ? 'background:linear-gradient(135deg,#6d28d9,#a855f7);color:#fff'
+    : 'background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1)';
+  av.textContent = m.is_mine ? '👩‍🏫' : (m.sender_name || '?')[0];
+
+  const right = document.createElement('div');
+  right.style.cssText = m.is_mine ? 'text-align:right' : '';
+
+  const bub = document.createElement('div');
+  bub.className = 'bubble ' + (m.is_mine ? 'mine' : 'theirs');
+  bub.textContent = m.content;
+
+  const ts = document.createElement('div');
+  ts.className = 'ts';
+  ts.textContent = fmt(m.created_at) + (m.is_mine ? '' : ' · ' + (m.sender_name || ''));
+
+  right.appendChild(bub);
+  right.appendChild(ts);
+  if (m.is_mine) { wrap.appendChild(right); wrap.appendChild(av); }
+  else { wrap.appendChild(av); wrap.appendChild(right); }
+  return wrap;
+}
+
+async function loadMessages(silent) {
+  if (!activeStudentId) return;
+  try {
+    const res = await fetch(`${API}/api/chat/messages?student_id=${activeStudentId}`, {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    if (res.status === 401) { window.location.href = 'login.html'; return; }
+    const msgs = await res.json();
+
+    const list = document.getElementById('chatMsgs');
+    const newMsgs = msgs.filter(m => m.id > lastMsgId);
+    if (newMsgs.length === 0) return;
+
+    newMsgs.forEach(m => {
+      lastMsgId = Math.max(lastMsgId, m.id);
+      list.appendChild(renderMsg(m, !silent));
+    });
+    list.scrollTop = list.scrollHeight;
+  } catch { }
+}
+
+async function sendMessage() {
+  const input = document.getElementById('chatInput');
+  const content = input.value.trim();
+  if (!content || !activeStudentId) return;
+
+  document.getElementById('chatSendBtn').disabled = true;
+  input.value = '';
+  input.style.height = '';
+
+  try {
+    const res = await fetch(`${API}/api/chat/messages`, {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ content, student_id: activeStudentId })
+    });
+    if (res.ok) {
+      const m = await res.json();
+      m.is_mine = true;
+      m.sender_name = me.first_name || 'ครู';
+      lastMsgId = Math.max(lastMsgId, m.id);
+      const list = document.getElementById('chatMsgs');
+      list.appendChild(renderMsg(m, true));
+      list.scrollTop = list.scrollHeight;
+    }
+  } catch { }
+  document.getElementById('chatSendBtn').disabled = false;
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+  document.getElementById('chatSendBtn').disabled = !el.value.trim();
+}
+
+document.getElementById('chatInput').addEventListener('input', function () {
+  document.getElementById('chatSendBtn').disabled = !this.value.trim();
+});
+
+function logout() {
+  localStorage.removeItem('cl_token');
+  localStorage.removeItem('cl_user');
+  window.location.href = 'login.html';
+}
+
+// ── Init ───────────────────────────────────────────────────────────────────
+fetchStudents();
+setInterval(fetchStudents, 30000); // refresh student list every 30s
+</script>
+</body>
+</html>

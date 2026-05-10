@@ -119,7 +119,8 @@ body{font-family:'Kanit',sans-serif;background:#050210;color:#fff;min-height:100
   <div class="result-card text-center">
     <div id="resIcon" class="text-5xl mb-3"></div>
     <p id="resTitle" class="text-xl font-bold mb-1"></p>
-    <p id="resScore" class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-cyan-300 mb-2"></p>
+    <p id="resScore" class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-cyan-300 mb-1"></p>
+    <p id="resPts" class="text-sm font-bold text-yellow-400 mb-2" style="display:none"></p>
     <p id="resTime" class="text-xs text-gray-500 mb-5"></p>
     <div id="resDetail" class="grid grid-cols-3 gap-2 mb-6"></div>
     <div class="flex gap-3">
@@ -249,6 +250,26 @@ function clickSlot(i){
   render();
 }
 
+async function submitScore(){
+  const token=localStorage.getItem('cl_token');
+  if(!token)return;
+  try{
+    const res=await fetch(`${API}/api/students/progress`,{
+      method:'POST',
+      headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
+      body:JSON.stringify({stage:'E2',points:200})
+    });
+    if(res.ok){
+      const d=await res.json();
+      const u=JSON.parse(localStorage.getItem('cl_user')||'{}');
+      u.score=d.total_score;
+      localStorage.setItem('cl_user',JSON.stringify(u));
+      return d.already_completed;
+    }
+  }catch{}
+  return false;
+}
+
 function submitAnswer(){
   done=true;
   clearInterval(timerInt);
@@ -257,12 +278,13 @@ function submitAnswer(){
   document.getElementById('slotsGrid').querySelectorAll('.slot').forEach((el,i)=>{
     if(slots[i]) el.classList.add(slots[i].order===i+1?'correct':'wrong');
   });
-  setTimeout(()=>{
+  const pct=Math.round(correct/6*100);
+  const passed=pct>=67;
+  setTimeout(async()=>{
     const m=String(Math.floor(timerSec/60)).padStart(2,'0');
     const s2=String(timerSec%60).padStart(2,'0');
-    const pct=Math.round(correct/6*100);
-    document.getElementById('resIcon').textContent=pct===100?'🏆':pct>=67?'😊':'🔄';
-    document.getElementById('resTitle').textContent=pct===100?'เยี่ยมมาก! สมบูรณ์แบบ!':pct>=67?'ดีมาก! เกือบได้แล้ว':'ลองใหม่อีกครั้งนะ';
+    document.getElementById('resIcon').textContent=pct===100?'🏆':passed?'😊':'🔄';
+    document.getElementById('resTitle').textContent=pct===100?'เยี่ยมมาก! สมบูรณ์แบบ!':passed?'ดีมาก! ผ่านด่านแล้ว!':'ลองใหม่อีกครั้งนะ';
     document.getElementById('resScore').textContent=`${correct} / 6 ถูกต้อง`;
     document.getElementById('resTime').textContent=`เวลาที่ใช้: ${m}:${s2}`;
     document.getElementById('resDetail').innerHTML=slots.map((s,i)=>{
@@ -272,6 +294,11 @@ function submitAnswer(){
         <p class="text-[9px] text-gray-400 mt-0.5">${s?s.th:'ว่าง'}</p>
       </div>`;
     }).join('');
+    if(passed){
+      const already=await submitScore();
+      document.getElementById('resPts').style.display='';
+      document.getElementById('resPts').textContent=already?'✓ เคยได้คะแนนแล้ว':'🏆 +200 คะแนน';
+    }
     document.getElementById('overlay').classList.remove('hidden');
   },600);
 }

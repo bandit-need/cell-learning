@@ -134,6 +134,56 @@ def delete_student(student_id):
     return jsonify({'message': 'ลบข้อมูลนักเรียนสำเร็จ'}), 200
 
 
+@student_bp.route('/progress', methods=['POST'])
+@jwt_required()
+def submit_progress():
+    user_id = int(get_jwt_identity())
+    data = request.get_json(silent=True) or {}
+    stage = data.get('stage')
+    points = data.get('points', 0)
+
+    if not stage:
+        return jsonify({'error': 'กรุณาระบุ stage'}), 400
+
+    try:
+        points = int(points)
+    except (ValueError, TypeError):
+        return jsonify({'error': 'คะแนนต้องเป็นตัวเลข'}), 400
+
+    conn = get_db()
+    cur = get_cursor(conn)
+    cur.execute('SELECT 1 FROM progress WHERE user_id = %s AND stage = %s', (user_id, stage))
+    if cur.fetchone():
+        cur.execute('SELECT score FROM users WHERE id = %s', (user_id,))
+        row = cur.fetchone()
+        cur.close()
+        conn.close()
+        return jsonify({'message': 'ผ่านด่านนี้แล้ว', 'total_score': row['score'], 'already_completed': True}), 200
+
+    cur.execute('INSERT INTO progress (user_id, stage) VALUES (%s, %s)', (user_id, stage))
+    if points > 0:
+        cur.execute('UPDATE users SET score = score + %s WHERE id = %s', (points, user_id))
+    conn.commit()
+    cur.execute('SELECT score FROM users WHERE id = %s', (user_id,))
+    row = cur.fetchone()
+    cur.close()
+    conn.close()
+    return jsonify({'message': 'บันทึกความก้าวหน้าสำเร็จ', 'total_score': row['score'], 'already_completed': False}), 200
+
+
+@student_bp.route('/progress', methods=['GET'])
+@jwt_required()
+def get_progress():
+    user_id = int(get_jwt_identity())
+    conn = get_db()
+    cur = get_cursor(conn)
+    cur.execute('SELECT stage FROM progress WHERE user_id = %s', (user_id,))
+    rows = cur.fetchall()
+    cur.close()
+    conn.close()
+    return jsonify([r['stage'] for r in rows]), 200
+
+
 @student_bp.route('/score', methods=['POST'])
 @jwt_required()
 def add_score():

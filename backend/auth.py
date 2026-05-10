@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from werkzeug.security import generate_password_hash, check_password_hash
 from database import get_db, get_cursor
+import os
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -37,16 +38,19 @@ def register():
 
     password_hash = generate_password_hash(data['password'])
 
+    teacher_code = data.get('teacher_code', '').strip()
+    role = 'teacher' if teacher_code == os.environ.get('TEACHER_CODE', 'KRUTHAK2026') else 'student'
+
     try:
         conn = get_db()
         cur = get_cursor(conn)
         cur.execute(
             '''INSERT INTO users
                (username, password_hash, first_name, last_name,
-                class_name, student_number, gender, age)
-               VALUES (%s, %s, %s, %s, %s, %s, %s, %s)''',
+                class_name, student_number, gender, age, role)
+               VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)''',
             (data['username'], password_hash, data['first_name'], data['last_name'],
-             data['class_name'], student_number, gender, age)
+             data['class_name'], student_number, gender, age, role)
         )
         conn.commit()
         cur.close()

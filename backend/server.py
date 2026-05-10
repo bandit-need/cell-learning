@@ -4,6 +4,7 @@ from flask_jwt_extended import JWTManager
 from database import init_db
 from auth import auth_bp
 from data_student import student_bp
+from chat import chat_bp
 import os
 
 FRONTEND_DIR = os.path.join(os.path.dirname(__file__), '..', 'frontend')
@@ -23,6 +24,7 @@ JWTManager(app)
 # ── Blueprints ─────────────────────────────────────────────────────────────
 app.register_blueprint(auth_bp,    url_prefix='/api/auth')
 app.register_blueprint(student_bp, url_prefix='/api/students')
+app.register_blueprint(chat_bp,    url_prefix='/api/chat')
 
 # ── Init DB ────────────────────────────────────────────────────────────────
 init_db()

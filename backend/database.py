@@ -21,6 +21,7 @@ def get_cursor(conn):
 def init_db():
     conn = get_db()
     cur = get_cursor(conn)
+
     cur.execute('''
         CREATE TABLE IF NOT EXISTS users (
             id               SERIAL PRIMARY KEY,
@@ -38,6 +39,27 @@ def init_db():
             created_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     ''')
+
+    cur.execute('''
+        CREATE TABLE IF NOT EXISTS messages (
+            id         SERIAL PRIMARY KEY,
+            sender_id  INTEGER   NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+            student_id INTEGER   NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+            content    TEXT      NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            is_read    BOOLEAN   DEFAULT FALSE
+        )
+    ''')
+
+    cur.execute('''
+        CREATE TABLE IF NOT EXISTS progress (
+            user_id      INTEGER   NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+            stage        TEXT      NOT NULL,
+            completed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (user_id, stage)
+        )
+    ''')
+
     conn.commit()
     cur.close()
     conn.close()
