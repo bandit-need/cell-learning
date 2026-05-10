@@ -10,27 +10,58 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Kanit',sans-serif;background:#050210;color:#fff;min-height:100vh;overflow-x:hidden}
+
 @keyframes twinkle{0%,100%{opacity:.1}50%{opacity:.65}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+@keyframes popIn{from{opacity:0;transform:scale(.82)}to{opacity:1;transform:scale(1)}}
+@keyframes fillIn{from{opacity:0;transform:translateY(-6px) scale(.9)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes pulseGlow{0%,100%{opacity:.7}50%{opacity:1}}
+@keyframes correctFlash{0%{background:rgba(5,150,105,.35)}50%{background:rgba(52,211,153,.5)}100%{background:rgba(5,150,105,.35)}}
+@keyframes scoreUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
 .fu{animation:fadeUp .5s ease both}
+
+/* Header */
 .hdr{background:linear-gradient(to bottom,rgba(5,2,16,.95),rgba(5,2,16,0));position:sticky;top:0;z-index:50}
 .ubadge{background:rgba(5,150,105,.15);border:1px solid rgba(5,150,105,.35);border-radius:999px;padding:4px 12px 4px 5px;display:inline-flex;align-items:center;gap:7px;font-size:11px}
 .logbtn{cursor:pointer;padding:5px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);font-size:10px;color:rgba(255,255,255,.4);font-family:'Kanit',sans-serif;transition:all .2s}
 .logbtn:hover{border-color:rgba(239,68,68,.4);color:#fca5a5;background:rgba(239,68,68,.08)}
 
 /* Video */
-.video-wrap{background:#000;border-radius:20px;overflow:hidden;border:1px solid rgba(255,255,255,.08);position:relative}
-video{width:100%;display:block;max-height:260px;object-fit:contain}
+.video-wrap{background:#000;border-radius:20px;overflow:hidden;border:1px solid rgba(255,255,255,.08)}
+video{width:100%;display:block;max-height:210px;object-fit:contain}
 
-/* Game scaffold */
-.lyric-box{background:rgba(255,255,255,.04);border:1px solid rgba(5,150,105,.25);border-radius:16px;padding:16px;text-align:center}
-.blank-word{display:inline-block;background:rgba(5,150,105,.2);border:1.5px dashed rgba(5,150,105,.6);border-radius:10px;padding:2px 14px;color:#6ee7b7;font-weight:700;min-width:64px}
-.word-tile{background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.12);border-radius:12px;padding:10px 8px;font-family:'Kanit',sans-serif;font-size:12px;font-weight:600;color:rgba(255,255,255,.35);cursor:not-allowed;transition:all .2s;text-align:center}
-.check-btn-off{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.25);font-family:'Kanit',sans-serif;font-size:13px;font-weight:600;padding:13px 20px;border-radius:14px;cursor:not-allowed;width:100%;display:flex;align-items:center;justify-content:center;gap:8px}
+/* Game Panel */
+.game-panel{background:linear-gradient(145deg,rgba(5,150,105,.07),rgba(4,120,87,.04));border:1.5px solid rgba(5,150,105,.28);border-radius:22px;padding:20px 16px}
+
+/* Lyric Display */
+.lyric-box{background:rgba(0,0,0,.35);border:1px solid rgba(5,150,105,.22);border-radius:16px;padding:20px 16px;text-align:center;min-height:96px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px}
+
+/* Blank slot */
+.blank-slot{display:inline-flex;align-items:center;justify-content:center;min-width:80px;min-height:34px;background:rgba(5,150,105,.12);border:2px dashed rgba(5,150,105,.5);border-radius:10px;padding:3px 12px;margin:0 4px;vertical-align:middle;transition:all .3s;cursor:default}
+.blank-slot.has-word{border-style:solid;border-color:rgba(52,211,153,.65);background:rgba(5,150,105,.22);animation:fillIn .3s ease}
+.blank-slot.correct-anim{border-color:#34d399;background:rgba(5,150,105,.38);animation:correctFlash .6s ease}
+.blank-slot.wrong-anim{border-color:rgba(239,68,68,.6);background:rgba(239,68,68,.12);animation:shake .4s ease}
+
+/* Word tiles */
+.word-tile{background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.14);border-radius:13px;padding:12px 8px;font-family:'Kanit',sans-serif;font-size:13px;font-weight:600;color:#e2e8f0;cursor:pointer;transition:all .22s;text-align:center;user-select:none;width:100%}
+.word-tile:hover:not([disabled]){background:rgba(5,150,105,.18);border-color:rgba(52,211,153,.55);transform:translateY(-2px);box-shadow:0 6px 20px rgba(5,150,105,.25)}
+.word-tile:active:not([disabled]){transform:scale(.95)}
+.word-tile[disabled]{opacity:.28;cursor:not-allowed}
+.word-tile.used{opacity:.2;cursor:not-allowed;text-decoration:line-through}
+
+/* Progress dots */
+.pdot{height:8px;border-radius:99px;background:rgba(255,255,255,.13);transition:all .4s}
+.pdot.done{background:#34d399}
+.pdot.active{background:#6ee7b7;width:24px !important;box-shadow:0 0 10px rgba(110,231,183,.55);animation:pulseGlow 1.4s ease-in-out infinite}
+
+/* Hint card */
+.hint-card{background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.22);border-radius:14px;padding:12px 14px;animation:fadeUp .3s ease}
 
 /* Stage accordion */
 .stage-item{border-radius:18px;overflow:hidden;margin-bottom:10px}
-.stage-hdr{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;transition:all .2s;border-radius:18px}
+.stage-hdr{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;transition:background .2s;border-radius:18px}
 .stage-hdr:hover{background:rgba(255,255,255,.04)}
 .stage-hdr.open{border-radius:18px 18px 0 0}
 .stage-body{overflow:hidden;max-height:0;transition:max-height .4s ease,opacity .3s ease;opacity:0}
@@ -47,13 +78,25 @@ video{width:100%;display:block;max-height:260px;object-fit:contain}
 
 /* Nav btn */
 .nav-btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px 20px;border-radius:16px;font-family:'Kanit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .3s;text-decoration:none}
+
+/* Buttons */
+.green-btn{background:linear-gradient(135deg,#065f46,#059669);border:none;color:#fff;font-family:'Kanit',sans-serif;font-size:14px;font-weight:700;padding:14px 20px;border-radius:16px;cursor:pointer;width:100%;transition:all .3s;box-shadow:0 8px 24px rgba(5,150,105,.4);display:flex;align-items:center;justify-content:center;gap:8px}
+.green-btn:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(5,150,105,.6)}
+.green-btn:active{transform:scale(.97)}
+
+/* Overlays */
+.overlay{position:fixed;inset:0;background:rgba(5,2,16,.92);z-index:100;display:flex;align-items:center;justify-content:center;padding:24px;backdrop-filter:blur(10px)}
+.result-card{background:rgba(10,5,30,.8);border:1.5px solid rgba(5,150,105,.35);border-radius:26px;padding:30px 24px;width:100%;max-width:360px;animation:popIn .4s cubic-bezier(.34,1.56,.64,1)}
+
+/* Score badge */
+.score-badge{background:rgba(5,150,105,.15);border:1px solid rgba(5,150,105,.3);border-radius:99px;padding:5px 14px;font-size:11px;display:inline-flex;align-items:center;gap:5px;animation:scoreUp .3s ease}
 </style>
 </head>
 <body class="max-w-[480px] mx-auto">
 
 <div id="stars" style="position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden"></div>
 
-<!-- Header -->
+<!-- ═══════════════════ HEADER ═══════════════════ -->
 <header class="hdr flex justify-between items-center px-4 py-3 relative z-10">
   <div class="flex items-center gap-2.5">
     <a href="E2.html" class="w-9 h-9 bg-gradient-to-br from-emerald-600 to-teal-700 rounded-xl flex items-center justify-center shadow-lg hover:opacity-80 transition-opacity">
@@ -84,18 +127,18 @@ video{width:100%;display:block;max-height:260px;object-fit:contain}
       กิจกรรมที่ 3 &nbsp;·&nbsp; Explain
     </div>
     <h1 class="text-xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 to-teal-300 mb-2">ขั้นตอนการแบ่งเซลล์ไมโทซิส</h1>
-    <p class="text-[11px] text-gray-400 leading-relaxed">ดูวิดีโอเพื่อทำความเข้าใจ จากนั้นเล่นเกมต่อเพลง</p>
+    <p class="text-[11px] text-gray-400 leading-relaxed">ศึกษาเนื้อหา ดูวิดีโอ แล้วเล่นเกมต่อเพลงให้ผ่าน</p>
   </div>
 
-  <!-- ═══════════════════════════════════ VIDEO ═══════════════════════════════════ -->
-  <div class="mb-5 fu" style="animation-delay:.08s">
+  <!-- ═══════════════════ VIDEO ═══════════════════ -->
+  <div class="mb-5 fu" style="animation-delay:.07s">
     <div class="flex items-center gap-2 mb-3">
       <div class="w-8 h-8 bg-emerald-500/15 rounded-xl flex items-center justify-center flex-shrink-0">
         <i class="fas fa-play-circle text-emerald-400 text-sm"></i>
       </div>
       <div>
         <p class="text-xs font-bold">วิดีโอประกอบบทเรียน</p>
-        <p class="text-[10px] text-gray-500">ดูให้จบก่อนเล่นเกม</p>
+        <p class="text-[10px] text-gray-500">ดูเพื่อทำความเข้าใจก่อนเล่นเกม</p>
       </div>
     </div>
     <div class="video-wrap">
@@ -109,7 +152,7 @@ video{width:100%;display:block;max-height:260px;object-fit:contain}
     </p>
   </div>
 
-  <!-- ══════════════════════════════ GAME SCAFFOLD ══════════════════════════════ -->
+  <!-- ═══════════════════ GAME SECTION ═══════════════════ -->
   <div class="mb-5 fu" style="animation-delay:.13s">
     <div class="flex items-center gap-2 mb-3">
       <div class="w-8 h-8 bg-emerald-500/15 rounded-xl flex items-center justify-center flex-shrink-0">
@@ -117,66 +160,88 @@ video{width:100%;display:block;max-height:260px;object-fit:contain}
       </div>
       <div class="flex-1">
         <p class="text-xs font-bold">เกม: ต่อเพลง</p>
-        <p class="text-[10px] text-gray-500">ลากคำมาเติมในช่องว่างขณะวิดีโอหยุด</p>
+        <p class="text-[10px] text-gray-500">เลือกคำที่หายไปจากเนื้อเพลงไมโทซิส</p>
       </div>
-      <span class="text-[9px] bg-amber-500/15 text-amber-300 px-2.5 py-1 rounded-full border border-amber-500/25 flex-shrink-0">
-        🚧 กำลังพัฒนา
-      </span>
-    </div>
-
-    <!-- วิธีเล่น -->
-    <div class="bg-emerald-500/6 border border-emerald-500/18 rounded-2xl p-4 mb-3">
-      <p class="text-[10px] font-semibold text-emerald-300 mb-2.5 flex items-center gap-1.5">
-        <i class="fas fa-circle-info"></i> วิธีเล่น
-      </p>
-      <div class="space-y-1.5">
-        <div class="flex items-start gap-2">
-          <span class="text-emerald-400 font-bold text-[10px] mt-0.5 flex-shrink-0">1.</span>
-          <p class="text-[10px] text-gray-400">วิดีโอเพลงจะเปิดขึ้นโดยอัตโนมัติ</p>
-        </div>
-        <div class="flex items-start gap-2">
-          <span class="text-emerald-400 font-bold text-[10px] mt-0.5 flex-shrink-0">2.</span>
-          <p class="text-[10px] text-gray-400">เมื่อเนื้อเพลงหายไป วิดีโอจะหยุด</p>
-        </div>
-        <div class="flex items-start gap-2">
-          <span class="text-emerald-400 font-bold text-[10px] mt-0.5 flex-shrink-0">3.</span>
-          <p class="text-[10px] text-gray-400">เลือกคำที่ถูกต้องจากตัวเลือกด้านล่าง</p>
-        </div>
-        <div class="flex items-start gap-2">
-          <span class="text-emerald-400 font-bold text-[10px] mt-0.5 flex-shrink-0">4.</span>
-          <p class="text-[10px] text-gray-400">เมื่อถูกต้อง วิดีโอจะเล่นต่อ</p>
-        </div>
+      <div id="scoreBadge" class="score-badge hidden">
+        <i class="fas fa-star text-yellow-400" style="font-size:10px"></i>
+        <span id="scoreNum" class="text-emerald-300 font-bold">0</span>
+        <span class="text-gray-500">/ 200</span>
       </div>
     </div>
 
-    <!-- ตัวอย่างหน้าตาเกม (scaffold) -->
-    <div class="lyric-box mb-3">
-      <p class="text-[9px] text-emerald-400 uppercase tracking-wider mb-3 font-semibold">ตัวอย่างเนื้อเพลง</p>
-      <p class="text-sm text-white leading-loose mb-1">
-        "โครโมโซมจะ <span class="blank-word">?????</span> ตัวเอง"
-      </p>
-      <p class="text-[10px] text-gray-500 mt-2">วิดีโอหยุด — เลือกคำที่ขาดหายไป</p>
+    <!-- ── IDLE ── -->
+    <div id="stateIdle" class="game-panel">
+      <div class="text-center mb-5">
+        <div class="text-5xl mb-3">🎵</div>
+        <p class="text-sm font-bold text-emerald-300 mb-2">เกมต่อเพลงไมโทซิส</p>
+        <p class="text-[10px] text-gray-400 leading-relaxed max-w-[280px] mx-auto">เนื้อเพลงจะปรากฏขึ้นทีละท่อน มีคำหายไปหนึ่งคำ ให้เลือกคำที่ถูกต้องจากตัวเลือก</p>
+      </div>
+      <div class="bg-black/20 border border-emerald-500/15 rounded-xl p-3.5 mb-5 text-left">
+        <p class="text-[10px] font-semibold text-emerald-300 mb-2 flex items-center gap-1.5">
+          <i class="fas fa-circle-info text-emerald-400"></i> วิธีเล่น
+        </p>
+        <div class="space-y-2">
+          <div class="flex gap-2"><span class="text-emerald-500 font-bold text-[11px] shrink-0">1.</span><p class="text-[10px] text-gray-400">เนื้อเพลงแต่ละท่อนจะแสดงขึ้นมา มีคำ <span class="text-emerald-400">_____</span> หายไป</p></div>
+          <div class="flex gap-2"><span class="text-emerald-500 font-bold text-[11px] shrink-0">2.</span><p class="text-[10px] text-gray-400">แตะคำที่คุณคิดว่าถูกต้องจากตัวเลือก 4 คำด้านล่าง</p></div>
+          <div class="flex gap-2"><span class="text-emerald-500 font-bold text-[11px] shrink-0">3.</span><p class="text-[10px] text-gray-400">ถูก → ไปท่อนถัดไป · ผิด → ดูคำแนะนำแล้วลองใหม่</p></div>
+          <div class="flex gap-2"><span class="text-emerald-500 font-bold text-[11px] shrink-0">4.</span><p class="text-[10px] text-gray-400">ตอบถูกครบ 5 ท่อน = ผ่านด่าน + <span class="text-yellow-400 font-bold">200 คะแนน</span></p></div>
+        </div>
+      </div>
+      <button class="green-btn" onclick="startGame()">
+        <i class="fas fa-play"></i> เริ่มเล่นเกม
+      </button>
     </div>
 
-    <!-- Word tile palette (scaffold) -->
-    <div class="grid grid-cols-2 gap-2 mb-3">
-      <div class="word-tile">จำลอง</div>
-      <div class="word-tile">สลายตัว</div>
-      <div class="word-tile">หดตัว</div>
-      <div class="word-tile">แบ่งแยก</div>
+    <!-- ── PLAYING ── -->
+    <div id="statePlaying" class="game-panel hidden">
+
+      <!-- Progress bar -->
+      <div class="flex items-center gap-1.5 mb-4">
+        <div id="progressDots" class="flex gap-1.5 flex-1"></div>
+        <span id="qNum" class="text-[10px] text-gray-500 shrink-0">1 / 5</span>
+      </div>
+
+      <!-- Phase label -->
+      <div class="flex items-center justify-between mb-3">
+        <span id="phaseTag" class="text-[10px] font-bold px-3 py-1 rounded-full" style="background:rgba(5,150,105,.15);color:#34d399;border:1px solid rgba(5,150,105,.3)"></span>
+        <span id="wrongCount" class="text-[9px] text-gray-600"></span>
+      </div>
+
+      <!-- Lyric box -->
+      <div class="lyric-box mb-4" id="lyricBox">
+        <p id="lyricLine" class="text-sm text-gray-200 leading-relaxed text-center"></p>
+        <p class="text-[9px] text-emerald-500/60 mt-1"><i class="fas fa-hand-pointer mr-1"></i>เลือกคำที่หายไปจากตัวเลือกด้านล่าง</p>
+      </div>
+
+      <!-- Hint card -->
+      <div id="hintCard" class="hint-card mb-3 hidden">
+        <div class="flex items-start gap-2">
+          <i class="fas fa-lightbulb text-yellow-400 mt-0.5 shrink-0" style="font-size:11px"></i>
+          <div>
+            <p class="text-[10px] font-bold text-yellow-300 mb-0.5">คำแนะนำ</p>
+            <p id="hintText" class="text-[10px] text-gray-300 leading-relaxed"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Word tiles -->
+      <div class="grid grid-cols-2 gap-2.5 mb-1" id="wordTiles"></div>
+      <p id="tileGuide" class="text-center text-[9px] text-gray-600 mt-2">แตะคำที่คุณคิดว่าถูกต้อง</p>
     </div>
 
-    <!-- Check button (disabled scaffold) -->
-    <div class="check-btn-off">
-      <i class="fas fa-check-circle" style="font-size:14px"></i>
-      ตรวจสอบคำตอบ
+    <!-- ── DONE (local finish state before overlay) ── -->
+    <div id="stateDone" class="game-panel text-center hidden">
+      <div class="text-5xl mb-3" id="doneEmoji">🏆</div>
+      <p class="text-base font-bold text-emerald-300 mb-1" id="doneTitle"></p>
+      <p class="text-[11px] text-gray-400 mb-5" id="doneMsg"></p>
+      <button class="green-btn" onclick="resetGame()">
+        <i class="fas fa-redo"></i> เล่นใหม่อีกครั้ง
+      </button>
     </div>
-    <p class="text-center text-[9px] text-gray-600 mt-2">
-      ⚙ ระบบเกมจะเปิดใช้งานเร็วๆ นี้
-    </p>
-  </div>
 
-  <!-- ══════════════════════════════ เนื้อหาอ้างอิง ══════════════════════════════ -->
+  </div><!-- /game section -->
+
+  <!-- ═══════════════════ CONTENT ACCORDION ═══════════════════ -->
   <div class="mb-5 fu" style="animation-delay:.18s">
     <div class="flex items-center gap-2 mb-3">
       <div class="w-8 h-8 bg-emerald-500/15 rounded-xl flex items-center justify-center flex-shrink-0">
@@ -190,7 +255,7 @@ video{width:100%;display:block;max-height:260px;object-fit:contain}
     <div id="stages"></div>
   </div>
 
-  <!-- ══════════════════════════════ คำศัพท์สำคัญ ══════════════════════════════ -->
+  <!-- ═══════════════════ VOCAB ═══════════════════ -->
   <div class="mb-6 fu" style="animation-delay:.23s">
     <div class="flex items-center gap-2.5 mb-3">
       <div class="w-8 h-8 bg-emerald-500/15 rounded-xl flex items-center justify-center flex-shrink-0">
@@ -212,7 +277,7 @@ video{width:100%;display:block;max-height:260px;object-fit:contain}
       </div>
       <div class="vcard">
         <p class="text-xs font-semibold text-emerald-300 mb-0.5">เซนทริโอล (Centriole)</p>
-        <p class="text-[10px] text-gray-400 leading-relaxed">อวัยวะเล็กๆ ที่ช่วยจัดระเบียบเส้นใยสปินเดิล พบในเซลล์สัตว์</p>
+        <p class="text-[10px] text-gray-400 leading-relaxed">อวัยวะเล็กๆ ที่ช่วยจัดระเบียบเส้นใยสปินเดิล พบในเซลล์สัตว์เท่านั้น</p>
       </div>
       <div class="vcard">
         <p class="text-xs font-semibold text-emerald-300 mb-0.5">คลีเวจ เฟอร์โรว (Cleavage furrow)</p>
@@ -233,28 +298,283 @@ video{width:100%;display:block;max-height:260px;object-fit:contain}
 
 </main>
 
-<script>
-const API='';
-function logout(){localStorage.removeItem('cl_token');localStorage.removeItem('cl_user');window.location.href='login.html';}
+<!-- ═══════════════════ SUCCESS OVERLAY ═══════════════════ -->
+<div class="overlay hidden" id="successOverlay">
+  <div class="result-card text-center">
+    <div class="text-5xl mb-4">🏆</div>
+    <p class="text-xl font-bold text-emerald-300 mb-1">ผ่านด่านแล้ว!</p>
+    <p class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 to-teal-300 mb-2">200 คะแนน</p>
+    <p id="alreadyPts" class="text-sm font-semibold text-yellow-400 mb-1"></p>
+    <p class="text-[11px] text-gray-400 mb-6 leading-relaxed">คุณเรียนรู้ขั้นตอนการแบ่งเซลล์<br>ไมโทซิสได้สำเร็จ! 🎉</p>
+    <div class="grid grid-cols-1 gap-2 mb-4">
+      <div id="sumDetail" class="grid grid-cols-5 gap-1.5"></div>
+    </div>
+    <div class="flex gap-3 mt-2">
+      <button onclick="resetGame();document.getElementById('successOverlay').classList.add('hidden')"
+        class="flex-1 py-3 rounded-xl border border-white/15 text-sm font-semibold hover:bg-white/8 transition-all">
+        <i class="fas fa-redo mr-1"></i>เล่นใหม่
+      </button>
+      <button onclick="window.location.href='E4.html'"
+        class="flex-1 py-3 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-all"
+        style="background:linear-gradient(135deg,#065f46,#047857)">
+        E4 ถัดไป <i class="fas fa-arrow-right ml-1"></i>
+      </button>
+    </div>
+  </div>
+</div>
 
+<script>
+const API = '';
+
+function logout(){
+  localStorage.removeItem('cl_token');
+  localStorage.removeItem('cl_user');
+  window.location.href = 'login.html';
+}
+
+// Auth check
 (function(){
-  if(!localStorage.getItem('cl_token')){window.location.href='login.html';return;}
-  const u=JSON.parse(localStorage.getItem('cl_user')||'{}');
-  document.getElementById('hdrName').textContent=u.first_name||u.username||'';
+  if(!localStorage.getItem('cl_token')){ window.location.href='login.html'; return; }
+  const u = JSON.parse(localStorage.getItem('cl_user')||'{}');
+  document.getElementById('hdrName').textContent = u.first_name || u.username || '';
 })();
 
+// Stars
 (function(){
-  const c=document.getElementById('stars');
+  const c = document.getElementById('stars');
   for(let i=0;i<55;i++){
-    const s=document.createElement('div');
-    const sz=Math.random()*1.5+0.5;
-    s.style.cssText=`position:absolute;background:#fff;border-radius:50%;left:${Math.random()*100}%;top:${Math.random()*100}%;width:${sz}px;height:${sz}px;opacity:${Math.random()*.4+.1};animation:twinkle ${Math.random()*3+2}s ease-in-out infinite;animation-delay:${Math.random()*4}s`;
+    const s = document.createElement('div');
+    const sz = Math.random()*1.5+0.5;
+    s.style.cssText = `position:absolute;background:#fff;border-radius:50%;left:${Math.random()*100}%;top:${Math.random()*100}%;width:${sz}px;height:${sz}px;opacity:${Math.random()*.4+.1};animation:twinkle ${Math.random()*3+2}s ease-in-out infinite;animation-delay:${Math.random()*4}s`;
     c.appendChild(s);
   }
 })();
 
-// ─── Stage accordion data ────────────────────────────────────────────────────
-const STAGES=[
+// ─────────────────────────────────────────────────────
+//  LYRIC CUES  (5 questions about mitosis stages)
+// ─────────────────────────────────────────────────────
+const CUES = [
+  {
+    phase: 'Interphase', phaseColor: '#818cf8',
+    before: 'อินเตอร์เฟส DNA จะ',
+    blank: 'จำลอง',
+    after: 'ตัวเอง สองชุดพร้อม',
+    options: ['จำลอง', 'สลาย', 'หยุด', 'แบ่งแยก'],
+    hint: 'ในระยะ Interphase เซลล์เตรียมพร้อมโดยทำการ "จำลอง" DNA ให้เป็น 2 ชุดเท่ากัน ก่อนการแบ่งเซลล์จะเริ่มต้น'
+  },
+  {
+    phase: 'Prophase', phaseColor: '#a78bfa',
+    before: 'โพรเฟส โครโมโซมหดตัว เส้นใย',
+    blank: 'สปินเดิล',
+    after: 'เริ่มก่อตัวขึ้น',
+    options: ['สปินเดิล', 'ไลโซโซม', 'ไรโบโซม', 'วาคิวโอล'],
+    hint: 'ในระยะ Prophase "เส้นใยสปินเดิล" จะก่อตัวขึ้นจากเซนทริโอล เพื่อเตรียมใช้ดึงโครโมโซมในระยะต่อไป'
+  },
+  {
+    phase: 'Metaphase', phaseColor: '#f472b6',
+    before: 'เมทาเฟส โครโมโซมเรียงที่',
+    blank: 'ระนาบกลาง',
+    after: 'เซลล์งามตา',
+    options: ['ระนาบกลาง', 'ขั้วเซลล์', 'นิวเคลียส', 'ผนังเซลล์'],
+    hint: 'ในระยะ Metaphase โครโมโซมเรียงตัวอยู่ที่ "ระนาบกลาง" ของเซลล์ (metaphase plate) ทำให้มองเห็นโครโมโซมได้ชัดที่สุด'
+  },
+  {
+    phase: 'Anaphase', phaseColor: '#fbbf24',
+    before: 'แอนาเฟส สปินเดิลดึงสู่',
+    blank: 'ขั้วเซลล์',
+    after: 'ทั้งสองด้าน',
+    options: ['ขั้วเซลล์', 'กึ่งกลาง', 'นิวเคลียส', 'เซนโทรเมียร์'],
+    hint: 'ในระยะ Anaphase เส้นใยสปินเดิลจะดึงโครโมโซมแยกออกจากกัน เคลื่อนไปยัง "ขั้วเซลล์" ทั้งสองด้าน'
+  },
+  {
+    phase: 'Telophase', phaseColor: '#34d399',
+    before: 'เทโลเฟสสร้าง',
+    blank: 'นิวเคลียส',
+    after: 'ใหม่สองอัน แบ่งเซลล์เสร็จสิ้น',
+    options: ['นิวเคลียส', 'โครโมโซม', 'ไมโทคอน', 'เซนทริโอล'],
+    hint: 'ในระยะ Telophase "นิวเคลียส" ใหม่ 2 อันก่อตัวขึ้นที่ขั้วแต่ละด้าน จากนั้นไซโตไคนีซิสแบ่งเซลล์เป็น 2 เซลล์ลูก'
+  }
+];
+
+// ─────────────────────────────────────────────────────
+//  GAME STATE
+// ─────────────────────────────────────────────────────
+let cueIdx = 0;
+let score = 0;
+let wrongThisCue = 0;
+let answered = false;
+let cueResults = []; // true/false per cue
+
+function shuffle(a){ const b=[...a]; for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];} return b; }
+
+function startGame(){
+  cueIdx = 0; score = 0; wrongThisCue = 0; answered = false; cueResults = [];
+  show('statePlaying');
+  document.getElementById('scoreBadge').classList.remove('hidden');
+  document.getElementById('scoreNum').textContent = '0';
+  document.getElementById('hintCard').classList.add('hidden');
+  renderCue();
+}
+
+function renderCue(){
+  const c = CUES[cueIdx];
+  answered = false; wrongThisCue = 0;
+  document.getElementById('hintCard').classList.add('hidden');
+  document.getElementById('tileGuide').textContent = 'แตะคำที่คุณคิดว่าถูกต้อง';
+
+  // Phase tag
+  const tag = document.getElementById('phaseTag');
+  tag.textContent = c.phase;
+  tag.style.color = c.phaseColor;
+  tag.style.borderColor = c.phaseColor + '55';
+  tag.style.background = c.phaseColor + '18';
+
+  // Question counter
+  document.getElementById('qNum').textContent = `${cueIdx+1} / ${CUES.length}`;
+  document.getElementById('wrongCount').textContent = '';
+
+  // Progress dots
+  const pd = document.getElementById('progressDots');
+  pd.innerHTML = '';
+  CUES.forEach((_,i)=>{
+    const d = document.createElement('div');
+    d.className = 'pdot';
+    d.style.width = '8px';
+    if(i < cueIdx) d.classList.add('done');
+    else if(i === cueIdx) { d.classList.add('active'); d.style.width='24px'; }
+    pd.appendChild(d);
+  });
+
+  // Lyric line with blank
+  renderLyricLine(c, null);
+
+  // Word tiles
+  const tileWrap = document.getElementById('wordTiles');
+  tileWrap.innerHTML = '';
+  shuffle(c.options).forEach(word=>{
+    const btn = document.createElement('button');
+    btn.className = 'word-tile';
+    btn.textContent = word;
+    btn.onclick = ()=> pickWord(word, btn);
+    tileWrap.appendChild(btn);
+  });
+}
+
+function renderLyricLine(c, filledWord){
+  const box = document.getElementById('lyricLine');
+  let blankHTML;
+  if(filledWord === null){
+    blankHTML = `<span class="blank-slot" id="blankSlot"><span style="color:rgba(52,211,153,.4);font-size:12px">_____</span></span>`;
+  } else {
+    blankHTML = `<span class="blank-slot has-word" id="blankSlot" style="color:#6ee7b7;font-weight:700">${filledWord}</span>`;
+  }
+  box.innerHTML = `${escHtml(c.before)} ${blankHTML} ${escHtml(c.after)}`;
+}
+
+function escHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function pickWord(word, btn){
+  if(answered) return;
+  const c = CUES[cueIdx];
+
+  renderLyricLine(c, word);
+  const slot = document.getElementById('blankSlot');
+
+  if(word === c.blank){
+    // ── CORRECT ──
+    answered = true;
+    slot.classList.add('correct-anim');
+    document.querySelectorAll('#wordTiles .word-tile').forEach(b=>{ b.disabled=true; });
+    document.getElementById('tileGuide').textContent = '✓ ถูกต้อง! กำลังไปท่อนถัดไป…';
+    document.getElementById('hintCard').classList.add('hidden');
+
+    score += 40;
+    document.getElementById('scoreNum').textContent = score;
+    cueResults.push(true);
+
+    setTimeout(()=>{
+      cueIdx++;
+      if(cueIdx >= CUES.length) finishGame();
+      else renderCue();
+    }, 1100);
+
+  } else {
+    // ── WRONG ──
+    wrongThisCue++;
+    slot.classList.add('wrong-anim');
+    btn.classList.add('used');
+    btn.disabled = true;
+
+    setTimeout(()=>{
+      slot.classList.remove('wrong-anim','has-word');
+      renderLyricLine(c, null);
+    }, 550);
+
+    document.getElementById('tileGuide').textContent = '✗ ไม่ถูกต้อง ลองคำอื่น';
+    document.getElementById('wrongCount').textContent = `ผิด ${wrongThisCue} ครั้ง`;
+    document.getElementById('hintText').textContent = c.hint;
+    document.getElementById('hintCard').classList.remove('hidden');
+  }
+}
+
+async function submitProgress(){
+  const token = localStorage.getItem('cl_token');
+  if(!token) return false;
+  try{
+    const res = await fetch(`${API}/api/students/progress`, {
+      method:'POST',
+      headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
+      body: JSON.stringify({stage:'E3', points:200})
+    });
+    if(res.ok){
+      const d = await res.json();
+      const u = JSON.parse(localStorage.getItem('cl_user')||'{}');
+      u.score = d.total_score;
+      localStorage.setItem('cl_user', JSON.stringify(u));
+      return d.already_completed;
+    }
+  }catch{}
+  return false;
+}
+
+async function finishGame(){
+  show('stateDone');
+  document.getElementById('doneEmoji').textContent = '🎉';
+  document.getElementById('doneTitle').textContent = 'ยอดเยี่ยม! ครบทุกท่อน!';
+  document.getElementById('doneMsg').textContent = `คะแนนรวม ${score} / 200 คะแนน`;
+
+  // Build summary in overlay
+  const sum = document.getElementById('sumDetail');
+  sum.innerHTML = '';
+  cueResults.forEach((ok,i)=>{
+    const d = document.createElement('div');
+    d.className = `rounded-xl p-1.5 text-center ${ok?'bg-emerald-500/15 border border-emerald-500/30':'bg-red-500/15 border border-red-500/30'}`;
+    d.innerHTML = `<p class="text-[9px] font-bold ${ok?'text-emerald-400':'text-red-400'}">${ok?'✓':'✗'}</p><p class="text-[8px] text-gray-500 mt-0.5">${CUES[i].phase.split(' ')[0]}</p>`;
+    sum.appendChild(d);
+  });
+
+  if(score >= 200){
+    const already = await submitProgress();
+    document.getElementById('alreadyPts').textContent = already ? '✓ เคยบันทึกคะแนนแล้ว' : '🏆 +200 คะแนน — บันทึกสำเร็จ!';
+    document.getElementById('successOverlay').classList.remove('hidden');
+  }
+}
+
+function resetGame(){
+  show('stateIdle');
+  document.getElementById('scoreBadge').classList.add('hidden');
+}
+
+function show(id){
+  ['stateIdle','statePlaying','stateDone'].forEach(s=>{
+    document.getElementById(s).classList.toggle('hidden', s!==id);
+  });
+}
+
+// ─────────────────────────────────────────────────────
+//  STAGE ACCORDION
+// ─────────────────────────────────────────────────────
+const STAGES = [
   {
     num:1,label:'Interphase',th:'อินเตอร์เฟส',color:'#6366f1',bg:'rgba(99,102,241,.12)',
     desc:'ระยะเตรียมพร้อมก่อนการแบ่งเซลล์ เซลล์มีการเจริญเติบโตและจำลอง DNA',
@@ -329,13 +649,12 @@ const STAGES=[
   }
 ];
 
-// Build accordion
-const container=document.getElementById('stages');
+const container = document.getElementById('stages');
 STAGES.forEach((s,idx)=>{
-  const item=document.createElement('div');
-  item.className='stage-item';
-  item.style.cssText=`background:${s.bg};border:1px solid ${s.color}30`;
-  item.innerHTML=`
+  const item = document.createElement('div');
+  item.className = 'stage-item';
+  item.style.cssText = `background:${s.bg};border:1px solid ${s.color}30`;
+  item.innerHTML = `
     <div class="stage-hdr" onclick="toggle(${idx})">
       <div class="stage-num" style="background:${s.color}22;color:${s.color}">${s.num}</div>
       <div style="flex:1;min-width:0">
@@ -355,29 +674,14 @@ STAGES.forEach((s,idx)=>{
 });
 
 function toggle(i){
-  const hdr=document.querySelectorAll('.stage-hdr')[i];
-  const body=document.getElementById('body'+i);
-  const isOpen=hdr.classList.contains('open');
+  const hdr = document.querySelectorAll('.stage-hdr')[i];
+  const body = document.getElementById('body'+i);
+  const isOpen = hdr.classList.contains('open');
   hdr.classList.toggle('open',!isOpen);
   body.classList.toggle('open',!isOpen);
 }
 
 toggle(0);
-
-// ─── Game scaffold (placeholder — implement later) ───────────────────────────
-// TODO: implement fill-in-the-blank lyrics game
-// Structure needed:
-//   const LYRICS_CUES = [
-//     { time: 10.5, lyricBefore: 'โครโมโซมจะ', lyricAfter: 'ตัวเอง',
-//       options: ['จำลอง', 'สลาย', 'หดตัว', 'แบ่งแยก'], answer: 'จำลอง' },
-//     ...
-//   ];
-//
-//   1. Listen to video timeupdate
-//   2. When currentTime crosses a cue.time, video.pause()
-//   3. Show lyric line with blank + shuffle options
-//   4. On correct tile select: video.play(), advance cue index
-//   5. On wrong: show shake effect, deduct score
 </script>
 </body>
 </html>
