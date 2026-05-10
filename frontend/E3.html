@@ -12,15 +12,16 @@
 body{font-family:'Kanit',sans-serif;background:#050210;color:#fff;min-height:100vh;overflow-x:hidden}
 
 @keyframes twinkle{0%,100%{opacity:.1}50%{opacity:.65}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
 @keyframes popIn{from{opacity:0;transform:scale(.82)}to{opacity:1;transform:scale(1)}}
-@keyframes fillIn{from{opacity:0;transform:translateY(-6px) scale(.9)}to{opacity:1;transform:translateY(0) scale(1)}}
-@keyframes pulseGlow{0%,100%{opacity:.7}50%{opacity:1}}
-@keyframes correctFlash{0%{background:rgba(5,150,105,.35)}50%{background:rgba(52,211,153,.5)}100%{background:rgba(5,150,105,.35)}}
-@keyframes scoreUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes correctPulse{0%{box-shadow:0 0 0 0 rgba(52,211,153,.6)}70%{box-shadow:0 0 0 12px rgba(52,211,153,0)}100%{box-shadow:0 0 0 0 rgba(52,211,153,0)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes pulseRing{0%,100%{opacity:.6}50%{opacity:1}}
 
-.fu{animation:fadeUp .5s ease both}
+.fu{animation:fadeUp .45s ease both}
+.slide-up{animation:slideUp .4s cubic-bezier(.34,1.3,.64,1) both}
 
 /* Header */
 .hdr{background:linear-gradient(to bottom,rgba(5,2,16,.95),rgba(5,2,16,0));position:sticky;top:0;z-index:50}
@@ -28,36 +29,54 @@ body{font-family:'Kanit',sans-serif;background:#050210;color:#fff;min-height:100
 .logbtn{cursor:pointer;padding:5px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);font-size:10px;color:rgba(255,255,255,.4);font-family:'Kanit',sans-serif;transition:all .2s}
 .logbtn:hover{border-color:rgba(239,68,68,.4);color:#fca5a5;background:rgba(239,68,68,.08)}
 
-/* Video */
-.video-wrap{background:#000;border-radius:20px;overflow:hidden;border:1px solid rgba(255,255,255,.08)}
-video{width:100%;display:block;max-height:210px;object-fit:contain}
+/* ── Video wrapper ── */
+.vid-wrap{position:relative;background:#000;border-radius:20px;overflow:hidden;border:1px solid rgba(255,255,255,.08)}
+video{width:100%;display:block;max-height:230px;object-fit:contain;pointer-events:none}
 
-/* Game Panel */
-.game-panel{background:linear-gradient(145deg,rgba(5,150,105,.07),rgba(4,120,87,.04));border:1.5px solid rgba(5,150,105,.28);border-radius:22px;padding:20px 16px}
+/* Start overlay (on top of video) */
+.vid-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:rgba(5,2,16,.75);backdrop-filter:blur(4px);transition:opacity .4s}
+.vid-overlay.hidden{opacity:0;pointer-events:none}
+.start-btn-big{background:linear-gradient(135deg,#065f46,#059669);border:none;color:#fff;font-family:'Kanit',sans-serif;font-size:15px;font-weight:700;padding:14px 32px;border-radius:99px;cursor:pointer;display:flex;align-items:center;gap:10px;box-shadow:0 8px 28px rgba(5,150,105,.55);transition:all .25s}
+.start-btn-big:hover{transform:scale(1.06);box-shadow:0 12px 36px rgba(5,150,105,.7)}
+.start-btn-big:active{transform:scale(.97)}
 
-/* Lyric Display */
-.lyric-box{background:rgba(0,0,0,.35);border:1px solid rgba(5,150,105,.22);border-radius:16px;padding:20px 16px;text-align:center;min-height:96px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px}
+/* Waiting-for-answer overlay on video */
+.vid-pause-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(5,2,16,.55);backdrop-filter:blur(2px);pointer-events:none;opacity:0;transition:opacity .3s}
+.vid-pause-overlay.show{opacity:1}
+.pause-ring{width:54px;height:54px;border-radius:50%;border:3px solid rgba(52,211,153,.7);display:flex;align-items:center;justify-content:center;animation:pulseRing 1.2s ease-in-out infinite}
 
-/* Blank slot */
-.blank-slot{display:inline-flex;align-items:center;justify-content:center;min-width:80px;min-height:34px;background:rgba(5,150,105,.12);border:2px dashed rgba(5,150,105,.5);border-radius:10px;padding:3px 12px;margin:0 4px;vertical-align:middle;transition:all .3s;cursor:default}
-.blank-slot.has-word{border-style:solid;border-color:rgba(52,211,153,.65);background:rgba(5,150,105,.22);animation:fillIn .3s ease}
-.blank-slot.correct-anim{border-color:#34d399;background:rgba(5,150,105,.38);animation:correctFlash .6s ease}
-.blank-slot.wrong-anim{border-color:rgba(239,68,68,.6);background:rgba(239,68,68,.12);animation:shake .4s ease}
-
-/* Word tiles */
-.word-tile{background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.14);border-radius:13px;padding:12px 8px;font-family:'Kanit',sans-serif;font-size:13px;font-weight:600;color:#e2e8f0;cursor:pointer;transition:all .22s;text-align:center;user-select:none;width:100%}
-.word-tile:hover:not([disabled]){background:rgba(5,150,105,.18);border-color:rgba(52,211,153,.55);transform:translateY(-2px);box-shadow:0 6px 20px rgba(5,150,105,.25)}
-.word-tile:active:not([disabled]){transform:scale(.95)}
-.word-tile[disabled]{opacity:.28;cursor:not-allowed}
-.word-tile.used{opacity:.2;cursor:not-allowed;text-decoration:line-through}
+/* Mute button */
+.mute-btn{position:absolute;bottom:10px;right:10px;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.15);border-radius:10px;color:#fff;padding:6px 9px;font-size:13px;cursor:pointer;backdrop-filter:blur(4px);z-index:5;transition:background .2s}
+.mute-btn:hover{background:rgba(0,0,0,.8)}
 
 /* Progress dots */
-.pdot{height:8px;border-radius:99px;background:rgba(255,255,255,.13);transition:all .4s}
+.pdot{height:7px;border-radius:99px;background:rgba(255,255,255,.12);transition:all .4s}
 .pdot.done{background:#34d399}
-.pdot.active{background:#6ee7b7;width:24px !important;box-shadow:0 0 10px rgba(110,231,183,.55);animation:pulseGlow 1.4s ease-in-out infinite}
+.pdot.active{background:#6ee7b7;box-shadow:0 0 8px rgba(110,231,183,.6);animation:blink 1.4s ease-in-out infinite}
+
+/* Score badge */
+.score-badge{background:rgba(5,150,105,.15);border:1px solid rgba(5,150,105,.3);border-radius:99px;padding:4px 12px;font-size:11px;display:inline-flex;align-items:center;gap:5px}
+
+/* Question card */
+.q-card{background:linear-gradient(145deg,rgba(5,150,105,.1),rgba(4,120,87,.06));border:1.5px solid rgba(5,150,105,.35);border-radius:22px;padding:18px 16px}
+
+/* Lyric line */
+.lyric-box{background:rgba(0,0,0,.3);border:1px solid rgba(5,150,105,.2);border-radius:14px;padding:16px;text-align:center;min-height:76px;display:flex;align-items:center;justify-content:center}
+
+/* Blank slot */
+.blank-slot{display:inline-flex;align-items:center;justify-content:center;min-width:76px;min-height:32px;background:rgba(5,150,105,.12);border:2px dashed rgba(5,150,105,.55);border-radius:9px;padding:3px 12px;margin:0 4px;vertical-align:middle;transition:all .28s}
+.blank-slot.filled{border-style:solid;border-color:rgba(52,211,153,.7);background:rgba(5,150,105,.25)}
+.blank-slot.correct{border-color:#34d399;background:rgba(5,150,105,.4);animation:correctPulse .6s ease}
+.blank-slot.wrong{border-color:rgba(239,68,68,.6);background:rgba(239,68,68,.12);animation:shake .38s ease}
+
+/* Word tiles */
+.word-tile{background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.14);border-radius:12px;padding:12px 8px;font-family:'Kanit',sans-serif;font-size:13px;font-weight:600;color:#e2e8f0;cursor:pointer;transition:all .2s;text-align:center;user-select:none;width:100%}
+.word-tile:hover:not([disabled]){background:rgba(5,150,105,.2);border-color:rgba(52,211,153,.6);transform:translateY(-2px);box-shadow:0 5px 18px rgba(5,150,105,.28)}
+.word-tile:active:not([disabled]){transform:scale(.95)}
+.word-tile[disabled]{opacity:.25;cursor:not-allowed}
 
 /* Hint card */
-.hint-card{background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.22);border-radius:14px;padding:12px 14px;animation:fadeUp .3s ease}
+.hint-card{background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.22);border-radius:13px;padding:11px 13px}
 
 /* Stage accordion */
 .stage-item{border-radius:18px;overflow:hidden;margin-bottom:10px}
@@ -79,24 +98,20 @@ video{width:100%;display:block;max-height:210px;object-fit:contain}
 /* Nav btn */
 .nav-btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px 20px;border-radius:16px;font-family:'Kanit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .3s;text-decoration:none}
 
-/* Buttons */
-.green-btn{background:linear-gradient(135deg,#065f46,#059669);border:none;color:#fff;font-family:'Kanit',sans-serif;font-size:14px;font-weight:700;padding:14px 20px;border-radius:16px;cursor:pointer;width:100%;transition:all .3s;box-shadow:0 8px 24px rgba(5,150,105,.4);display:flex;align-items:center;justify-content:center;gap:8px}
+/* Green button */
+.green-btn{background:linear-gradient(135deg,#065f46,#059669);border:none;color:#fff;font-family:'Kanit',sans-serif;font-size:14px;font-weight:700;padding:14px 20px;border-radius:16px;cursor:pointer;width:100%;transition:all .28s;box-shadow:0 8px 24px rgba(5,150,105,.4);display:flex;align-items:center;justify-content:center;gap:8px}
 .green-btn:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(5,150,105,.6)}
-.green-btn:active{transform:scale(.97)}
 
-/* Overlays */
+/* Overlay */
 .overlay{position:fixed;inset:0;background:rgba(5,2,16,.92);z-index:100;display:flex;align-items:center;justify-content:center;padding:24px;backdrop-filter:blur(10px)}
-.result-card{background:rgba(10,5,30,.8);border:1.5px solid rgba(5,150,105,.35);border-radius:26px;padding:30px 24px;width:100%;max-width:360px;animation:popIn .4s cubic-bezier(.34,1.56,.64,1)}
-
-/* Score badge */
-.score-badge{background:rgba(5,150,105,.15);border:1px solid rgba(5,150,105,.3);border-radius:99px;padding:5px 14px;font-size:11px;display:inline-flex;align-items:center;gap:5px;animation:scoreUp .3s ease}
+.result-card{background:rgba(10,5,30,.85);border:1.5px solid rgba(5,150,105,.35);border-radius:26px;padding:30px 24px;width:100%;max-width:360px;animation:popIn .4s cubic-bezier(.34,1.56,.64,1)}
 </style>
 </head>
 <body class="max-w-[480px] mx-auto">
 
 <div id="stars" style="position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden"></div>
 
-<!-- ═══════════════════ HEADER ═══════════════════ -->
+<!-- Header -->
 <header class="hdr flex justify-between items-center px-4 py-3 relative z-10">
   <div class="flex items-center gap-2.5">
     <a href="E2.html" class="w-9 h-9 bg-gradient-to-br from-emerald-600 to-teal-700 rounded-xl flex items-center justify-center shadow-lg hover:opacity-80 transition-opacity">
@@ -121,128 +136,99 @@ video{width:100%;display:block;max-height:210px;object-fit:contain}
 <main class="px-4 pb-10 relative z-10">
 
   <!-- Title -->
-  <div class="text-center py-5 fu">
-    <div class="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 rounded-full px-4 py-1.5 text-xs text-emerald-300 mb-4">
+  <div class="text-center py-4 fu">
+    <div class="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 rounded-full px-4 py-1.5 text-xs text-emerald-300 mb-3">
       <div class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
       กิจกรรมที่ 3 &nbsp;·&nbsp; Explain
     </div>
-    <h1 class="text-xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 to-teal-300 mb-2">ขั้นตอนการแบ่งเซลล์ไมโทซิส</h1>
-    <p class="text-[11px] text-gray-400 leading-relaxed">ศึกษาเนื้อหา ดูวิดีโอ แล้วเล่นเกมต่อเพลงให้ผ่าน</p>
+    <h1 class="text-xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 to-teal-300 mb-1">ขั้นตอนการแบ่งเซลล์ไมโทซิส</h1>
+    <p class="text-[11px] text-gray-400">ดูเพลงแล้วเติมคำที่หายไป — วิดีโอจะหยุดรอเมื่อถึงเวลา</p>
   </div>
 
-  <!-- ═══════════════════ VIDEO ═══════════════════ -->
-  <div class="mb-5 fu" style="animation-delay:.07s">
-    <div class="flex items-center gap-2 mb-3">
-      <div class="w-8 h-8 bg-emerald-500/15 rounded-xl flex items-center justify-center flex-shrink-0">
-        <i class="fas fa-play-circle text-emerald-400 text-sm"></i>
-      </div>
-      <div>
-        <p class="text-xs font-bold">วิดีโอประกอบบทเรียน</p>
-        <p class="text-[10px] text-gray-500">ดูเพื่อทำความเข้าใจก่อนเล่นเกม</p>
-      </div>
-    </div>
-    <div class="video-wrap">
-      <video controls playsinline preload="metadata" id="lessonVideo">
+  <!-- ═══ VIDEO + GAME (รวมกัน) ═══ -->
+  <div class="mb-4 fu" style="animation-delay:.08s">
+
+    <!-- Video -->
+    <div class="vid-wrap mb-3">
+      <video id="vid" playsinline preload="auto">
         <source src="/video/E4.mp4" type="video/mp4">
-        <p class="text-center text-xs text-gray-500 p-4">เบราว์เซอร์ไม่รองรับวิดีโอ</p>
       </video>
-    </div>
-    <p class="text-[9px] text-gray-600 text-center mt-2">
-      <i class="fas fa-volume-up mr-1"></i>เปิดเสียงเพื่อประสบการณ์ที่ดีที่สุด
-    </p>
-  </div>
 
-  <!-- ═══════════════════ GAME SECTION ═══════════════════ -->
-  <div class="mb-5 fu" style="animation-delay:.13s">
-    <div class="flex items-center gap-2 mb-3">
-      <div class="w-8 h-8 bg-emerald-500/15 rounded-xl flex items-center justify-center flex-shrink-0">
-        <i class="fas fa-music text-emerald-400 text-sm"></i>
+      <!-- Start overlay -->
+      <div class="vid-overlay" id="startOverlay">
+        <div class="text-center px-4">
+          <p class="text-2xl mb-1">🎵</p>
+          <p class="text-sm font-bold text-white mb-0.5">เกมต่อเพลงไมโทซิส</p>
+          <p class="text-[10px] text-gray-300 mb-4 leading-relaxed">วิดีโอจะหยุดอัตโนมัติ 8 ครั้ง เมื่อเนื้อเพลงหายไป<br>ให้เลือกคำที่ถูกต้องเพื่อเล่นต่อ</p>
+        </div>
+        <button class="start-btn-big" onclick="startGame()">
+          <i class="fas fa-play"></i> เริ่มเล่น
+        </button>
+        <p class="text-[9px] text-gray-500 mt-2">* กลับไปเริ่มใหม่ไม่ได้ระหว่างเล่น</p>
       </div>
-      <div class="flex-1">
-        <p class="text-xs font-bold">เกม: ต่อเพลง</p>
-        <p class="text-[10px] text-gray-500">เลือกคำที่หายไปจากเนื้อเพลงไมโทซิส</p>
-      </div>
-      <div id="scoreBadge" class="score-badge hidden">
-        <i class="fas fa-star text-yellow-400" style="font-size:10px"></i>
-        <span id="scoreNum" class="text-emerald-300 font-bold">0</span>
-        <span class="text-gray-500">/ 200</span>
-      </div>
-    </div>
 
-    <!-- ── IDLE ── -->
-    <div id="stateIdle" class="game-panel">
-      <div class="text-center mb-5">
-        <div class="text-5xl mb-3">🎵</div>
-        <p class="text-sm font-bold text-emerald-300 mb-2">เกมต่อเพลงไมโทซิส</p>
-        <p class="text-[10px] text-gray-400 leading-relaxed max-w-[280px] mx-auto">เนื้อเพลงจะปรากฏขึ้นทีละท่อน มีคำหายไปหนึ่งคำ ให้เลือกคำที่ถูกต้องจากตัวเลือก</p>
-      </div>
-      <div class="bg-black/20 border border-emerald-500/15 rounded-xl p-3.5 mb-5 text-left">
-        <p class="text-[10px] font-semibold text-emerald-300 mb-2 flex items-center gap-1.5">
-          <i class="fas fa-circle-info text-emerald-400"></i> วิธีเล่น
-        </p>
-        <div class="space-y-2">
-          <div class="flex gap-2"><span class="text-emerald-500 font-bold text-[11px] shrink-0">1.</span><p class="text-[10px] text-gray-400">เนื้อเพลงแต่ละท่อนจะแสดงขึ้นมา มีคำ <span class="text-emerald-400">_____</span> หายไป</p></div>
-          <div class="flex gap-2"><span class="text-emerald-500 font-bold text-[11px] shrink-0">2.</span><p class="text-[10px] text-gray-400">แตะคำที่คุณคิดว่าถูกต้องจากตัวเลือก 4 คำด้านล่าง</p></div>
-          <div class="flex gap-2"><span class="text-emerald-500 font-bold text-[11px] shrink-0">3.</span><p class="text-[10px] text-gray-400">ถูก → ไปท่อนถัดไป · ผิด → ดูคำแนะนำแล้วลองใหม่</p></div>
-          <div class="flex gap-2"><span class="text-emerald-500 font-bold text-[11px] shrink-0">4.</span><p class="text-[10px] text-gray-400">ตอบถูกครบ 5 ท่อน = ผ่านด่าน + <span class="text-yellow-400 font-bold">200 คะแนน</span></p></div>
+      <!-- Pause overlay (waiting for answer) -->
+      <div class="vid-pause-overlay" id="pauseOverlay">
+        <div class="pause-ring">
+          <i class="fas fa-music text-emerald-300" style="font-size:18px"></i>
         </div>
       </div>
-      <button class="green-btn" onclick="startGame()">
-        <i class="fas fa-play"></i> เริ่มเล่นเกม
+
+      <!-- Mute button -->
+      <button class="mute-btn" id="muteBtn" onclick="toggleMute()" style="display:none">
+        <i class="fas fa-volume-up" id="muteIcon"></i>
       </button>
     </div>
 
-    <!-- ── PLAYING ── -->
-    <div id="statePlaying" class="game-panel hidden">
-
-      <!-- Progress bar -->
-      <div class="flex items-center gap-1.5 mb-4">
-        <div id="progressDots" class="flex gap-1.5 flex-1"></div>
-        <span id="qNum" class="text-[10px] text-gray-500 shrink-0">1 / 5</span>
+    <!-- Progress + Score -->
+    <div id="progressRow" class="flex items-center gap-3 mb-3 hidden">
+      <div class="flex gap-1.5 flex-1" id="progressDots"></div>
+      <div class="score-badge">
+        <i class="fas fa-star text-yellow-400" style="font-size:10px"></i>
+        <span id="scoreNum" class="text-emerald-300 font-bold text-xs">0</span>
+        <span class="text-gray-500 text-xs">/ 200</span>
       </div>
+    </div>
 
-      <!-- Phase label -->
+    <!-- Question card (hidden until video pauses at cue) -->
+    <div id="qCard" class="q-card hidden slide-up">
+
+      <!-- Phase tag -->
       <div class="flex items-center justify-between mb-3">
-        <span id="phaseTag" class="text-[10px] font-bold px-3 py-1 rounded-full" style="background:rgba(5,150,105,.15);color:#34d399;border:1px solid rgba(5,150,105,.3)"></span>
-        <span id="wrongCount" class="text-[9px] text-gray-600"></span>
+        <span id="phaseTag" class="text-[10px] font-bold px-3 py-1 rounded-full border"></span>
+        <span id="wrongLabel" class="text-[9px] text-red-400"></span>
       </div>
 
-      <!-- Lyric box -->
-      <div class="lyric-box mb-4" id="lyricBox">
+      <!-- Lyric line -->
+      <div class="lyric-box mb-3">
         <p id="lyricLine" class="text-sm text-gray-200 leading-relaxed text-center"></p>
-        <p class="text-[9px] text-emerald-500/60 mt-1"><i class="fas fa-hand-pointer mr-1"></i>เลือกคำที่หายไปจากตัวเลือกด้านล่าง</p>
       </div>
 
       <!-- Hint card -->
       <div id="hintCard" class="hint-card mb-3 hidden">
-        <div class="flex items-start gap-2">
-          <i class="fas fa-lightbulb text-yellow-400 mt-0.5 shrink-0" style="font-size:11px"></i>
-          <div>
-            <p class="text-[10px] font-bold text-yellow-300 mb-0.5">คำแนะนำ</p>
-            <p id="hintText" class="text-[10px] text-gray-300 leading-relaxed"></p>
-          </div>
+        <div class="flex gap-2">
+          <i class="fas fa-lightbulb text-yellow-400 shrink-0 mt-0.5" style="font-size:11px"></i>
+          <p id="hintText" class="text-[10px] text-gray-300 leading-relaxed"></p>
         </div>
       </div>
 
       <!-- Word tiles -->
-      <div class="grid grid-cols-2 gap-2.5 mb-1" id="wordTiles"></div>
+      <div class="grid grid-cols-2 gap-2.5" id="wordTiles"></div>
       <p id="tileGuide" class="text-center text-[9px] text-gray-600 mt-2">แตะคำที่คุณคิดว่าถูกต้อง</p>
     </div>
 
-    <!-- ── DONE (local finish state before overlay) ── -->
-    <div id="stateDone" class="game-panel text-center hidden">
-      <div class="text-5xl mb-3" id="doneEmoji">🏆</div>
-      <p class="text-base font-bold text-emerald-300 mb-1" id="doneTitle"></p>
-      <p class="text-[11px] text-gray-400 mb-5" id="doneMsg"></p>
-      <button class="green-btn" onclick="resetGame()">
-        <i class="fas fa-redo"></i> เล่นใหม่อีกครั้ง
-      </button>
+    <!-- Status bar (while playing) -->
+    <div id="statusBar" class="hidden text-center">
+      <p class="text-[10px] text-emerald-400/60 flex items-center justify-center gap-1.5">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse inline-block"></span>
+        กำลังเล่นวิดีโอ — รอท่อนต่อไป…
+      </p>
     </div>
 
-  </div><!-- /game section -->
+  </div><!-- /video+game -->
 
-  <!-- ═══════════════════ CONTENT ACCORDION ═══════════════════ -->
-  <div class="mb-5 fu" style="animation-delay:.18s">
+  <!-- ═══ CONTENT ACCORDION ═══ -->
+  <div class="mb-5 fu" style="animation-delay:.15s">
     <div class="flex items-center gap-2 mb-3">
       <div class="w-8 h-8 bg-emerald-500/15 rounded-xl flex items-center justify-center flex-shrink-0">
         <i class="fas fa-book-open text-emerald-400 text-sm"></i>
@@ -255,8 +241,8 @@ video{width:100%;display:block;max-height:210px;object-fit:contain}
     <div id="stages"></div>
   </div>
 
-  <!-- ═══════════════════ VOCAB ═══════════════════ -->
-  <div class="mb-6 fu" style="animation-delay:.23s">
+  <!-- ═══ VOCAB ═══ -->
+  <div class="mb-6 fu" style="animation-delay:.2s">
     <div class="flex items-center gap-2.5 mb-3">
       <div class="w-8 h-8 bg-emerald-500/15 rounded-xl flex items-center justify-center flex-shrink-0">
         <i class="fas fa-spell-check text-emerald-400 text-sm"></i>
@@ -267,27 +253,15 @@ video{width:100%;display:block;max-height:210px;object-fit:contain}
       </div>
     </div>
     <div class="grid grid-cols-1 gap-2">
-      <div class="vcard">
-        <p class="text-xs font-semibold text-emerald-300 mb-0.5">โครโมโซม (Chromosome)</p>
-        <p class="text-[10px] text-gray-400 leading-relaxed">โครงสร้างที่บรรจุ DNA และโปรตีน พบในนิวเคลียส ทำหน้าที่เก็บข้อมูลทางพันธุกรรม</p>
-      </div>
-      <div class="vcard">
-        <p class="text-xs font-semibold text-emerald-300 mb-0.5">สปินเดิล (Spindle fiber)</p>
-        <p class="text-[10px] text-gray-400 leading-relaxed">เส้นใยโปรตีนที่ก่อตัวในระยะโพรเฟส ทำหน้าที่ดึงโครโมโซมไปยังขั้วเซลล์</p>
-      </div>
-      <div class="vcard">
-        <p class="text-xs font-semibold text-emerald-300 mb-0.5">เซนทริโอล (Centriole)</p>
-        <p class="text-[10px] text-gray-400 leading-relaxed">อวัยวะเล็กๆ ที่ช่วยจัดระเบียบเส้นใยสปินเดิล พบในเซลล์สัตว์เท่านั้น</p>
-      </div>
-      <div class="vcard">
-        <p class="text-xs font-semibold text-emerald-300 mb-0.5">คลีเวจ เฟอร์โรว (Cleavage furrow)</p>
-        <p class="text-[10px] text-gray-400 leading-relaxed">รอยบากที่เกิดในระยะไซโตไคนีซิส ทำให้เซลล์แม่แบ่งออกเป็นสองเซลล์ลูก</p>
-      </div>
+      <div class="vcard"><p class="text-xs font-semibold text-emerald-300 mb-0.5">โครโมโซม (Chromosome)</p><p class="text-[10px] text-gray-400 leading-relaxed">โครงสร้างที่บรรจุ DNA และโปรตีน พบในนิวเคลียส ทำหน้าที่เก็บข้อมูลทางพันธุกรรม</p></div>
+      <div class="vcard"><p class="text-xs font-semibold text-emerald-300 mb-0.5">สปินเดิล (Spindle fiber)</p><p class="text-[10px] text-gray-400 leading-relaxed">เส้นใยโปรตีนที่ก่อตัวในระยะโพรเฟส ทำหน้าที่ดึงโครโมโซมไปยังขั้วเซลล์</p></div>
+      <div class="vcard"><p class="text-xs font-semibold text-emerald-300 mb-0.5">เซนทริโอล (Centriole)</p><p class="text-[10px] text-gray-400 leading-relaxed">อวัยวะเล็กๆ ที่ช่วยจัดระเบียบเส้นใยสปินเดิล พบในเซลล์สัตว์เท่านั้น</p></div>
+      <div class="vcard"><p class="text-xs font-semibold text-emerald-300 mb-0.5">คลีเวจ เฟอร์โรว (Cleavage furrow)</p><p class="text-[10px] text-gray-400 leading-relaxed">รอยบากที่เกิดในระยะไซโตไคนีซิส ทำให้เซลล์แม่แบ่งออกเป็นสองเซลล์ลูก</p></div>
     </div>
   </div>
 
   <!-- Navigation -->
-  <div class="flex gap-3 fu" style="animation-delay:.28s">
+  <div class="flex gap-3 fu" style="animation-delay:.25s">
     <a href="E2.html" class="nav-btn flex-1 border border-white/12 text-gray-300 hover:bg-white/6">
       <i class="fas fa-arrow-left text-sm"></i> E2
     </a>
@@ -298,25 +272,20 @@ video{width:100%;display:block;max-height:210px;object-fit:contain}
 
 </main>
 
-<!-- ═══════════════════ SUCCESS OVERLAY ═══════════════════ -->
+<!-- ═══ SUCCESS OVERLAY ═══ -->
 <div class="overlay hidden" id="successOverlay">
   <div class="result-card text-center">
-    <div class="text-5xl mb-4">🏆</div>
+    <div class="text-5xl mb-3">🏆</div>
     <p class="text-xl font-bold text-emerald-300 mb-1">ผ่านด่านแล้ว!</p>
     <p class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 to-teal-300 mb-2">200 คะแนน</p>
-    <p id="alreadyPts" class="text-sm font-semibold text-yellow-400 mb-1"></p>
-    <p class="text-[11px] text-gray-400 mb-6 leading-relaxed">คุณเรียนรู้ขั้นตอนการแบ่งเซลล์<br>ไมโทซิสได้สำเร็จ! 🎉</p>
-    <div class="grid grid-cols-1 gap-2 mb-4">
-      <div id="sumDetail" class="grid grid-cols-5 gap-1.5"></div>
-    </div>
-    <div class="flex gap-3 mt-2">
-      <button onclick="resetGame();document.getElementById('successOverlay').classList.add('hidden')"
-        class="flex-1 py-3 rounded-xl border border-white/15 text-sm font-semibold hover:bg-white/8 transition-all">
+    <p id="alreadyPts" class="text-sm font-bold text-yellow-400 mb-1"></p>
+    <p class="text-[11px] text-gray-400 mb-5 leading-relaxed">เรียนรู้ขั้นตอนการแบ่งเซลล์ไมโทซิสสำเร็จ! 🎉</p>
+    <div class="grid grid-cols-5 gap-1.5 mb-5" id="sumDetail"></div>
+    <div class="flex gap-3">
+      <button onclick="resetGame()" class="flex-1 py-3 rounded-xl border border-white/15 text-sm font-semibold hover:bg-white/8 transition-all">
         <i class="fas fa-redo mr-1"></i>เล่นใหม่
       </button>
-      <button onclick="window.location.href='E4.html'"
-        class="flex-1 py-3 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-all"
-        style="background:linear-gradient(135deg,#065f46,#047857)">
+      <button onclick="window.location.href='E4.html'" class="flex-1 py-3 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-all" style="background:linear-gradient(135deg,#065f46,#047857)">
         E4 ถัดไป <i class="fas fa-arrow-right ml-1"></i>
       </button>
     </div>
@@ -325,14 +294,8 @@ video{width:100%;display:block;max-height:210px;object-fit:contain}
 
 <script>
 const API = '';
+function logout(){ localStorage.removeItem('cl_token'); localStorage.removeItem('cl_user'); window.location.href='login.html'; }
 
-function logout(){
-  localStorage.removeItem('cl_token');
-  localStorage.removeItem('cl_user');
-  window.location.href = 'login.html';
-}
-
-// Auth check
 (function(){
   if(!localStorage.getItem('cl_token')){ window.location.href='login.html'; return; }
   const u = JSON.parse(localStorage.getItem('cl_user')||'{}');
@@ -345,186 +308,333 @@ function logout(){
   for(let i=0;i<55;i++){
     const s = document.createElement('div');
     const sz = Math.random()*1.5+0.5;
-    s.style.cssText = `position:absolute;background:#fff;border-radius:50%;left:${Math.random()*100}%;top:${Math.random()*100}%;width:${sz}px;height:${sz}px;opacity:${Math.random()*.4+.1};animation:twinkle ${Math.random()*3+2}s ease-in-out infinite;animation-delay:${Math.random()*4}s`;
+    s.style.cssText=`position:absolute;background:#fff;border-radius:50%;left:${Math.random()*100}%;top:${Math.random()*100}%;width:${sz}px;height:${sz}px;opacity:${Math.random()*.4+.1};animation:twinkle ${Math.random()*3+2}s ease-in-out infinite;animation-delay:${Math.random()*4}s`;
     c.appendChild(s);
   }
 })();
 
 // ─────────────────────────────────────────────────────
-//  LYRIC CUES  (5 questions about mitosis stages)
+//  LYRIC CUES  ← แก้ time: X (วินาที) ให้ตรงกับวิดีโอ
 // ─────────────────────────────────────────────────────
 const CUES = [
   {
+    time: 8,
     phase: 'Interphase', phaseColor: '#818cf8',
-    before: 'อินเตอร์เฟส DNA จะ',
+    before: 'อินเตอร์เฟส เซลล์เตรียมพร้อม DNA จะ',
     blank: 'จำลอง',
-    after: 'ตัวเอง สองชุดพร้อม',
-    options: ['จำลอง', 'สลาย', 'หยุด', 'แบ่งแยก'],
-    hint: 'ในระยะ Interphase เซลล์เตรียมพร้อมโดยทำการ "จำลอง" DNA ให้เป็น 2 ชุดเท่ากัน ก่อนการแบ่งเซลล์จะเริ่มต้น'
+    after: 'ตัวเอง',
+    options: ['จำลอง','สลาย','หยุด','แบ่งแยก'],
+    hint: 'ในระยะ Interphase เซลล์ทำการ "จำลอง" DNA ให้เป็น 2 ชุด เพื่อเตรียมพร้อมก่อนการแบ่งเซลล์'
   },
   {
+    time: 22,
     phase: 'Prophase', phaseColor: '#a78bfa',
-    before: 'โพรเฟส โครโมโซมหดตัว เส้นใย',
+    before: 'โพรเฟส โครโมโซม',
+    blank: 'หดตัว',
+    after: 'มองเห็นชัด เยื่อหุ้มนิวเคลียสสลาย',
+    options: ['หดตัว','ขยายตัว','คลายตัว','แตกตัว'],
+    hint: 'ในระยะ Prophase โครโมโซม "หดตัว" (condensation) จึงมองเห็นได้ชัดเจน และเยื่อหุ้มนิวเคลียสเริ่มสลายตัว'
+  },
+  {
+    time: 38,
+    phase: 'Prophase', phaseColor: '#a78bfa',
+    before: 'เส้นใย',
     blank: 'สปินเดิล',
-    after: 'เริ่มก่อตัวขึ้น',
-    options: ['สปินเดิล', 'ไลโซโซม', 'ไรโบโซม', 'วาคิวโอล'],
-    hint: 'ในระยะ Prophase "เส้นใยสปินเดิล" จะก่อตัวขึ้นจากเซนทริโอล เพื่อเตรียมใช้ดึงโครโมโซมในระยะต่อไป'
+    after: 'ก่อตัวจากเซนทริโอลทั้งสองข้าง',
+    options: ['สปินเดิล','ไลโซโซม','ไรโบโซม','นิวคลีโอลัส'],
+    hint: 'ในระยะ Prophase "เส้นใยสปินเดิล" ก่อตัวขึ้นจากเซนทริโอล เพื่อเตรียมดึงโครโมโซมไปยังขั้วเซลล์'
   },
   {
+    time: 52,
     phase: 'Metaphase', phaseColor: '#f472b6',
-    before: 'เมทาเฟส โครโมโซมเรียงที่',
+    before: 'เมทาเฟส โครโมโซมเรียงตัวที่',
     blank: 'ระนาบกลาง',
-    after: 'เซลล์งามตา',
-    options: ['ระนาบกลาง', 'ขั้วเซลล์', 'นิวเคลียส', 'ผนังเซลล์'],
-    hint: 'ในระยะ Metaphase โครโมโซมเรียงตัวอยู่ที่ "ระนาบกลาง" ของเซลล์ (metaphase plate) ทำให้มองเห็นโครโมโซมได้ชัดที่สุด'
+    after: 'ของเซลล์',
+    options: ['ระนาบกลาง','ขั้วเซลล์','นิวเคลียส','ผนังเซลล์'],
+    hint: 'ในระยะ Metaphase โครโมโซมเรียงตัวที่ "ระนาบกลาง" ของเซลล์ (metaphase plate) ทำให้มองเห็นชัดที่สุด'
   },
   {
+    time: 68,
     phase: 'Anaphase', phaseColor: '#fbbf24',
-    before: 'แอนาเฟส สปินเดิลดึงสู่',
+    before: 'แอนาเฟส สปินเดิลดึงโครโมโซมสู่',
     blank: 'ขั้วเซลล์',
     after: 'ทั้งสองด้าน',
-    options: ['ขั้วเซลล์', 'กึ่งกลาง', 'นิวเคลียส', 'เซนโทรเมียร์'],
-    hint: 'ในระยะ Anaphase เส้นใยสปินเดิลจะดึงโครโมโซมแยกออกจากกัน เคลื่อนไปยัง "ขั้วเซลล์" ทั้งสองด้าน'
+    options: ['ขั้วเซลล์','กึ่งกลาง','นิวเคลียส','เซนโทรเมียร์'],
+    hint: 'ในระยะ Anaphase เส้นใยสปินเดิลดึงโครโมโซมแยกออกไปยัง "ขั้วเซลล์" ทั้งสองด้านของเซลล์'
   },
   {
+    time: 82,
     phase: 'Telophase', phaseColor: '#34d399',
-    before: 'เทโลเฟสสร้าง',
+    before: 'เทโลเฟส สร้าง',
     blank: 'นิวเคลียส',
-    after: 'ใหม่สองอัน แบ่งเซลล์เสร็จสิ้น',
-    options: ['นิวเคลียส', 'โครโมโซม', 'ไมโทคอน', 'เซนทริโอล'],
-    hint: 'ในระยะ Telophase "นิวเคลียส" ใหม่ 2 อันก่อตัวขึ้นที่ขั้วแต่ละด้าน จากนั้นไซโตไคนีซิสแบ่งเซลล์เป็น 2 เซลล์ลูก'
+    after: 'ใหม่สองอัน โครโมโซมคลายตัว',
+    options: ['นิวเคลียส','โครโมโซม','เซนทริโอล','ไมโทคอน'],
+    hint: 'ในระยะ Telophase "นิวเคลียส" ใหม่ 2 อันก่อตัวขึ้นที่ขั้วแต่ละด้าน และโครโมโซมเริ่มคลายตัวกลับ'
+  },
+  {
+    time: 98,
+    phase: 'Cytokinesis', phaseColor: '#60a5fa',
+    before: 'ไซโตไคนีซิส ไซโตพลาซึม',
+    blank: 'แบ่ง',
+    after: 'ออกเป็นสองส่วน',
+    options: ['แบ่ง','รวม','หด','ขยาย'],
+    hint: 'ในระยะ Cytokinesis ไซโตพลาซึม "แบ่ง" ออกเป็นสองส่วน โดยเซลล์สัตว์จะเกิดรอยบาก (cleavage furrow)'
+  },
+  {
+    time: 112,
+    phase: 'Cytokinesis', phaseColor: '#60a5fa',
+    before: 'ได้เซลล์ลูก',
+    blank: 'สอง',
+    after: 'เซลล์ มีโครโมโซมเท่ากับเซลล์แม่ ไมโทซิสเสร็จสมบูรณ์',
+    options: ['สอง','สี่','หนึ่ง','สาม'],
+    hint: 'การแบ่งเซลล์แบบไมโทซิสให้เซลล์ลูก "สอง" เซลล์ที่มีจำนวนโครโมโซมเท่ากับเซลล์แม่ทุกประการ'
   }
 ];
 
 // ─────────────────────────────────────────────────────
-//  GAME STATE
+//  STATE
 // ─────────────────────────────────────────────────────
-let cueIdx = 0;
-let score = 0;
-let wrongThisCue = 0;
-let answered = false;
-let cueResults = []; // true/false per cue
+const vid      = document.getElementById('vid');
+let gameActive = false;
+let cuePaused  = false;   // true = video paused AT a cue (waiting for answer)
+let cueIdx     = 0;       // next cue to trigger
+let score      = 0;
+let wrongCount = 0;
+let cueResults = [];
+let lastSafeTime = 0;     // last time while NOT at a cue pause
 
 function shuffle(a){ const b=[...a]; for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];} return b; }
 
+// ─────────────────────────────────────────────────────
+//  VIDEO CONTROLS (lock-down)
+// ─────────────────────────────────────────────────────
+
+// Prevent manual pause: if video pauses but not because of our cue → resume
+vid.addEventListener('pause', () => {
+  if(gameActive && !cuePaused) {
+    vid.play().catch(()=>{});
+  }
+});
+
+// Prevent seeking backward
+vid.addEventListener('seeking', () => {
+  if(!gameActive) return;
+  if(vid.currentTime < lastSafeTime - 0.5) {
+    vid.currentTime = lastSafeTime;
+  }
+});
+
+// Track safe position (only while not cue-paused)
+vid.addEventListener('timeupdate', () => {
+  if(!gameActive || cuePaused) return;
+  lastSafeTime = vid.currentTime;
+
+  if(cueIdx >= CUES.length) return;
+  if(vid.currentTime >= CUES[cueIdx].time) {
+    triggerCue();
+  }
+});
+
+// Video ended without triggering remaining cues → finish
+vid.addEventListener('ended', () => {
+  if(gameActive) finishGame();
+});
+
+// ─────────────────────────────────────────────────────
+//  GAME FLOW
+// ─────────────────────────────────────────────────────
 function startGame(){
-  cueIdx = 0; score = 0; wrongThisCue = 0; answered = false; cueResults = [];
-  show('statePlaying');
-  document.getElementById('scoreBadge').classList.remove('hidden');
-  document.getElementById('scoreNum').textContent = '0';
-  document.getElementById('hintCard').classList.add('hidden');
-  renderCue();
+  gameActive = true; cuePaused = false; cueIdx = 0;
+  score = 0; wrongCount = 0; cueResults = [];
+
+  document.getElementById('startOverlay').classList.add('hidden');
+  document.getElementById('muteBtn').style.display = '';
+  document.getElementById('progressRow').classList.remove('hidden');
+  document.getElementById('statusBar').classList.remove('hidden');
+  renderDots();
+
+  vid.currentTime = 0;
+  vid.muted = false;
+  vid.play().catch(()=>{ vid.muted=true; vid.play(); }); // fallback muted if browser blocks
+  updateMuteIcon();
 }
 
-function renderCue(){
-  const c = CUES[cueIdx];
-  answered = false; wrongThisCue = 0;
-  document.getElementById('hintCard').classList.add('hidden');
-  document.getElementById('tileGuide').textContent = 'แตะคำที่คุณคิดว่าถูกต้อง';
+function triggerCue(){
+  cuePaused = true;
+  vid.pause();
+  wrongCount = 0;
 
-  // Phase tag
+  document.getElementById('pauseOverlay').classList.add('show');
+  document.getElementById('statusBar').classList.add('hidden');
+  document.getElementById('qCard').classList.remove('hidden');
+  document.getElementById('hintCard').classList.add('hidden');
+  document.getElementById('wrongLabel').textContent = '';
+
+  renderDots();
+  renderQuestion(CUES[cueIdx]);
+}
+
+function renderQuestion(c){
   const tag = document.getElementById('phaseTag');
   tag.textContent = c.phase;
   tag.style.color = c.phaseColor;
   tag.style.borderColor = c.phaseColor + '55';
-  tag.style.background = c.phaseColor + '18';
+  tag.style.background  = c.phaseColor + '18';
 
-  // Question counter
-  document.getElementById('qNum').textContent = `${cueIdx+1} / ${CUES.length}`;
-  document.getElementById('wrongCount').textContent = '';
+  document.getElementById('lyricLine').innerHTML =
+    `${esc(c.before)} <span class="blank-slot" id="blankSlot"><span style="color:rgba(52,211,153,.4)">_____</span></span> ${esc(c.after)}`;
 
-  // Progress dots
-  const pd = document.getElementById('progressDots');
-  pd.innerHTML = '';
-  CUES.forEach((_,i)=>{
-    const d = document.createElement('div');
-    d.className = 'pdot';
-    d.style.width = '8px';
-    if(i < cueIdx) d.classList.add('done');
-    else if(i === cueIdx) { d.classList.add('active'); d.style.width='24px'; }
-    pd.appendChild(d);
+  const tw = document.getElementById('wordTiles');
+  tw.innerHTML = '';
+  shuffle(c.options).forEach(w => {
+    const b = document.createElement('button');
+    b.className = 'word-tile';
+    b.textContent = w;
+    b.onclick = () => pickWord(w, b);
+    tw.appendChild(b);
   });
 
-  // Lyric line with blank
-  renderLyricLine(c, null);
-
-  // Word tiles
-  const tileWrap = document.getElementById('wordTiles');
-  tileWrap.innerHTML = '';
-  shuffle(c.options).forEach(word=>{
-    const btn = document.createElement('button');
-    btn.className = 'word-tile';
-    btn.textContent = word;
-    btn.onclick = ()=> pickWord(word, btn);
-    tileWrap.appendChild(btn);
-  });
+  document.getElementById('tileGuide').textContent = 'แตะคำที่คุณคิดว่าถูกต้อง';
 }
-
-function renderLyricLine(c, filledWord){
-  const box = document.getElementById('lyricLine');
-  let blankHTML;
-  if(filledWord === null){
-    blankHTML = `<span class="blank-slot" id="blankSlot"><span style="color:rgba(52,211,153,.4);font-size:12px">_____</span></span>`;
-  } else {
-    blankHTML = `<span class="blank-slot has-word" id="blankSlot" style="color:#6ee7b7;font-weight:700">${filledWord}</span>`;
-  }
-  box.innerHTML = `${escHtml(c.before)} ${blankHTML} ${escHtml(c.after)}`;
-}
-
-function escHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 function pickWord(word, btn){
-  if(answered) return;
   const c = CUES[cueIdx];
-
-  renderLyricLine(c, word);
   const slot = document.getElementById('blankSlot');
+  slot.innerHTML = `<span style="font-weight:700;color:#6ee7b7">${esc(word)}</span>`;
+  slot.classList.add('filled');
 
   if(word === c.blank){
     // ── CORRECT ──
-    answered = true;
-    slot.classList.add('correct-anim');
-    document.querySelectorAll('#wordTiles .word-tile').forEach(b=>{ b.disabled=true; });
-    document.getElementById('tileGuide').textContent = '✓ ถูกต้อง! กำลังไปท่อนถัดไป…';
+    slot.classList.add('correct');
+    document.querySelectorAll('#wordTiles .word-tile').forEach(b=>b.disabled=true);
+    document.getElementById('tileGuide').textContent = '✓ ถูกต้อง! วิดีโอกำลังเล่นต่อ…';
     document.getElementById('hintCard').classList.add('hidden');
 
-    score += 40;
+    score += 25;
     document.getElementById('scoreNum').textContent = score;
     cueResults.push(true);
+    cueIdx++;
+    renderDots();
 
-    setTimeout(()=>{
-      cueIdx++;
-      if(cueIdx >= CUES.length) finishGame();
-      else renderCue();
-    }, 1100);
+    setTimeout(() => {
+      document.getElementById('qCard').classList.add('hidden');
+      document.getElementById('pauseOverlay').classList.remove('show');
+      cuePaused = false;
+
+      if(cueIdx >= CUES.length){
+        finishGame();
+      } else {
+        document.getElementById('statusBar').classList.remove('hidden');
+        vid.play().catch(()=>{});
+      }
+    }, 1000);
 
   } else {
     // ── WRONG ──
-    wrongThisCue++;
-    slot.classList.add('wrong-anim');
-    btn.classList.add('used');
+    wrongCount++;
+    slot.classList.add('wrong');
     btn.disabled = true;
+    document.getElementById('wrongLabel').textContent = `ผิด ${wrongCount} ครั้ง`;
 
-    setTimeout(()=>{
-      slot.classList.remove('wrong-anim','has-word');
-      renderLyricLine(c, null);
-    }, 550);
+    setTimeout(() => {
+      slot.classList.remove('wrong','filled');
+      slot.innerHTML = `<span style="color:rgba(52,211,153,.4)">_____</span>`;
+      document.getElementById('tileGuide').textContent = 'ลองคำอื่นอีกครั้ง';
+    }, 500);
 
-    document.getElementById('tileGuide').textContent = '✗ ไม่ถูกต้อง ลองคำอื่น';
-    document.getElementById('wrongCount').textContent = `ผิด ${wrongThisCue} ครั้ง`;
     document.getElementById('hintText').textContent = c.hint;
     document.getElementById('hintCard').classList.remove('hidden');
   }
+}
+
+async function finishGame(){
+  gameActive = false;
+  document.getElementById('qCard').classList.add('hidden');
+  document.getElementById('statusBar').classList.add('hidden');
+  document.getElementById('pauseOverlay').classList.remove('show');
+
+  // Summary dots in overlay
+  const sum = document.getElementById('sumDetail');
+  sum.innerHTML = '';
+  cueResults.forEach((ok,i) => {
+    const d = document.createElement('div');
+    d.className = `rounded-xl p-1.5 text-center ${ok?'bg-emerald-500/15 border border-emerald-500/30':'bg-red-500/15 border border-red-500/30'}`;
+    d.innerHTML = `<p class="text-[9px] font-bold ${ok?'text-emerald-400':'text-red-400'}">${ok?'✓':'✗'}</p><p class="text-[8px] text-gray-500 mt-0.5">${CUES[i].phase.split(' ')[0]}</p>`;
+    sum.appendChild(d);
+  });
+
+  if(score >= 200){
+    const already = await submitProgress();
+    document.getElementById('alreadyPts').textContent = already ? '✓ เคยบันทึกคะแนนแล้ว' : '🏆 +200 คะแนน — บันทึกสำเร็จ!';
+    document.getElementById('successOverlay').classList.remove('hidden');
+  } else {
+    // Partial score — show result in startOverlay style
+    document.getElementById('startOverlay').innerHTML = `
+      <div class="text-center px-4">
+        <p class="text-3xl mb-2">🔄</p>
+        <p class="text-sm font-bold text-white mb-1">ได้ ${score} / 200 คะแนน</p>
+        <p class="text-[10px] text-gray-300 mb-4">ลองเล่นใหม่เพื่อเก็บคะแนนให้ครบ</p>
+        <button class="start-btn-big" onclick="resetGame()"><i class="fas fa-redo"></i> เล่นใหม่</button>
+      </div>`;
+    document.getElementById('startOverlay').classList.remove('hidden');
+  }
+}
+
+function resetGame(){
+  vid.pause();
+  vid.currentTime = 0;
+  gameActive = false; cuePaused = false; cueIdx = 0;
+  score = 0; wrongCount = 0; cueResults = [];
+  lastSafeTime = 0;
+  document.getElementById('scoreNum').textContent = '0';
+  document.getElementById('progressRow').classList.add('hidden');
+  document.getElementById('statusBar').classList.add('hidden');
+  document.getElementById('qCard').classList.add('hidden');
+  document.getElementById('pauseOverlay').classList.remove('show');
+  document.getElementById('successOverlay').classList.add('hidden');
+  document.getElementById('muteBtn').style.display = 'none';
+
+  // Restore start overlay
+  document.getElementById('startOverlay').innerHTML = `
+    <div class="text-center px-4">
+      <p class="text-2xl mb-1">🎵</p>
+      <p class="text-sm font-bold text-white mb-0.5">เกมต่อเพลงไมโทซิส</p>
+      <p class="text-[10px] text-gray-300 mb-4 leading-relaxed">วิดีโอจะหยุดอัตโนมัติ เมื่อเนื้อเพลงหายไป<br>ให้เลือกคำที่ถูกต้องเพื่อเล่นต่อ</p>
+    </div>
+    <button class="start-btn-big" onclick="startGame()"><i class="fas fa-play"></i> เริ่มเล่น</button>
+    <p class="text-[9px] text-gray-500 mt-2">* กลับไปเริ่มใหม่ไม่ได้ระหว่างเล่น</p>`;
+  document.getElementById('startOverlay').classList.remove('hidden');
+}
+
+function renderDots(){
+  const pd = document.getElementById('progressDots');
+  pd.innerHTML = '';
+  CUES.forEach((_,i) => {
+    const d = document.createElement('div');
+    d.className = 'pdot flex-1';
+    if(i < cueIdx) d.classList.add('done');
+    else if(i === cueIdx) d.classList.add('active');
+    pd.appendChild(d);
+  });
+}
+
+// Mute toggle
+function toggleMute(){
+  vid.muted = !vid.muted;
+  updateMuteIcon();
+}
+function updateMuteIcon(){
+  document.getElementById('muteIcon').className = vid.muted ? 'fas fa-volume-mute' : 'fas fa-volume-up';
 }
 
 async function submitProgress(){
   const token = localStorage.getItem('cl_token');
   if(!token) return false;
   try{
-    const res = await fetch(`${API}/api/students/progress`, {
+    const res = await fetch(`${API}/api/students/progress`,{
       method:'POST',
       headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
-      body: JSON.stringify({stage:'E3', points:200})
+      body: JSON.stringify({stage:'E3',points:200})
     });
     if(res.ok){
       const d = await res.json();
@@ -537,130 +647,29 @@ async function submitProgress(){
   return false;
 }
 
-async function finishGame(){
-  show('stateDone');
-  document.getElementById('doneEmoji').textContent = '🎉';
-  document.getElementById('doneTitle').textContent = 'ยอดเยี่ยม! ครบทุกท่อน!';
-  document.getElementById('doneMsg').textContent = `คะแนนรวม ${score} / 200 คะแนน`;
-
-  // Build summary in overlay
-  const sum = document.getElementById('sumDetail');
-  sum.innerHTML = '';
-  cueResults.forEach((ok,i)=>{
-    const d = document.createElement('div');
-    d.className = `rounded-xl p-1.5 text-center ${ok?'bg-emerald-500/15 border border-emerald-500/30':'bg-red-500/15 border border-red-500/30'}`;
-    d.innerHTML = `<p class="text-[9px] font-bold ${ok?'text-emerald-400':'text-red-400'}">${ok?'✓':'✗'}</p><p class="text-[8px] text-gray-500 mt-0.5">${CUES[i].phase.split(' ')[0]}</p>`;
-    sum.appendChild(d);
-  });
-
-  if(score >= 200){
-    const already = await submitProgress();
-    document.getElementById('alreadyPts').textContent = already ? '✓ เคยบันทึกคะแนนแล้ว' : '🏆 +200 คะแนน — บันทึกสำเร็จ!';
-    document.getElementById('successOverlay').classList.remove('hidden');
-  }
-}
-
-function resetGame(){
-  show('stateIdle');
-  document.getElementById('scoreBadge').classList.add('hidden');
-}
-
-function show(id){
-  ['stateIdle','statePlaying','stateDone'].forEach(s=>{
-    document.getElementById(s).classList.toggle('hidden', s!==id);
-  });
-}
+function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 // ─────────────────────────────────────────────────────
 //  STAGE ACCORDION
 // ─────────────────────────────────────────────────────
-const STAGES = [
-  {
-    num:1,label:'Interphase',th:'อินเตอร์เฟส',color:'#6366f1',bg:'rgba(99,102,241,.12)',
-    desc:'ระยะเตรียมพร้อมก่อนการแบ่งเซลล์ เซลล์มีการเจริญเติบโตและจำลอง DNA',
-    events:['DNA จำลองตัวเองเป็น 2 ชุด (DNA replication)','เซลล์สะสมพลังงานและโปรตีน','โครโมโซมยังอยู่ในรูป chromatin คลายตัว'],
-    svg:`<circle cx="40" cy="40" r="34" fill="rgba(99,102,241,.12)" stroke="rgba(99,102,241,.7)" stroke-width="2"/>
-<circle cx="40" cy="40" r="16" fill="rgba(99,102,241,.15)" stroke="rgba(167,139,250,.6)" stroke-width="1.5" stroke-dasharray="3,2"/>
-<path d="M33 37 Q37 33 41 37 Q45 41 49 37" fill="none" stroke="rgba(196,181,253,.9)" stroke-width="1.8" stroke-linecap="round"/>
-<path d="M34 43 Q38 39 42 43" fill="none" stroke="rgba(216,180,254,.7)" stroke-width="1.5" stroke-linecap="round"/>
-<ellipse cx="22" cy="28" rx="7" ry="4" fill="none" stroke="rgba(167,139,250,.3)" stroke-width="1.2" transform="rotate(-20,22,28)"/>
-<ellipse cx="58" cy="26" rx="7" ry="4" fill="none" stroke="rgba(167,139,250,.3)" stroke-width="1.2" transform="rotate(15,58,26)"/>`
-  },
-  {
-    num:2,label:'Prophase',th:'โพรเฟส',color:'#8b5cf6',bg:'rgba(139,92,246,.12)',
-    desc:'โครโมโซมหดตัวและมองเห็นได้ชัดเจน เยื่อหุ้มนิวเคลียสเริ่มสลายตัว',
-    events:['โครโมโซมหดตัว (condensation) มองเห็นชัดเจน','เยื่อหุ้มนิวเคลียสสลายตัว','เส้นใยสปินเดิลเริ่มก่อตัวจากเซนทริโอล'],
-    svg:`<circle cx="40" cy="40" r="34" fill="rgba(139,92,246,.1)" stroke="rgba(139,92,246,.7)" stroke-width="2"/>
-<rect x="29" y="26" width="7" height="28" rx="3.5" fill="rgba(167,139,250,.85)"/>
-<rect x="39" y="23" width="7" height="34" rx="3.5" fill="rgba(139,92,246,.9)"/>
-<rect x="49" y="28" width="7" height="24" rx="3.5" fill="rgba(167,139,250,.85)"/>
-<circle cx="40" cy="8" r="4" fill="rgba(196,181,253,.7)"/>
-<circle cx="40" cy="72" r="4" fill="rgba(196,181,253,.7)"/>`
-  },
-  {
-    num:3,label:'Metaphase',th:'เมทาเฟส',color:'#ec4899',bg:'rgba(236,72,153,.1)',
-    desc:'โครโมโซมเรียงตัวที่กึ่งกลางเซลล์ (metaphase plate) เส้นใยสปินเดิลยึดโครโมโซม',
-    events:['โครโมโซมเรียงตัวที่ระนาบกลาง (metaphase plate)','เส้นใยสปินเดิลยึดเซนโทรเมียร์ของโครโมโซม','เป็นระยะที่มองเห็นโครโมโซมชัดที่สุด'],
-    svg:`<circle cx="40" cy="40" r="34" fill="rgba(236,72,153,.08)" stroke="rgba(236,72,153,.7)" stroke-width="2"/>
-<line x1="40" y1="6" x2="28" y2="40" stroke="rgba(236,72,153,.3)" stroke-width="1"/>
-<line x1="40" y1="6" x2="40" y2="40" stroke="rgba(236,72,153,.3)" stroke-width="1"/>
-<line x1="40" y1="6" x2="52" y2="40" stroke="rgba(236,72,153,.3)" stroke-width="1"/>
-<line x1="40" y1="74" x2="28" y2="40" stroke="rgba(236,72,153,.3)" stroke-width="1"/>
-<line x1="40" y1="74" x2="40" y2="40" stroke="rgba(236,72,153,.3)" stroke-width="1"/>
-<line x1="40" y1="74" x2="52" y2="40" stroke="rgba(236,72,153,.3)" stroke-width="1"/>
-<circle cx="40" cy="6" r="4" fill="rgba(236,72,153,.8)"/>
-<circle cx="40" cy="74" r="4" fill="rgba(236,72,153,.8)"/>
-<rect x="27" y="33" width="7" height="14" rx="3.5" fill="rgba(251,113,133,.9)"/>
-<rect x="37" y="33" width="7" height="14" rx="3.5" fill="rgba(244,114,182,.9)"/>
-<rect x="47" y="33" width="7" height="14" rx="3.5" fill="rgba(251,113,133,.9)"/>`
-  },
-  {
-    num:4,label:'Anaphase',th:'แอนาเฟส',color:'#f59e0b',bg:'rgba(245,158,11,.1)',
-    desc:'โครโมโซมถูกดึงแยกจากกัน เคลื่อนที่ไปยังขั้วเซลล์ทั้งสองด้าน',
-    events:['เส้นใยสปินเดิลดึงโครโมโซมไปยังแต่ละขั้ว','เซลล์เริ่มยืดตัวออก','โครโมโซมแต่ละชุดเคลื่อนที่ห่างจากกัน'],
-    svg:`<ellipse cx="40" cy="40" rx="28" ry="36" fill="rgba(245,158,11,.08)" stroke="rgba(245,158,11,.7)" stroke-width="2"/>
-<rect x="31" y="11" width="6" height="11" rx="3" fill="rgba(251,191,36,.9)"/>
-<rect x="40" y="9" width="6" height="11" rx="3" fill="rgba(245,158,11,.9)"/>
-<rect x="31" y="57" width="6" height="11" rx="3" fill="rgba(251,191,36,.9)"/>
-<rect x="40" y="59" width="6" height="11" rx="3" fill="rgba(245,158,11,.9)"/>
-<line x1="40" y1="25" x2="40" y2="55" stroke="rgba(245,158,11,.25)" stroke-width="1" stroke-dasharray="3,3"/>`
-  },
-  {
-    num:5,label:'Telophase',th:'เทโลเฟส',color:'#10b981',bg:'rgba(16,185,129,.1)',
-    desc:'นิวเคลียสใหม่ 2 อันก่อตัวขึ้น โครโมโซมเริ่มคลายตัว เซลล์ใกล้แบ่งตัว',
-    events:['นิวเคลียสใหม่ 2 อันก่อตัวที่แต่ละขั้ว','เยื่อหุ้มนิวเคลียสสร้างใหม่รอบโครโมโซม','โครโมโซมเริ่มคลายตัวกลับเป็น chromatin'],
-    svg:`<ellipse cx="40" cy="40" rx="34" ry="36" fill="rgba(16,185,129,.08)" stroke="rgba(16,185,129,.7)" stroke-width="2"/>
-<line x1="6" y1="40" x2="74" y2="40" stroke="rgba(16,185,129,.3)" stroke-width="1.5" stroke-dasharray="4,3"/>
-<ellipse cx="40" cy="23" rx="14" ry="13" fill="rgba(16,185,129,.1)" stroke="rgba(52,211,153,.6)" stroke-width="1.5" stroke-dasharray="3,2"/>
-<ellipse cx="40" cy="57" rx="14" ry="13" fill="rgba(16,185,129,.1)" stroke="rgba(52,211,153,.6)" stroke-width="1.5" stroke-dasharray="3,2"/>
-<rect x="34" y="16" width="4" height="14" rx="2" fill="rgba(52,211,153,.7)"/>
-<rect x="42" y="16" width="4" height="14" rx="2" fill="rgba(110,231,183,.7)"/>
-<rect x="34" y="50" width="4" height="14" rx="2" fill="rgba(52,211,153,.7)"/>
-<rect x="42" y="50" width="4" height="14" rx="2" fill="rgba(110,231,183,.7)"/>`
-  },
-  {
-    num:6,label:'Cytokinesis',th:'ไซโตไคนีซิส',color:'#3b82f6',bg:'rgba(59,130,246,.1)',
-    desc:'ไซโตพลาซึมแบ่งออกเป็นสองส่วน ได้เซลล์ลูก 2 เซลล์ที่มีโครโมโซมเท่ากัน',
-    events:['ไซโตพลาซึมแบ่งออก (cytokinesis)','ในเซลล์สัตว์: เกิด cleavage furrow บีบตัว','ได้เซลล์ลูก 2 เซลล์ มีโครโมโซมเท่ากับเซลล์แม่'],
-    svg:`<circle cx="22" cy="40" r="18" fill="rgba(59,130,246,.1)" stroke="rgba(59,130,246,.7)" stroke-width="2"/>
-<circle cx="22" cy="40" r="8" fill="rgba(59,130,246,.12)" stroke="rgba(96,165,250,.5)" stroke-width="1.5" stroke-dasharray="2,2"/>
-<circle cx="58" cy="40" r="18" fill="rgba(59,130,246,.1)" stroke="rgba(59,130,246,.7)" stroke-width="2"/>
-<circle cx="58" cy="40" r="8" fill="rgba(59,130,246,.12)" stroke="rgba(96,165,250,.5)" stroke-width="1.5" stroke-dasharray="2,2"/>`
-  }
+const STAGES=[
+  {num:1,label:'Interphase',th:'อินเตอร์เฟส',color:'#6366f1',bg:'rgba(99,102,241,.12)',desc:'ระยะเตรียมพร้อมก่อนการแบ่งเซลล์ เซลล์มีการเจริญเติบโตและจำลอง DNA',events:['DNA จำลองตัวเองเป็น 2 ชุด (DNA replication)','เซลล์สะสมพลังงานและโปรตีน','โครโมโซมยังอยู่ในรูป chromatin คลายตัว'],svg:`<circle cx="40" cy="40" r="34" fill="rgba(99,102,241,.12)" stroke="rgba(99,102,241,.7)" stroke-width="2"/><circle cx="40" cy="40" r="16" fill="rgba(99,102,241,.15)" stroke="rgba(167,139,250,.6)" stroke-width="1.5" stroke-dasharray="3,2"/><path d="M33 37 Q37 33 41 37 Q45 41 49 37" fill="none" stroke="rgba(196,181,253,.9)" stroke-width="1.8" stroke-linecap="round"/><path d="M34 43 Q38 39 42 43" fill="none" stroke="rgba(216,180,254,.7)" stroke-width="1.5" stroke-linecap="round"/>`},
+  {num:2,label:'Prophase',th:'โพรเฟส',color:'#8b5cf6',bg:'rgba(139,92,246,.12)',desc:'โครโมโซมหดตัวและมองเห็นได้ชัดเจน เยื่อหุ้มนิวเคลียสเริ่มสลายตัว',events:['โครโมโซมหดตัว (condensation) มองเห็นชัดเจน','เยื่อหุ้มนิวเคลียสสลายตัว','เส้นใยสปินเดิลเริ่มก่อตัวจากเซนทริโอล'],svg:`<circle cx="40" cy="40" r="34" fill="rgba(139,92,246,.1)" stroke="rgba(139,92,246,.7)" stroke-width="2"/><rect x="29" y="26" width="7" height="28" rx="3.5" fill="rgba(167,139,250,.85)"/><rect x="39" y="23" width="7" height="34" rx="3.5" fill="rgba(139,92,246,.9)"/><rect x="49" y="28" width="7" height="24" rx="3.5" fill="rgba(167,139,250,.85)"/><circle cx="40" cy="8" r="4" fill="rgba(196,181,253,.7)"/><circle cx="40" cy="72" r="4" fill="rgba(196,181,253,.7)"/>`},
+  {num:3,label:'Metaphase',th:'เมทาเฟส',color:'#ec4899',bg:'rgba(236,72,153,.1)',desc:'โครโมโซมเรียงตัวที่กึ่งกลางเซลล์ (metaphase plate) เส้นใยสปินเดิลยึดโครโมโซม',events:['โครโมโซมเรียงตัวที่ระนาบกลาง (metaphase plate)','เส้นใยสปินเดิลยึดเซนโทรเมียร์ของโครโมโซม','เป็นระยะที่มองเห็นโครโมโซมชัดที่สุด'],svg:`<circle cx="40" cy="40" r="34" fill="rgba(236,72,153,.08)" stroke="rgba(236,72,153,.7)" stroke-width="2"/><rect x="27" y="33" width="7" height="14" rx="3.5" fill="rgba(251,113,133,.9)"/><rect x="37" y="33" width="7" height="14" rx="3.5" fill="rgba(244,114,182,.9)"/><rect x="47" y="33" width="7" height="14" rx="3.5" fill="rgba(251,113,133,.9)"/>`},
+  {num:4,label:'Anaphase',th:'แอนาเฟส',color:'#f59e0b',bg:'rgba(245,158,11,.1)',desc:'โครโมโซมถูกดึงแยกจากกัน เคลื่อนที่ไปยังขั้วเซลล์ทั้งสองด้าน',events:['เส้นใยสปินเดิลดึงโครโมโซมไปยังแต่ละขั้ว','เซลล์เริ่มยืดตัวออก','โครโมโซมแต่ละชุดเคลื่อนที่ห่างจากกัน'],svg:`<ellipse cx="40" cy="40" rx="28" ry="36" fill="rgba(245,158,11,.08)" stroke="rgba(245,158,11,.7)" stroke-width="2"/><rect x="31" y="11" width="6" height="11" rx="3" fill="rgba(251,191,36,.9)"/><rect x="40" y="9" width="6" height="11" rx="3" fill="rgba(245,158,11,.9)"/><rect x="31" y="57" width="6" height="11" rx="3" fill="rgba(251,191,36,.9)"/><rect x="40" y="59" width="6" height="11" rx="3" fill="rgba(245,158,11,.9)"/>`},
+  {num:5,label:'Telophase',th:'เทโลเฟส',color:'#10b981',bg:'rgba(16,185,129,.1)',desc:'นิวเคลียสใหม่ 2 อันก่อตัวขึ้น โครโมโซมเริ่มคลายตัว เซลล์ใกล้แบ่งตัว',events:['นิวเคลียสใหม่ 2 อันก่อตัวที่แต่ละขั้ว','เยื่อหุ้มนิวเคลียสสร้างใหม่รอบโครโมโซม','โครโมโซมเริ่มคลายตัวกลับเป็น chromatin'],svg:`<ellipse cx="40" cy="40" rx="34" ry="36" fill="rgba(16,185,129,.08)" stroke="rgba(16,185,129,.7)" stroke-width="2"/><ellipse cx="40" cy="23" rx="14" ry="13" fill="rgba(16,185,129,.1)" stroke="rgba(52,211,153,.6)" stroke-width="1.5" stroke-dasharray="3,2"/><ellipse cx="40" cy="57" rx="14" ry="13" fill="rgba(16,185,129,.1)" stroke="rgba(52,211,153,.6)" stroke-width="1.5" stroke-dasharray="3,2"/>`},
+  {num:6,label:'Cytokinesis',th:'ไซโตไคนีซิส',color:'#3b82f6',bg:'rgba(59,130,246,.1)',desc:'ไซโตพลาซึมแบ่งออกเป็นสองส่วน ได้เซลล์ลูก 2 เซลล์ที่มีโครโมโซมเท่ากัน',events:['ไซโตพลาซึมแบ่งออก (cytokinesis)','ในเซลล์สัตว์: เกิด cleavage furrow บีบตัว','ได้เซลล์ลูก 2 เซลล์ มีโครโมโซมเท่ากับเซลล์แม่'],svg:`<circle cx="22" cy="40" r="18" fill="rgba(59,130,246,.1)" stroke="rgba(59,130,246,.7)" stroke-width="2"/><circle cx="22" cy="40" r="8" fill="rgba(59,130,246,.12)" stroke="rgba(96,165,250,.5)" stroke-width="1.5" stroke-dasharray="2,2"/><circle cx="58" cy="40" r="18" fill="rgba(59,130,246,.1)" stroke="rgba(59,130,246,.7)" stroke-width="2"/><circle cx="58" cy="40" r="8" fill="rgba(59,130,246,.12)" stroke="rgba(96,165,250,.5)" stroke-width="1.5" stroke-dasharray="2,2"/>`}
 ];
 
-const container = document.getElementById('stages');
+const container=document.getElementById('stages');
 STAGES.forEach((s,idx)=>{
-  const item = document.createElement('div');
-  item.className = 'stage-item';
-  item.style.cssText = `background:${s.bg};border:1px solid ${s.color}30`;
-  item.innerHTML = `
+  const item=document.createElement('div');
+  item.className='stage-item';
+  item.style.cssText=`background:${s.bg};border:1px solid ${s.color}30`;
+  item.innerHTML=`
     <div class="stage-hdr" onclick="toggle(${idx})">
       <div class="stage-num" style="background:${s.color}22;color:${s.color}">${s.num}</div>
-      <div style="flex:1;min-width:0">
-        <p class="text-xs font-bold leading-none">${s.th}</p>
-        <p class="text-[10px] text-gray-500 mt-0.5">${s.label}</p>
-      </div>
+      <div style="flex:1;min-width:0"><p class="text-xs font-bold leading-none">${s.th}</p><p class="text-[10px] text-gray-500 mt-0.5">${s.label}</p></div>
       <svg viewBox="0 0 80 80" width="42" height="42" style="flex-shrink:0">${s.svg}</svg>
       <i class="fas fa-chevron-down chev ml-2"></i>
     </div>
@@ -674,13 +683,12 @@ STAGES.forEach((s,idx)=>{
 });
 
 function toggle(i){
-  const hdr = document.querySelectorAll('.stage-hdr')[i];
-  const body = document.getElementById('body'+i);
-  const isOpen = hdr.classList.contains('open');
+  const hdr=document.querySelectorAll('.stage-hdr')[i];
+  const body=document.getElementById('body'+i);
+  const isOpen=hdr.classList.contains('open');
   hdr.classList.toggle('open',!isOpen);
   body.classList.toggle('open',!isOpen);
 }
-
 toggle(0);
 </script>
 </body>
