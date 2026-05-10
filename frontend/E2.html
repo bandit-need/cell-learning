@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>E2 Â· Explore â€” à¸ªà¸³à¸£à¸§à¸ˆà¸à¸²à¸£à¹à¸šà¹ˆà¸‡à¹€à¸‹à¸¥à¸¥à¹Œ</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>E2 · Explore — สำรวจการแบ่งเซลล์</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
@@ -20,15 +20,12 @@ body{font-family:'Kanit',sans-serif;background:#050210;color:#fff;min-height:100
 .logbtn{cursor:pointer;padding:5px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);font-size:10px;color:rgba(255,255,255,.4);font-family:'Kanit',sans-serif;transition:all .2s}
 .logbtn:hover{border-color:rgba(239,68,68,.4);color:#fca5a5;background:rgba(239,68,68,.08)}
 
-/* Game card */
-.gcard{background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);border-radius:14px;padding:10px 8px;cursor:pointer;transition:all .25s;text-align:center;position:relative;user-select:none}
+.gcard{background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);border-radius:14px;padding:10px 8px;cursor:pointer;transition:all .25s;text-align:center;user-select:none}
 .gcard:hover{background:rgba(37,99,235,.12);border-color:rgba(37,99,235,.4)}
 .gcard.sel{background:rgba(37,99,235,.25);border-color:#3b82f6;box-shadow:0 0 18px rgba(59,130,246,.5)}
-.gcard.placed{opacity:.45;cursor:default;pointer-events:none}
 .gcard img{width:56px;height:56px;object-fit:cover;border-radius:8px;margin:0 auto 6px;background:rgba(255,255,255,.06)}
 
-/* Slot */
-.slot{background:rgba(255,255,255,.03);border:1.5px dashed rgba(37,99,235,.3);border-radius:14px;padding:10px 6px;text-align:center;cursor:pointer;transition:all .25s;min-height:106px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative}
+.slot{background:rgba(255,255,255,.03);border:1.5px dashed rgba(37,99,235,.3);border-radius:14px;padding:10px 6px;text-align:center;cursor:pointer;transition:all .25s;min-height:106px;display:flex;flex-direction:column;align-items:center;justify-content:center}
 .slot:hover{border-color:rgba(37,99,235,.6);background:rgba(37,99,235,.06)}
 .slot.filled{border-style:solid;border-color:rgba(37,99,235,.45);background:rgba(37,99,235,.1)}
 .slot.correct{border-color:rgba(16,185,129,.7);background:rgba(16,185,129,.1)}
@@ -36,15 +33,12 @@ body{font-family:'Kanit',sans-serif;background:#050210;color:#fff;min-height:100
 .slot .slot-num{font-size:10px;font-weight:700;color:rgba(59,130,246,.6);margin-bottom:4px}
 .slot img{width:50px;height:50px;object-fit:cover;border-radius:8px;background:rgba(255,255,255,.06)}
 
-/* Submit btn */
 .sub-btn{background:linear-gradient(135deg,#1d4ed8,#3b82f6);border:none;color:#fff;font-family:'Kanit',sans-serif;font-size:14px;font-weight:600;padding:14px 28px;border-radius:16px;cursor:pointer;width:100%;transition:all .3s;box-shadow:0 8px 25px rgba(37,99,235,.4)}
 .sub-btn:disabled{background:rgba(255,255,255,.08);color:rgba(255,255,255,.3);cursor:not-allowed;box-shadow:none}
 .sub-btn:not(:disabled):hover{transform:translateY(-2px);box-shadow:0 12px 35px rgba(37,99,235,.6)}
 
-/* Result overlay */
 .overlay{position:fixed;inset:0;background:rgba(5,2,16,.92);z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;backdrop-filter:blur(8px)}
 .result-card{background:rgba(255,255,255,.06);border:1px solid rgba(37,99,235,.3);border-radius:24px;padding:28px 24px;width:100%;max-width:360px;animation:popIn .4s ease}
-
 .shake{animation:shake .4s ease}
 </style>
 </head>
@@ -60,7 +54,7 @@ body{font-family:'Kanit',sans-serif;background:#050210;color:#fff;min-height:100
     </a>
     <div>
       <p class="text-xs font-bold leading-none">Explore</p>
-      <p class="text-[8px] text-blue-400 font-light tracking-wider mt-0.5">E2 Â· à¸ªà¸³à¸£à¸§à¸ˆà¸„à¹‰à¸™à¸«à¸²</p>
+      <p class="text-[8px] text-blue-400 font-light tracking-wider mt-0.5">E2 · สำรวจค้นหา</p>
     </div>
   </div>
   <div class="flex items-center gap-2">
@@ -80,43 +74,41 @@ body{font-family:'Kanit',sans-serif;background:#050210;color:#fff;min-height:100
   <div class="text-center py-5 fu">
     <div class="inline-flex items-center gap-2 bg-blue-500/10 border border-blue-500/20 rounded-full px-4 py-1.5 text-xs text-blue-300 mb-4">
       <div class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></div>
-      à¸à¸´à¸ˆà¸à¸£à¸£à¸¡à¸—à¸µà¹ˆ 2 &nbsp;Â·&nbsp; Explore
+      กิจกรรมที่ 2 &nbsp;·&nbsp; Explore
     </div>
-    <h1 class="text-xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-cyan-300 mb-2">à¹€à¸£à¸µà¸¢à¸‡à¸¥à¸³à¸”à¸±à¸šà¸‚à¸±à¹‰à¸™à¸•à¸­à¸™</h1>
-    <p class="text-[11px] text-gray-400 leading-relaxed">à¹à¸•à¸°à¸à¸²à¸£à¹Œà¸”à¹€à¸žà¸·à¹ˆà¸­à¹€à¸¥à¸·à¸­à¸ à¸ˆà¸²à¸à¸™à¸±à¹‰à¸™à¹à¸•à¸°à¸Šà¹ˆà¸­à¸‡à¸«à¸¡à¸²à¸¢à¹€à¸¥à¸‚<br>à¹€à¸žà¸·à¹ˆà¸­à¸§à¸²à¸‡à¸à¸²à¸£à¹Œà¸”à¹ƒà¸™à¸¥à¸³à¸”à¸±à¸šà¸—à¸µà¹ˆà¸–à¸¹à¸à¸•à¹‰à¸­à¸‡ (1 â†’ 6)</p>
-
-    <!-- Timer -->
-    <div class="inline-flex items-center gap-2 mt-3 bg-white/5 border border-white/8 rounded-full px-4 py-1.5">
+    <h1 class="text-xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-cyan-300 mb-2">เรียงลำดับขั้นตอน</h1>
+    <p class="text-[11px] text-gray-400 leading-relaxed">แตะการ์ดเพื่อเลือก จากนั้นแตะช่องหมายเลข<br>เพื่อวางการ์ดในลำดับที่ถูกต้อง (1 → 6)</p>
+    <div class="inline-flex items-center gap-2 mt-3 bg-white/5 border border-white/10 rounded-full px-4 py-1.5">
       <i class="fas fa-clock text-blue-400 text-xs"></i>
       <span id="timer" class="text-sm font-bold text-blue-300">00:00</span>
     </div>
   </div>
 
   <!-- Hint -->
-  <div id="hint" class="text-center text-[10px] text-blue-400 bg-blue-500/8 border border-blue-500/15 rounded-full px-4 py-1.5 mb-3 fu" style="animation-delay:.05s">
+  <div class="text-center text-[10px] text-blue-400 bg-blue-500/8 border border-blue-500/15 rounded-full px-4 py-1.5 mb-3 fu" style="animation-delay:.05s">
     <i class="fas fa-hand-pointer mr-1"></i>
-    <span id="hintTxt">à¹à¸•à¸°à¸à¸²à¸£à¹Œà¸”à¸”à¹‰à¸²à¸™à¸¥à¹ˆà¸²à¸‡à¹€à¸žà¸·à¹ˆà¸­à¹€à¸¥à¸·à¸­à¸</span>
+    <span id="hintTxt">แตะการ์ดด้านล่างเพื่อเลือก</span>
   </div>
 
   <!-- Drop Slots -->
   <div class="mb-4 fu" style="animation-delay:.1s">
-    <p class="text-[10px] font-semibold text-blue-400 uppercase tracking-wider mb-2.5">à¸¥à¸³à¸”à¸±à¸šà¸‚à¸±à¹‰à¸™à¸•à¸­à¸™</p>
+    <p class="text-[10px] font-semibold text-blue-400 uppercase tracking-wider mb-2.5">ลำดับขั้นตอน</p>
     <div class="grid grid-cols-3 gap-2.5" id="slotsGrid"></div>
   </div>
 
   <!-- Hand Cards -->
   <div class="fu" style="animation-delay:.15s">
-    <p class="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2.5">à¸à¸²à¸£à¹Œà¸”à¸—à¸µà¹ˆà¹€à¸«à¸¥à¸·à¸­</p>
-    <div class="bg-white/3 border border-white/6 rounded-2xl p-3 min-h-[80px]" id="handGrid">
+    <p class="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2.5">การ์ดที่เหลือ</p>
+    <div class="bg-white/3 border border-white/6 rounded-2xl p-3 min-h-[80px]">
       <div class="grid grid-cols-3 gap-2.5" id="handCards"></div>
-      <p id="handEmpty" class="text-center text-xs text-blue-400 py-3 hidden">à¸§à¸²à¸‡à¸à¸²à¸£à¹Œà¸”à¸—à¸±à¹‰à¸‡à¸«à¸¡à¸”à¹à¸¥à¹‰à¸§ âœ“</p>
+      <p id="handEmpty" class="text-center text-xs text-blue-400 py-3 hidden">วางการ์ดทั้งหมดแล้ว ✓</p>
     </div>
   </div>
 
   <!-- Submit -->
   <div class="mt-4 fu" style="animation-delay:.2s">
     <button id="subBtn" class="sub-btn" disabled onclick="submitAnswer()">
-      <i class="fas fa-check-circle mr-2"></i>à¸ªà¹ˆà¸‡à¸„à¸³à¸•à¸­à¸š
+      <i class="fas fa-check-circle mr-2"></i>ส่งคำตอบ
     </button>
   </div>
 
@@ -132,10 +124,10 @@ body{font-family:'Kanit',sans-serif;background:#050210;color:#fff;min-height:100
     <div id="resDetail" class="grid grid-cols-3 gap-2 mb-6"></div>
     <div class="flex gap-3">
       <button onclick="resetGame()" class="flex-1 py-3 rounded-xl border border-white/15 text-sm font-semibold hover:bg-white/8 transition-all">
-        <i class="fas fa-redo mr-1.5"></i>à¸¥à¸­à¸‡à¹ƒà¸«à¸¡à¹ˆ
+        <i class="fas fa-redo mr-1.5"></i>ลองใหม่
       </button>
       <button onclick="window.location.href='E3.html'" class="flex-1 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 text-sm font-semibold hover:opacity-90 transition-all">
-        E3 à¸–à¸±à¸”à¹„à¸› <i class="fas fa-arrow-right ml-1.5"></i>
+        E3 ถัดไป <i class="fas fa-arrow-right ml-1.5"></i>
       </button>
     </div>
   </div>
@@ -162,12 +154,18 @@ function logout(){localStorage.removeItem('cl_token');localStorage.removeItem('c
 })();
 
 const STAGES=[
-  {id:'interphase',label:'Interphase',th:'à¸­à¸´à¸™à¹€à¸•à¸­à¸£à¹Œà¹€à¸Ÿà¸ª',order:1,color:'#6366f1',img:'https://media.base44.com/images/public/69fcb7f2f2e1d9f3a57a7680/82fcfe895_generated_image.png'},
-  {id:'prophase',label:'Prophase',th:'à¹‚à¸žà¸£à¹€à¸Ÿà¸ª',order:2,color:'#8b5cf6',img:'https://media.base44.com/images/public/69fcb7f2f2e1d9f3a57a7680/1e5e42c29_generated_image.png'},
-  {id:'metaphase',label:'Metaphase',th:'à¹€à¸¡à¸—à¸²à¹€à¸Ÿà¸ª',order:3,color:'#ec4899',img:'https://media.base44.com/images/public/69fcb7f2f2e1d9f3a57a7680/c39da49e6_generated_image.png'},
-  {id:'anaphase',label:'Anaphase',th:'à¹à¸­à¸™à¸²à¹€à¸Ÿà¸ª',order:4,color:'#f59e0b',img:'https://media.base44.com/images/public/69fcb7f2f2e1d9f3a57a7680/1f9d4e398_generated_image.png'},
-  {id:'telophase',label:'Telophase',th:'à¹€à¸—à¹‚à¸¥à¹€à¸Ÿà¸ª',order:5,color:'#10b981',img:'https://media.base44.com/images/public/69fcb7f2f2e1d9f3a57a7680/677098ac3_generated_image.png'},
-  {id:'cytokinesis',label:'Cytokinesis',th:'à¹„à¸‹à¹‚à¸•à¹„à¸„à¸™à¸µà¸‹à¸´à¸ª',order:6,color:'#3b82f6',img:'https://media.base44.com/images/public/69fcb7f2f2e1d9f3a57a7680/01dd5c005_generated_image.png'}
+  {id:'interphase', label:'Interphase', th:'อินเตอร์เฟส', order:1, color:'#6366f1',
+   img:'https://media.base44.com/images/public/69fcb7f2f2e1d9f3a57a7680/82fcfe895_generated_image.png'},
+  {id:'prophase',   label:'Prophase',   th:'โพรเฟส',      order:2, color:'#8b5cf6',
+   img:'https://media.base44.com/images/public/69fcb7f2f2e1d9f3a57a7680/1e5e42c29_generated_image.png'},
+  {id:'metaphase',  label:'Metaphase',  th:'เมทาเฟส',     order:3, color:'#ec4899',
+   img:'https://media.base44.com/images/public/69fcb7f2f2e1d9f3a57a7680/c39da49e6_generated_image.png'},
+  {id:'anaphase',   label:'Anaphase',   th:'แอนาเฟส',     order:4, color:'#f59e0b',
+   img:'https://media.base44.com/images/public/69fcb7f2f2e1d9f3a57a7680/1f9d4e398_generated_image.png'},
+  {id:'telophase',  label:'Telophase',  th:'เทโลเฟส',     order:5, color:'#10b981',
+   img:'https://media.base44.com/images/public/69fcb7f2f2e1d9f3a57a7680/677098ac3_generated_image.png'},
+  {id:'cytokinesis',label:'Cytokinesis',th:'ไซโตไคนีซิส', order:6, color:'#3b82f6',
+   img:'https://media.base44.com/images/public/69fcb7f2f2e1d9f3a57a7680/01dd5c005_generated_image.png'}
 ];
 
 function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
@@ -186,7 +184,7 @@ timerInt=setInterval(()=>{
 },1000);
 
 function imgTag(s){
-  return `<img src="${s.img}" alt="${s.label}" onerror="this.style.background='${s.color}33';this.style.display='flex';this.style.alignItems='center';this.style.justifyContent='center';this.src='';this.alt='${s.th}'">`;
+  return `<img src="${s.img}" alt="${s.label}" onerror="this.style.background='${s.color}55';this.removeAttribute('src')">`;
 }
 
 function render(){
@@ -199,7 +197,6 @@ function render(){
     div.onclick=()=>clickSlot(i);
     if(st){
       div.innerHTML=`<div class="slot-num">${i+1}</div>${imgTag(st)}<p class="text-[9px] font-semibold mt-1.5" style="color:${st.color}">${st.th}</p><p class="text-[8px] text-gray-500">${st.label}</p>`;
-      div.style.cursor='pointer';
     } else {
       div.innerHTML=`<div class="slot-num">${i+1}</div><div class="w-10 h-10 rounded-xl border border-dashed border-blue-500/25 flex items-center justify-center"><i class="fas fa-plus text-blue-700" style="font-size:10px"></i></div>`;
     }
@@ -223,42 +220,30 @@ function render(){
   const hint=document.getElementById('hintTxt');
   if(selected){
     const st=STAGES.find(s=>s.id===selected.id);
-    hint.textContent=`à¹€à¸¥à¸·à¸­à¸: ${st.th} â€” à¹à¸•à¸°à¸Šà¹ˆà¸­à¸‡à¹€à¸žà¸·à¹ˆà¸­à¸§à¸²à¸‡`;
+    hint.textContent=`เลือก: ${st.th} — แตะช่องเพื่อวาง`;
   } else if(hand.length===0&&!allFilled){
-    hint.textContent='à¹à¸•à¸°à¸à¸²à¸£à¹Œà¸”à¹ƒà¸™à¸Šà¹ˆà¸­à¸‡à¹€à¸žà¸·à¹ˆà¸­à¸¢à¹‰à¸²à¸¢à¸à¸¥à¸±à¸š';
+    hint.textContent='แตะการ์ดในช่องเพื่อย้ายกลับ';
   } else if(allFilled){
-    hint.textContent='à¸à¸”à¸ªà¹ˆà¸‡à¸„à¸³à¸•à¸­à¸šà¹€à¸žà¸·à¹ˆà¸­à¸•à¸£à¸§à¸ˆ!';
+    hint.textContent='กดส่งคำตอบเพื่อตรวจ!';
   } else {
-    hint.textContent='à¹à¸•à¸°à¸à¸²à¸£à¹Œà¸”à¸”à¹‰à¸²à¸™à¸¥à¹ˆà¸²à¸‡à¹€à¸žà¸·à¹ˆà¸­à¹€à¸¥à¸·à¸­à¸';
+    hint.textContent='แตะการ์ดด้านล่างเพื่อเลือก';
   }
 }
 
 function clickCard(id,from){
-  if(selected&&selected.id===id){selected=null;}
-  else{selected={id,from};}
+  selected=(selected&&selected.id===id)?null:{id,from};
   render();
 }
 
 function clickSlot(i){
   if(!selected){
-    if(slots[i]){
-      const stage=slots[i];
-      hand.push(stage);
-      slots[i]=null;
-      selected=null;
-      render();
-    }
+    if(slots[i]){hand.push(slots[i]);slots[i]=null;render();}
     return;
   }
   const stage=STAGES.find(s=>s.id===selected.id);
-  if(slots[i]&&slots[i].id!==selected.id){
-    hand.push(slots[i]);
-  }
-  if(selected.from==='hand'){
-    hand=hand.filter(c=>c.id!==selected.id);
-  } else {
-    slots[selected.from]=null;
-  }
+  if(slots[i]&&slots[i].id!==selected.id) hand.push(slots[i]);
+  if(selected.from==='hand') hand=hand.filter(c=>c.id!==selected.id);
+  else slots[selected.from]=null;
   slots[i]=stage;
   selected=null;
   render();
@@ -269,28 +254,22 @@ function submitAnswer(){
   clearInterval(timerInt);
   let correct=0;
   slots.forEach((s,i)=>{if(s&&s.order===i+1)correct++;});
-  const sg=document.getElementById('slotsGrid');
-  sg.querySelectorAll('.slot').forEach((el,i)=>{
-    const s=slots[i];
-    if(s){
-      el.classList.add(s.order===i+1?'correct':'wrong');
-    }
+  document.getElementById('slotsGrid').querySelectorAll('.slot').forEach((el,i)=>{
+    if(slots[i]) el.classList.add(slots[i].order===i+1?'correct':'wrong');
   });
-
   setTimeout(()=>{
     const m=String(Math.floor(timerSec/60)).padStart(2,'0');
     const s2=String(timerSec%60).padStart(2,'0');
     const pct=Math.round(correct/6*100);
-    document.getElementById('resIcon').textContent=pct===100?'ðŸ†':pct>=67?'ðŸ˜Š':'ðŸ”„';
-    document.getElementById('resTitle').textContent=pct===100?'à¹€à¸¢à¸µà¹ˆà¸¢à¸¡à¸¡à¸²à¸! à¸ªà¸¡à¸šà¸¹à¸£à¸“à¹Œà¹à¸šà¸š!':pct>=67?'à¸”à¸µà¸¡à¸²à¸! à¹€à¸à¸·à¸­à¸šà¹„à¸”à¹‰à¹à¸¥à¹‰à¸§':'à¸¥à¸­à¸‡à¹ƒà¸«à¸¡à¹ˆà¸­à¸µà¸à¸„à¸£à¸±à¹‰à¸‡à¸™à¸°';
-    document.getElementById('resScore').textContent=`${correct} / 6 à¸–à¸¹à¸à¸•à¹‰à¸­à¸‡`;
-    document.getElementById('resTime').textContent=`à¹€à¸§à¸¥à¸²à¸—à¸µà¹ˆà¹ƒà¸Šà¹‰: ${m}:${s2}`;
-    const det=document.getElementById('resDetail');
-    det.innerHTML=slots.map((s,i)=>{
+    document.getElementById('resIcon').textContent=pct===100?'🏆':pct>=67?'😊':'🔄';
+    document.getElementById('resTitle').textContent=pct===100?'เยี่ยมมาก! สมบูรณ์แบบ!':pct>=67?'ดีมาก! เกือบได้แล้ว':'ลองใหม่อีกครั้งนะ';
+    document.getElementById('resScore').textContent=`${correct} / 6 ถูกต้อง`;
+    document.getElementById('resTime').textContent=`เวลาที่ใช้: ${m}:${s2}`;
+    document.getElementById('resDetail').innerHTML=slots.map((s,i)=>{
       const ok=s&&s.order===i+1;
-      return `<div class="p-2 rounded-xl ${ok?'bg-emerald-500/15 border border-emerald-500/3':'bg-red-500/15 border border-red-500/3'} text-center">
-        <p class="text-[10px] font-bold ${ok?'text-emerald-400':'text-red-400'}">${ok?'âœ“':'âœ—'} à¸Šà¹ˆà¸­à¸‡ ${i+1}</p>
-        <p class="text-[9px] text-gray-400 mt-0.5">${s?s.th:'à¸§à¹ˆà¸²à¸‡'}</p>
+      return `<div class="p-2 rounded-xl ${ok?'bg-emerald-500/15 border border-emerald-500/30':'bg-red-500/15 border border-red-500/30'} text-center">
+        <p class="text-[10px] font-bold ${ok?'text-emerald-400':'text-red-400'}">${ok?'✓':'✗'} ช่อง ${i+1}</p>
+        <p class="text-[9px] text-gray-400 mt-0.5">${s?s.th:'ว่าง'}</p>
       </div>`;
     }).join('');
     document.getElementById('overlay').classList.remove('hidden');
@@ -298,16 +277,11 @@ function submitAnswer(){
 }
 
 function resetGame(){
-  hand=shuffle([...STAGES]);
-  slots=Array(6).fill(null);
-  selected=null;
-  timerSec=0;
-  done=false;
+  hand=shuffle([...STAGES]);slots=Array(6).fill(null);selected=null;timerSec=0;done=false;
   document.getElementById('timer').textContent='00:00';
   clearInterval(timerInt);
   timerInt=setInterval(()=>{
-    if(done)return;
-    timerSec++;
+    if(done)return;timerSec++;
     const m=String(Math.floor(timerSec/60)).padStart(2,'0');
     const s=String(timerSec%60).padStart(2,'0');
     document.getElementById('timer').textContent=`${m}:${s}`;
@@ -320,4 +294,3 @@ render();
 </script>
 </body>
 </html>
-

@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>E3 Â· Explain â€” à¸­à¸˜à¸´à¸šà¸²à¸¢à¸à¸²à¸£à¹à¸šà¹ˆà¸‡à¹€à¸‹à¸¥à¸¥à¹Œ</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>E3 · Explain — อธิบายการแบ่งเซลล์</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
@@ -12,15 +12,24 @@
 body{font-family:'Kanit',sans-serif;background:#050210;color:#fff;min-height:100vh;overflow-x:hidden}
 @keyframes twinkle{0%,100%{opacity:.1}50%{opacity:.65}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-@keyframes slideDown{from{opacity:0;max-height:0;transform:translateY(-8px)}to{opacity:1;max-height:600px;transform:translateY(0)}}
 .fu{animation:fadeUp .5s ease both}
 .hdr{background:linear-gradient(to bottom,rgba(5,2,16,.95),rgba(5,2,16,0));position:sticky;top:0;z-index:50}
 .ubadge{background:rgba(5,150,105,.15);border:1px solid rgba(5,150,105,.35);border-radius:999px;padding:4px 12px 4px 5px;display:inline-flex;align-items:center;gap:7px;font-size:11px}
 .logbtn{cursor:pointer;padding:5px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);font-size:10px;color:rgba(255,255,255,.4);font-family:'Kanit',sans-serif;transition:all .2s}
 .logbtn:hover{border-color:rgba(239,68,68,.4);color:#fca5a5;background:rgba(239,68,68,.08)}
 
+/* Video */
+.video-wrap{background:#000;border-radius:20px;overflow:hidden;border:1px solid rgba(255,255,255,.08);position:relative}
+video{width:100%;display:block;max-height:260px;object-fit:contain}
+
+/* Game scaffold */
+.lyric-box{background:rgba(255,255,255,.04);border:1px solid rgba(5,150,105,.25);border-radius:16px;padding:16px;text-align:center}
+.blank-word{display:inline-block;background:rgba(5,150,105,.2);border:1.5px dashed rgba(5,150,105,.6);border-radius:10px;padding:2px 14px;color:#6ee7b7;font-weight:700;min-width:64px}
+.word-tile{background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.12);border-radius:12px;padding:10px 8px;font-family:'Kanit',sans-serif;font-size:12px;font-weight:600;color:rgba(255,255,255,.35);cursor:not-allowed;transition:all .2s;text-align:center}
+.check-btn-off{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.25);font-family:'Kanit',sans-serif;font-size:13px;font-weight:600;padding:13px 20px;border-radius:14px;cursor:not-allowed;width:100%;display:flex;align-items:center;justify-content:center;gap:8px}
+
 /* Stage accordion */
-.stage-item{border-radius:18px;overflow:hidden;margin-bottom:10px;transition:all .25s}
+.stage-item{border-radius:18px;overflow:hidden;margin-bottom:10px}
 .stage-hdr{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;transition:all .2s;border-radius:18px}
 .stage-hdr:hover{background:rgba(255,255,255,.04)}
 .stage-hdr.open{border-radius:18px 18px 0 0}
@@ -29,12 +38,10 @@ body{font-family:'Kanit',sans-serif;background:#050210;color:#fff;min-height:100
 .stage-num{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;flex-shrink:0}
 .chev{transition:transform .3s;font-size:10px;color:rgba(255,255,255,.3);margin-left:auto}
 .stage-hdr.open .chev{transform:rotate(180deg)}
-
-/* Event bullet */
 .ebullet{display:flex;align-items:flex-start;gap:8px;margin-bottom:7px}
 .edot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:4px}
 
-/* Vocab card */
+/* Vocab */
 .vcard{background:rgba(255,255,255,.04);border:1px solid rgba(5,150,105,.2);border-radius:14px;padding:12px 14px;transition:all .2s}
 .vcard:hover{background:rgba(5,150,105,.08);border-color:rgba(5,150,105,.4)}
 
@@ -54,7 +61,7 @@ body{font-family:'Kanit',sans-serif;background:#050210;color:#fff;min-height:100
     </a>
     <div>
       <p class="text-xs font-bold leading-none">Explain</p>
-      <p class="text-[8px] text-emerald-400 font-light tracking-wider mt-0.5">E3 Â· à¸­à¸˜à¸´à¸šà¸²à¸¢à¹€à¸™à¸·à¹‰à¸­à¸«à¸²</p>
+      <p class="text-[8px] text-emerald-400 font-light tracking-wider mt-0.5">E3 · อธิบายเนื้อหา</p>
     </div>
   </div>
   <div class="flex items-center gap-2">
@@ -74,41 +81,153 @@ body{font-family:'Kanit',sans-serif;background:#050210;color:#fff;min-height:100
   <div class="text-center py-5 fu">
     <div class="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 rounded-full px-4 py-1.5 text-xs text-emerald-300 mb-4">
       <div class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
-      à¸à¸´à¸ˆà¸à¸£à¸£à¸¡à¸—à¸µà¹ˆ 3 &nbsp;Â·&nbsp; Explain
+      กิจกรรมที่ 3 &nbsp;·&nbsp; Explain
     </div>
-    <h1 class="text-xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 to-teal-300 mb-2">à¸‚à¸±à¹‰à¸™à¸•à¸­à¸™à¸à¸²à¸£à¹à¸šà¹ˆà¸‡à¹€à¸‹à¸¥à¸¥à¹Œà¹„à¸¡à¹‚à¸—à¸‹à¸´à¸ª</h1>
-    <p class="text-[11px] text-gray-400 leading-relaxed">à¹à¸•à¸°à¹à¸•à¹ˆà¸¥à¸°à¸‚à¸±à¹‰à¸™à¸•à¸­à¸™à¹€à¸žà¸·à¹ˆà¸­à¹€à¸£à¸µà¸¢à¸™à¸£à¸¹à¹‰à¸£à¸²à¸¢à¸¥à¸°à¹€à¸­à¸µà¸¢à¸”</p>
+    <h1 class="text-xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 to-teal-300 mb-2">ขั้นตอนการแบ่งเซลล์ไมโทซิส</h1>
+    <p class="text-[11px] text-gray-400 leading-relaxed">ดูวิดีโอเพื่อทำความเข้าใจ จากนั้นเล่นเกมต่อเพลง</p>
   </div>
 
-  <!-- Stage Accordion -->
-  <div id="stages" class="mb-5 fu" style="animation-delay:.1s"></div>
-
-  <!-- Key Vocabulary -->
-  <div class="fu" style="animation-delay:.2s">
-    <div class="flex items-center gap-2.5 mb-3">
+  <!-- ═══════════════════════════════════ VIDEO ═══════════════════════════════════ -->
+  <div class="mb-5 fu" style="animation-delay:.08s">
+    <div class="flex items-center gap-2 mb-3">
       <div class="w-8 h-8 bg-emerald-500/15 rounded-xl flex items-center justify-center flex-shrink-0">
-        <i class="fas fa-book text-emerald-400 text-sm"></i>
+        <i class="fas fa-play-circle text-emerald-400 text-sm"></i>
       </div>
       <div>
-        <p class="text-xs font-bold">à¸„à¸³à¸¨à¸±à¸žà¸—à¹Œà¸ªà¸³à¸„à¸±à¸</p>
-        <p class="text-[10px] text-gray-500 mt-0.5">à¸„à¸³à¸¨à¸±à¸žà¸—à¹Œà¸—à¸µà¹ˆà¸„à¸§à¸£à¸ˆà¸³à¹ƒà¸™à¸šà¸—à¹€à¸£à¸µà¸¢à¸™à¸™à¸µà¹‰</p>
+        <p class="text-xs font-bold">วิดีโอประกอบบทเรียน</p>
+        <p class="text-[10px] text-gray-500">ดูให้จบก่อนเล่นเกม</p>
+      </div>
+    </div>
+    <div class="video-wrap">
+      <video controls playsinline preload="metadata" id="lessonVideo">
+        <source src="/video/E4.mp4" type="video/mp4">
+        <p class="text-center text-xs text-gray-500 p-4">เบราว์เซอร์ไม่รองรับวิดีโอ</p>
+      </video>
+    </div>
+    <p class="text-[9px] text-gray-600 text-center mt-2">
+      <i class="fas fa-volume-up mr-1"></i>เปิดเสียงเพื่อประสบการณ์ที่ดีที่สุด
+    </p>
+  </div>
+
+  <!-- ══════════════════════════════ GAME SCAFFOLD ══════════════════════════════ -->
+  <div class="mb-5 fu" style="animation-delay:.13s">
+    <div class="flex items-center gap-2 mb-3">
+      <div class="w-8 h-8 bg-emerald-500/15 rounded-xl flex items-center justify-center flex-shrink-0">
+        <i class="fas fa-music text-emerald-400 text-sm"></i>
+      </div>
+      <div class="flex-1">
+        <p class="text-xs font-bold">เกม: ต่อเพลง</p>
+        <p class="text-[10px] text-gray-500">ลากคำมาเติมในช่องว่างขณะวิดีโอหยุด</p>
+      </div>
+      <span class="text-[9px] bg-amber-500/15 text-amber-300 px-2.5 py-1 rounded-full border border-amber-500/25 flex-shrink-0">
+        🚧 กำลังพัฒนา
+      </span>
+    </div>
+
+    <!-- วิธีเล่น -->
+    <div class="bg-emerald-500/6 border border-emerald-500/18 rounded-2xl p-4 mb-3">
+      <p class="text-[10px] font-semibold text-emerald-300 mb-2.5 flex items-center gap-1.5">
+        <i class="fas fa-circle-info"></i> วิธีเล่น
+      </p>
+      <div class="space-y-1.5">
+        <div class="flex items-start gap-2">
+          <span class="text-emerald-400 font-bold text-[10px] mt-0.5 flex-shrink-0">1.</span>
+          <p class="text-[10px] text-gray-400">วิดีโอเพลงจะเปิดขึ้นโดยอัตโนมัติ</p>
+        </div>
+        <div class="flex items-start gap-2">
+          <span class="text-emerald-400 font-bold text-[10px] mt-0.5 flex-shrink-0">2.</span>
+          <p class="text-[10px] text-gray-400">เมื่อเนื้อเพลงหายไป วิดีโอจะหยุด</p>
+        </div>
+        <div class="flex items-start gap-2">
+          <span class="text-emerald-400 font-bold text-[10px] mt-0.5 flex-shrink-0">3.</span>
+          <p class="text-[10px] text-gray-400">เลือกคำที่ถูกต้องจากตัวเลือกด้านล่าง</p>
+        </div>
+        <div class="flex items-start gap-2">
+          <span class="text-emerald-400 font-bold text-[10px] mt-0.5 flex-shrink-0">4.</span>
+          <p class="text-[10px] text-gray-400">เมื่อถูกต้อง วิดีโอจะเล่นต่อ</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ตัวอย่างหน้าตาเกม (scaffold) -->
+    <div class="lyric-box mb-3">
+      <p class="text-[9px] text-emerald-400 uppercase tracking-wider mb-3 font-semibold">ตัวอย่างเนื้อเพลง</p>
+      <p class="text-sm text-white leading-loose mb-1">
+        "โครโมโซมจะ <span class="blank-word">?????</span> ตัวเอง"
+      </p>
+      <p class="text-[10px] text-gray-500 mt-2">วิดีโอหยุด — เลือกคำที่ขาดหายไป</p>
+    </div>
+
+    <!-- Word tile palette (scaffold) -->
+    <div class="grid grid-cols-2 gap-2 mb-3">
+      <div class="word-tile">จำลอง</div>
+      <div class="word-tile">สลายตัว</div>
+      <div class="word-tile">หดตัว</div>
+      <div class="word-tile">แบ่งแยก</div>
+    </div>
+
+    <!-- Check button (disabled scaffold) -->
+    <div class="check-btn-off">
+      <i class="fas fa-check-circle" style="font-size:14px"></i>
+      ตรวจสอบคำตอบ
+    </div>
+    <p class="text-center text-[9px] text-gray-600 mt-2">
+      ⚙ ระบบเกมจะเปิดใช้งานเร็วๆ นี้
+    </p>
+  </div>
+
+  <!-- ══════════════════════════════ เนื้อหาอ้างอิง ══════════════════════════════ -->
+  <div class="mb-5 fu" style="animation-delay:.18s">
+    <div class="flex items-center gap-2 mb-3">
+      <div class="w-8 h-8 bg-emerald-500/15 rounded-xl flex items-center justify-center flex-shrink-0">
+        <i class="fas fa-book-open text-emerald-400 text-sm"></i>
+      </div>
+      <div>
+        <p class="text-xs font-bold">เนื้อหาอ้างอิง</p>
+        <p class="text-[10px] text-gray-500">แตะแต่ละขั้นตอนเพื่ออ่านรายละเอียด</p>
+      </div>
+    </div>
+    <div id="stages"></div>
+  </div>
+
+  <!-- ══════════════════════════════ คำศัพท์สำคัญ ══════════════════════════════ -->
+  <div class="mb-6 fu" style="animation-delay:.23s">
+    <div class="flex items-center gap-2.5 mb-3">
+      <div class="w-8 h-8 bg-emerald-500/15 rounded-xl flex items-center justify-center flex-shrink-0">
+        <i class="fas fa-spell-check text-emerald-400 text-sm"></i>
+      </div>
+      <div>
+        <p class="text-xs font-bold">คำศัพท์สำคัญ</p>
+        <p class="text-[10px] text-gray-500 mt-0.5">คำศัพท์ที่ควรจำในบทเรียนนี้</p>
       </div>
     </div>
     <div class="grid grid-cols-1 gap-2">
-      <div class="vcard"><p class="text-xs font-semibold text-emerald-300 mb-0.5">à¹‚à¸„à¸£à¹‚à¸¡à¹‚à¸‹à¸¡ (Chromosome)</p><p class="text-[10px] text-gray-400 leading-relaxed">à¹‚à¸„à¸£à¸‡à¸ªà¸£à¹‰à¸²à¸‡à¸—à¸µà¹ˆà¸šà¸£à¸£à¸ˆà¸¸ DNA à¹à¸¥à¸°à¹‚à¸›à¸£à¸•à¸µà¸™ à¸žà¸šà¹ƒà¸™à¸™à¸´à¸§à¹€à¸„à¸¥à¸µà¸¢à¸ª à¸—à¸³à¸«à¸™à¹‰à¸²à¸—à¸µà¹ˆà¹€à¸à¹‡à¸šà¸‚à¹‰à¸­à¸¡à¸¹à¸¥à¸—à¸²à¸‡à¸žà¸±à¸™à¸˜à¸¸à¸à¸£à¸£à¸¡</p></div>
-      <div class="vcard"><p class="text-xs font-semibold text-emerald-300 mb-0.5">à¸ªà¸›à¸´à¸™à¹€à¸”à¸´à¸¥ (Spindle fiber)</p><p class="text-[10px] text-gray-400 leading-relaxed">à¹€à¸ªà¹‰à¸™à¹ƒà¸¢à¹‚à¸›à¸£à¸•à¸µà¸™à¸—à¸µà¹ˆà¸à¹ˆà¸­à¸•à¸±à¸§à¹ƒà¸™à¸£à¸°à¸¢à¸°à¹‚à¸žà¸£à¹€à¸Ÿà¸ª à¸—à¸³à¸«à¸™à¹‰à¸²à¸—à¸µà¹ˆà¸”à¸¶à¸‡à¹‚à¸„à¸£à¹‚à¸¡à¹‚à¸‹à¸¡à¹„à¸›à¸¢à¸±à¸‡à¸‚à¸±à¹‰à¸§à¹€à¸‹à¸¥à¸¥à¹Œ</p></div>
-      <div class="vcard"><p class="text-xs font-semibold text-emerald-300 mb-0.5">à¹€à¸‹à¸™à¸—à¸£à¸´à¹‚à¸­à¸¥ (Centriole)</p><p class="text-[10px] text-gray-400 leading-relaxed">à¸­à¸§à¸±à¸¢à¸§à¸°à¹€à¸¥à¹‡à¸à¹† à¸—à¸µà¹ˆà¸Šà¹ˆà¸§à¸¢à¸ˆà¸±à¸”à¸£à¸°à¹€à¸šà¸µà¸¢à¸šà¹€à¸ªà¹‰à¸™à¹ƒà¸¢à¸ªà¸›à¸´à¸™à¹€à¸”à¸´à¸¥ à¸žà¸šà¹ƒà¸™à¹€à¸‹à¸¥à¸¥à¹Œà¸ªà¸±à¸•à¸§à¹Œ</p></div>
-      <div class="vcard"><p class="text-xs font-semibold text-emerald-300 mb-0.5">à¸„à¸¥à¸µà¹€à¸§à¸ˆ à¹€à¸Ÿà¸­à¸£à¹Œà¹‚à¸£à¸§ (Cleavage furrow)</p><p class="text-[10px] text-gray-400 leading-relaxed">à¸£à¸­à¸¢à¸šà¸²à¸à¸—à¸µà¹ˆà¹€à¸à¸´à¸”à¹ƒà¸™à¸£à¸°à¸¢à¸°à¹„à¸‹à¹‚à¸•à¹„à¸„à¸™à¸µà¸‹à¸´à¸ª à¸—à¸³à¹ƒà¸«à¹‰à¹€à¸‹à¸¥à¸¥à¹Œà¹à¸¡à¹ˆà¹à¸šà¹ˆà¸‡à¸­à¸­à¸à¹€à¸›à¹‡à¸™à¸ªà¸­à¸‡à¹€à¸‹à¸¥à¸¥à¹Œà¸¥à¸¹à¸</p></div>
+      <div class="vcard">
+        <p class="text-xs font-semibold text-emerald-300 mb-0.5">โครโมโซม (Chromosome)</p>
+        <p class="text-[10px] text-gray-400 leading-relaxed">โครงสร้างที่บรรจุ DNA และโปรตีน พบในนิวเคลียส ทำหน้าที่เก็บข้อมูลทางพันธุกรรม</p>
+      </div>
+      <div class="vcard">
+        <p class="text-xs font-semibold text-emerald-300 mb-0.5">สปินเดิล (Spindle fiber)</p>
+        <p class="text-[10px] text-gray-400 leading-relaxed">เส้นใยโปรตีนที่ก่อตัวในระยะโพรเฟส ทำหน้าที่ดึงโครโมโซมไปยังขั้วเซลล์</p>
+      </div>
+      <div class="vcard">
+        <p class="text-xs font-semibold text-emerald-300 mb-0.5">เซนทริโอล (Centriole)</p>
+        <p class="text-[10px] text-gray-400 leading-relaxed">อวัยวะเล็กๆ ที่ช่วยจัดระเบียบเส้นใยสปินเดิล พบในเซลล์สัตว์</p>
+      </div>
+      <div class="vcard">
+        <p class="text-xs font-semibold text-emerald-300 mb-0.5">คลีเวจ เฟอร์โรว (Cleavage furrow)</p>
+        <p class="text-[10px] text-gray-400 leading-relaxed">รอยบากที่เกิดในระยะไซโตไคนีซิส ทำให้เซลล์แม่แบ่งออกเป็นสองเซลล์ลูก</p>
+      </div>
     </div>
   </div>
 
   <!-- Navigation -->
-  <div class="flex gap-3 mt-6 fu" style="animation-delay:.3s">
+  <div class="flex gap-3 fu" style="animation-delay:.28s">
     <a href="E2.html" class="nav-btn flex-1 border border-white/12 text-gray-300 hover:bg-white/6">
       <i class="fas fa-arrow-left text-sm"></i> E2
     </a>
-    <a href="E4.html" class="nav-btn flex-1 bg-gradient-to-r from-emerald-700 to-teal-700 text-white hover:opacity-90" style="box-shadow:0 8px 25px rgba(5,150,105,.35)">
-      E4 à¸–à¸±à¸”à¹„à¸› <i class="fas fa-arrow-right text-sm"></i>
+    <a href="E4.html" class="nav-btn flex-1 text-white hover:opacity-90" style="background:linear-gradient(135deg,#065f46,#047857);box-shadow:0 8px 25px rgba(5,150,105,.35)">
+      E4 ถัดไป <i class="fas fa-arrow-right text-sm"></i>
     </a>
   </div>
 
@@ -117,11 +236,13 @@ body{font-family:'Kanit',sans-serif;background:#050210;color:#fff;min-height:100
 <script>
 const API='';
 function logout(){localStorage.removeItem('cl_token');localStorage.removeItem('cl_user');window.location.href='login.html';}
+
 (function(){
   if(!localStorage.getItem('cl_token')){window.location.href='login.html';return;}
   const u=JSON.parse(localStorage.getItem('cl_user')||'{}');
   document.getElementById('hdrName').textContent=u.first_name||u.username||'';
 })();
+
 (function(){
   const c=document.getElementById('stars');
   for(let i=0;i<55;i++){
@@ -132,11 +253,12 @@ function logout(){localStorage.removeItem('cl_token');localStorage.removeItem('c
   }
 })();
 
+// ─── Stage accordion data ────────────────────────────────────────────────────
 const STAGES=[
   {
-    num:1,label:'Interphase',th:'à¸­à¸´à¸™à¹€à¸•à¸­à¸£à¹Œà¹€à¸Ÿà¸ª',color:'#6366f1',bg:'rgba(99,102,241,.12)',
-    desc:'à¸£à¸°à¸¢à¸°à¹€à¸•à¸£à¸µà¸¢à¸¡à¸žà¸£à¹‰à¸­à¸¡à¸à¹ˆà¸­à¸™à¸à¸²à¸£à¹à¸šà¹ˆà¸‡à¹€à¸‹à¸¥à¸¥à¹Œ à¹€à¸‹à¸¥à¸¥à¹Œà¸¡à¸µà¸à¸²à¸£à¹€à¸ˆà¸£à¸´à¸à¹€à¸•à¸´à¸šà¹‚à¸•à¹à¸¥à¸°à¸ˆà¸³à¸¥à¸­à¸‡ DNA',
-    events:['DNA à¸ˆà¸³à¸¥à¸­à¸‡à¸•à¸±à¸§à¹€à¸­à¸‡à¹€à¸›à¹‡à¸™ 2 à¸Šà¸¸à¸” (DNA replication)','à¹€à¸‹à¸¥à¸¥à¹Œà¸ªà¸°à¸ªà¸¡à¸žà¸¥à¸±à¸‡à¸‡à¸²à¸™à¹à¸¥à¸°à¹‚à¸›à¸£à¸•à¸µà¸™','à¹‚à¸„à¸£à¹‚à¸¡à¹‚à¸‹à¸¡à¸¢à¸±à¸‡à¸­à¸¢à¸¹à¹ˆà¹ƒà¸™à¸£à¸¹à¸› chromatin à¸„à¸¥à¸²à¸¢à¸•à¸±à¸§'],
+    num:1,label:'Interphase',th:'อินเตอร์เฟส',color:'#6366f1',bg:'rgba(99,102,241,.12)',
+    desc:'ระยะเตรียมพร้อมก่อนการแบ่งเซลล์ เซลล์มีการเจริญเติบโตและจำลอง DNA',
+    events:['DNA จำลองตัวเองเป็น 2 ชุด (DNA replication)','เซลล์สะสมพลังงานและโปรตีน','โครโมโซมยังอยู่ในรูป chromatin คลายตัว'],
     svg:`<circle cx="40" cy="40" r="34" fill="rgba(99,102,241,.12)" stroke="rgba(99,102,241,.7)" stroke-width="2"/>
 <circle cx="40" cy="40" r="16" fill="rgba(99,102,241,.15)" stroke="rgba(167,139,250,.6)" stroke-width="1.5" stroke-dasharray="3,2"/>
 <path d="M33 37 Q37 33 41 37 Q45 41 49 37" fill="none" stroke="rgba(196,181,253,.9)" stroke-width="1.8" stroke-linecap="round"/>
@@ -145,9 +267,9 @@ const STAGES=[
 <ellipse cx="58" cy="26" rx="7" ry="4" fill="none" stroke="rgba(167,139,250,.3)" stroke-width="1.2" transform="rotate(15,58,26)"/>`
   },
   {
-    num:2,label:'Prophase',th:'à¹‚à¸žà¸£à¹€à¸Ÿà¸ª',color:'#8b5cf6',bg:'rgba(139,92,246,.12)',
-    desc:'à¹‚à¸„à¸£à¹‚à¸¡à¹‚à¸‹à¸¡à¸«à¸”à¸•à¸±à¸§à¹à¸¥à¸°à¸¡à¸­à¸‡à¹€à¸«à¹‡à¸™à¹„à¸”à¹‰à¸Šà¸±à¸”à¹€à¸ˆà¸™ à¹€à¸¢à¸·à¹ˆà¸­à¸«à¸¸à¹‰à¸¡à¸™à¸´à¸§à¹€à¸„à¸¥à¸µà¸¢à¸ªà¹€à¸£à¸´à¹ˆà¸¡à¸ªà¸¥à¸²à¸¢à¸•à¸±à¸§',
-    events:['à¹‚à¸„à¸£à¹‚à¸¡à¹‚à¸‹à¸¡à¸«à¸”à¸•à¸±à¸§ (condensation) à¸¡à¸­à¸‡à¹€à¸«à¹‡à¸™à¸Šà¸±à¸”à¹€à¸ˆà¸™','à¹€à¸¢à¸·à¹ˆà¸­à¸«à¸¸à¹‰à¸¡à¸™à¸´à¸§à¹€à¸„à¸¥à¸µà¸¢à¸ªà¸ªà¸¥à¸²à¸¢à¸•à¸±à¸§','à¹€à¸ªà¹‰à¸™à¹ƒà¸¢à¸ªà¸›à¸´à¸™à¹€à¸”à¸´à¸¥à¹€à¸£à¸´à¹ˆà¸¡à¸à¹ˆà¸­à¸•à¸±à¸§à¸ˆà¸²à¸à¹€à¸‹à¸™à¸—à¸£à¸´à¹‚à¸­à¸¥'],
+    num:2,label:'Prophase',th:'โพรเฟส',color:'#8b5cf6',bg:'rgba(139,92,246,.12)',
+    desc:'โครโมโซมหดตัวและมองเห็นได้ชัดเจน เยื่อหุ้มนิวเคลียสเริ่มสลายตัว',
+    events:['โครโมโซมหดตัว (condensation) มองเห็นชัดเจน','เยื่อหุ้มนิวเคลียสสลายตัว','เส้นใยสปินเดิลเริ่มก่อตัวจากเซนทริโอล'],
     svg:`<circle cx="40" cy="40" r="34" fill="rgba(139,92,246,.1)" stroke="rgba(139,92,246,.7)" stroke-width="2"/>
 <rect x="29" y="26" width="7" height="28" rx="3.5" fill="rgba(167,139,250,.85)"/>
 <rect x="39" y="23" width="7" height="34" rx="3.5" fill="rgba(139,92,246,.9)"/>
@@ -156,9 +278,9 @@ const STAGES=[
 <circle cx="40" cy="72" r="4" fill="rgba(196,181,253,.7)"/>`
   },
   {
-    num:3,label:'Metaphase',th:'à¹€à¸¡à¸—à¸²à¹€à¸Ÿà¸ª',color:'#ec4899',bg:'rgba(236,72,153,.1)',
-    desc:'à¹‚à¸„à¸£à¹‚à¸¡à¹‚à¸‹à¸¡à¹€à¸£à¸µà¸¢à¸‡à¸•à¸±à¸§à¸—à¸µà¹ˆà¸à¸¶à¹ˆà¸‡à¸à¸¥à¸²à¸‡à¹€à¸‹à¸¥à¸¥à¹Œ (metaphase plate) à¹€à¸ªà¹‰à¸™à¹ƒà¸¢à¸ªà¸›à¸´à¸™à¹€à¸”à¸´à¸¥à¸¢à¸¶à¸”à¹‚à¸„à¸£à¹‚à¸¡à¹‚à¸‹à¸¡',
-    events:['à¹‚à¸„à¸£à¹‚à¸¡à¹‚à¸‹à¸¡à¹€à¸£à¸µà¸¢à¸‡à¸•à¸±à¸§à¸—à¸µà¹ˆà¸£à¸°à¸™à¸²à¸šà¸à¸¥à¸²à¸‡ (metaphase plate)','à¹€à¸ªà¹‰à¸™à¹ƒà¸¢à¸ªà¸›à¸´à¸™à¹€à¸”à¸´à¸¥à¸¢à¸¶à¸”à¹€à¸‹à¸™à¹‚à¸—à¸£à¹€à¸¡à¸µà¸¢à¸£à¹Œà¸‚à¸­à¸‡à¹‚à¸„à¸£à¹‚à¸¡à¹‚à¸‹à¸¡','à¹€à¸›à¹‡à¸™à¸£à¸°à¸¢à¸°à¸—à¸µà¹ˆà¸¡à¸­à¸‡à¹€à¸«à¹‡à¸™à¹‚à¸„à¸£à¹‚à¸¡à¹‚à¸‹à¸¡à¸Šà¸±à¸”à¸—à¸µà¹ˆà¸ªà¸¸à¸”'],
+    num:3,label:'Metaphase',th:'เมทาเฟส',color:'#ec4899',bg:'rgba(236,72,153,.1)',
+    desc:'โครโมโซมเรียงตัวที่กึ่งกลางเซลล์ (metaphase plate) เส้นใยสปินเดิลยึดโครโมโซม',
+    events:['โครโมโซมเรียงตัวที่ระนาบกลาง (metaphase plate)','เส้นใยสปินเดิลยึดเซนโทรเมียร์ของโครโมโซม','เป็นระยะที่มองเห็นโครโมโซมชัดที่สุด'],
     svg:`<circle cx="40" cy="40" r="34" fill="rgba(236,72,153,.08)" stroke="rgba(236,72,153,.7)" stroke-width="2"/>
 <line x1="40" y1="6" x2="28" y2="40" stroke="rgba(236,72,153,.3)" stroke-width="1"/>
 <line x1="40" y1="6" x2="40" y2="40" stroke="rgba(236,72,153,.3)" stroke-width="1"/>
@@ -173,9 +295,9 @@ const STAGES=[
 <rect x="47" y="33" width="7" height="14" rx="3.5" fill="rgba(251,113,133,.9)"/>`
   },
   {
-    num:4,label:'Anaphase',th:'à¹à¸­à¸™à¸²à¹€à¸Ÿà¸ª',color:'#f59e0b',bg:'rgba(245,158,11,.1)',
-    desc:'à¹‚à¸„à¸£à¹‚à¸¡à¹‚à¸‹à¸¡à¸–à¸¹à¸à¸”à¸¶à¸‡à¹à¸¢à¸à¸ˆà¸²à¸à¸à¸±à¸™ à¹€à¸„à¸¥à¸·à¹ˆà¸­à¸™à¸—à¸µà¹ˆà¹„à¸›à¸¢à¸±à¸‡à¸‚à¸±à¹‰à¸§à¹€à¸‹à¸¥à¸¥à¹Œà¸—à¸±à¹‰à¸‡à¸ªà¸­à¸‡à¸”à¹‰à¸²à¸™',
-    events:['à¹€à¸ªà¹‰à¸™à¹ƒà¸¢à¸ªà¸›à¸´à¸™à¹€à¸”à¸´à¸¥à¸”à¸¶à¸‡à¹‚à¸„à¸£à¹‚à¸¡à¹‚à¸‹à¸¡à¹„à¸›à¸¢à¸±à¸‡à¹à¸•à¹ˆà¸¥à¸°à¸‚à¸±à¹‰à¸§','à¹€à¸‹à¸¥à¸¥à¹Œà¹€à¸£à¸´à¹ˆà¸¡à¸¢à¸·à¸”à¸•à¸±à¸§à¸­à¸­à¸','à¹‚à¸„à¸£à¹‚à¸¡à¹‚à¸‹à¸¡à¹à¸•à¹ˆà¸¥à¸°à¸Šà¸¸à¸”à¹€à¸„à¸¥à¸·à¹ˆà¸­à¸™à¸—à¸µà¹ˆà¸«à¹ˆà¸²à¸‡à¸ˆà¸²à¸à¸à¸±à¸™'],
+    num:4,label:'Anaphase',th:'แอนาเฟส',color:'#f59e0b',bg:'rgba(245,158,11,.1)',
+    desc:'โครโมโซมถูกดึงแยกจากกัน เคลื่อนที่ไปยังขั้วเซลล์ทั้งสองด้าน',
+    events:['เส้นใยสปินเดิลดึงโครโมโซมไปยังแต่ละขั้ว','เซลล์เริ่มยืดตัวออก','โครโมโซมแต่ละชุดเคลื่อนที่ห่างจากกัน'],
     svg:`<ellipse cx="40" cy="40" rx="28" ry="36" fill="rgba(245,158,11,.08)" stroke="rgba(245,158,11,.7)" stroke-width="2"/>
 <rect x="31" y="11" width="6" height="11" rx="3" fill="rgba(251,191,36,.9)"/>
 <rect x="40" y="9" width="6" height="11" rx="3" fill="rgba(245,158,11,.9)"/>
@@ -184,9 +306,9 @@ const STAGES=[
 <line x1="40" y1="25" x2="40" y2="55" stroke="rgba(245,158,11,.25)" stroke-width="1" stroke-dasharray="3,3"/>`
   },
   {
-    num:5,label:'Telophase',th:'à¹€à¸—à¹‚à¸¥à¹€à¸Ÿà¸ª',color:'#10b981',bg:'rgba(16,185,129,.1)',
-    desc:'à¸™à¸´à¸§à¹€à¸„à¸¥à¸µà¸¢à¸ªà¹ƒà¸«à¸¡à¹ˆ 2 à¸­à¸±à¸™à¸à¹ˆà¸­à¸•à¸±à¸§à¸‚à¸¶à¹‰à¸™ à¹‚à¸„à¸£à¹‚à¸¡à¹‚à¸‹à¸¡à¹€à¸£à¸´à¹ˆà¸¡à¸„à¸¥à¸²à¸¢à¸•à¸±à¸§ à¹€à¸‹à¸¥à¸¥à¹Œà¹ƒà¸à¸¥à¹‰à¹à¸šà¹ˆà¸‡à¸•à¸±à¸§',
-    events:['à¸™à¸´à¸§à¹€à¸„à¸¥à¸µà¸¢à¸ªà¹ƒà¸«à¸¡à¹ˆ 2 à¸­à¸±à¸™à¸à¹ˆà¸­à¸•à¸±à¸§à¸—à¸µà¹ˆà¹à¸•à¹ˆà¸¥à¸°à¸‚à¸±à¹‰à¸§','à¹€à¸¢à¸·à¹ˆà¸­à¸«à¸¸à¹‰à¸¡à¸™à¸´à¸§à¹€à¸„à¸¥à¸µà¸¢à¸ªà¸ªà¸£à¹‰à¸²à¸‡à¹ƒà¸«à¸¡à¹ˆà¸£à¸­à¸šà¹‚à¸„à¸£à¹‚à¸¡à¹‚à¸‹à¸¡','à¹‚à¸„à¸£à¹‚à¸¡à¹‚à¸‹à¸¡à¹€à¸£à¸´à¹ˆà¸¡à¸„à¸¥à¸²à¸¢à¸•à¸±à¸§à¸à¸¥à¸±à¸šà¹€à¸›à¹‡à¸™ chromatin'],
+    num:5,label:'Telophase',th:'เทโลเฟส',color:'#10b981',bg:'rgba(16,185,129,.1)',
+    desc:'นิวเคลียสใหม่ 2 อันก่อตัวขึ้น โครโมโซมเริ่มคลายตัว เซลล์ใกล้แบ่งตัว',
+    events:['นิวเคลียสใหม่ 2 อันก่อตัวที่แต่ละขั้ว','เยื่อหุ้มนิวเคลียสสร้างใหม่รอบโครโมโซม','โครโมโซมเริ่มคลายตัวกลับเป็น chromatin'],
     svg:`<ellipse cx="40" cy="40" rx="34" ry="36" fill="rgba(16,185,129,.08)" stroke="rgba(16,185,129,.7)" stroke-width="2"/>
 <line x1="6" y1="40" x2="74" y2="40" stroke="rgba(16,185,129,.3)" stroke-width="1.5" stroke-dasharray="4,3"/>
 <ellipse cx="40" cy="23" rx="14" ry="13" fill="rgba(16,185,129,.1)" stroke="rgba(52,211,153,.6)" stroke-width="1.5" stroke-dasharray="3,2"/>
@@ -197,9 +319,9 @@ const STAGES=[
 <rect x="42" y="50" width="4" height="14" rx="2" fill="rgba(110,231,183,.7)"/>`
   },
   {
-    num:6,label:'Cytokinesis',th:'à¹„à¸‹à¹‚à¸•à¹„à¸„à¸™à¸µà¸‹à¸´à¸ª',color:'#3b82f6',bg:'rgba(59,130,246,.1)',
-    desc:'à¹„à¸‹à¹‚à¸—à¸žà¸¥à¸²à¸ªà¸‹à¸¶à¸¡à¹à¸šà¹ˆà¸‡à¸­à¸­à¸à¹€à¸›à¹‡à¸™à¸ªà¸­à¸‡à¸ªà¹ˆà¸§à¸™ à¹„à¸”à¹‰à¹€à¸‹à¸¥à¸¥à¹Œà¸¥à¸¹à¸ 2 à¹€à¸‹à¸¥à¸¥à¹Œà¸—à¸µà¹ˆà¸¡à¸µà¹‚à¸„à¸£à¹‚à¸¡à¹‚à¸‹à¸¡à¹€à¸—à¹ˆà¸²à¸à¸±à¸™',
-    events:['à¹„à¸‹à¹‚à¸—à¸žà¸¥à¸²à¸ªà¸‹à¸¶à¸¡à¹à¸šà¹ˆà¸‡à¸­à¸­à¸ (cytokinesis)','à¹ƒà¸™à¹€à¸‹à¸¥à¸¥à¹Œà¸ªà¸±à¸•à¸§à¹Œ: à¹€à¸à¸´à¸” cleavage furrow à¸šà¸µà¸šà¸•à¸±à¸§','à¹„à¸”à¹‰à¹€à¸‹à¸¥à¸¥à¹Œà¸¥à¸¹à¸ 2 à¹€à¸‹à¸¥à¸¥à¹Œ à¸¡à¸µà¹‚à¸„à¸£à¹‚à¸¡à¹‚à¸‹à¸¡à¹€à¸—à¹ˆà¸²à¸à¸±à¸šà¹€à¸‹à¸¥à¸¥à¹Œà¹à¸¡à¹ˆ'],
+    num:6,label:'Cytokinesis',th:'ไซโตไคนีซิส',color:'#3b82f6',bg:'rgba(59,130,246,.1)',
+    desc:'ไซโตพลาซึมแบ่งออกเป็นสองส่วน ได้เซลล์ลูก 2 เซลล์ที่มีโครโมโซมเท่ากัน',
+    events:['ไซโตพลาซึมแบ่งออก (cytokinesis)','ในเซลล์สัตว์: เกิด cleavage furrow บีบตัว','ได้เซลล์ลูก 2 เซลล์ มีโครโมโซมเท่ากับเซลล์แม่'],
     svg:`<circle cx="22" cy="40" r="18" fill="rgba(59,130,246,.1)" stroke="rgba(59,130,246,.7)" stroke-width="2"/>
 <circle cx="22" cy="40" r="8" fill="rgba(59,130,246,.12)" stroke="rgba(96,165,250,.5)" stroke-width="1.5" stroke-dasharray="2,2"/>
 <circle cx="58" cy="40" r="18" fill="rgba(59,130,246,.1)" stroke="rgba(59,130,246,.7)" stroke-width="2"/>
@@ -207,6 +329,7 @@ const STAGES=[
   }
 ];
 
+// Build accordion
 const container=document.getElementById('stages');
 STAGES.forEach((s,idx)=>{
   const item=document.createElement('div');
@@ -225,9 +348,7 @@ STAGES.forEach((s,idx)=>{
     <div class="stage-body" id="body${idx}">
       <div style="padding:0 16px 16px">
         <p class="text-[11px] text-gray-300 leading-relaxed mb-3">${s.desc}</p>
-        <div>
-          ${s.events.map(e=>`<div class="ebullet"><div class="edot" style="background:${s.color}"></div><p class="text-[10px] text-gray-400 leading-relaxed">${e}</p></div>`).join('')}
-        </div>
+        <div>${s.events.map(e=>`<div class="ebullet"><div class="edot" style="background:${s.color}"></div><p class="text-[10px] text-gray-400 leading-relaxed">${e}</p></div>`).join('')}</div>
       </div>
     </div>`;
   container.appendChild(item);
@@ -241,9 +362,22 @@ function toggle(i){
   body.classList.toggle('open',!isOpen);
 }
 
-// Open first stage by default
 toggle(0);
+
+// ─── Game scaffold (placeholder — implement later) ───────────────────────────
+// TODO: implement fill-in-the-blank lyrics game
+// Structure needed:
+//   const LYRICS_CUES = [
+//     { time: 10.5, lyricBefore: 'โครโมโซมจะ', lyricAfter: 'ตัวเอง',
+//       options: ['จำลอง', 'สลาย', 'หดตัว', 'แบ่งแยก'], answer: 'จำลอง' },
+//     ...
+//   ];
+//
+//   1. Listen to video timeupdate
+//   2. When currentTime crosses a cue.time, video.pause()
+//   3. Show lyric line with blank + shuffle options
+//   4. On correct tile select: video.play(), advance cue index
+//   5. On wrong: show shake effect, deduct score
 </script>
 </body>
 </html>
-

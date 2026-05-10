@@ -8,6 +8,7 @@ import os
 
 FRONTEND_DIR = os.path.join(os.path.dirname(__file__), '..', 'frontend')
 IMAGE_DIR    = os.path.join(os.path.dirname(__file__), '..', 'image')
+VIDEO_DIR    = os.path.join(os.path.dirname(__file__), '..', 'video')
 
 app = Flask(__name__)
 
@@ -36,6 +37,10 @@ def index():
 @app.route('/image/<path:filename>')
 def serve_image(filename):
     return send_from_directory(IMAGE_DIR, filename)
+
+@app.route('/video/<path:filename>')
+def serve_video(filename):
+    return send_from_directory(VIDEO_DIR, filename, conditional=True)
 
 @app.route('/<path:filename>')
 def serve_frontend(filename):
